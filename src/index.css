@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS for Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%); /* MODIFIED: Changed to -50% for seamless loop with duplicated content */
+  }
+}
+
+.animate-marquee-container {
+  animation: marquee 30s linear infinite; /* Adjust duration for speed */
+  white-space: nowrap; /* Prevent content from wrapping */
+}
+
+.animate-marquee-container:hover {
+  animation-play-state: paused; /* Pause animation on hover */
+}
