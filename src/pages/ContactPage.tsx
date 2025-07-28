@@ -105,7 +105,7 @@ ${formData.message}
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-1">Phone Number</h3>
-                  <p className="text-gray-600">+92 42 37667691</p>
+                  <p className="text-gray-600">+923164623026</p>
                   <p className="text-sm text-gray-500 mt-1">Available during business hours</p>
                 </div>
               </div>
