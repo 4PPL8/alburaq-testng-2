@@ -248,9 +248,7 @@ const AdminDashboard: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Categories</h3>
                 <p className="text-3xl font-bold text-yellow-600">{categories.length}</p>
               </div>
-              {/* This div was the start of the next card, and the previous one was missing a closing tag */}
-              {/* I've ensured each stat card has its own correctly closed div. */}
-              <div className="bg-white p-6 rounded-xl shadow-md">
+              <div className="bg-white p-6 rounded-xl shadow-md"> {/* This is the div for "Most Popular Category" */}
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Most Popular Category</h3>
                 <p className="text-lg font-bold text-green-600">
                   {mostPopularCategory}

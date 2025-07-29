@@ -5,8 +5,8 @@ import { ArrowRight, Package, Shield, Truck, Star, Zap } from 'lucide-react';
 import { useProducts } from '../contexts/ProductContext';
 import ProductCard from '../components/ProductCard';
 
-// Import your main logo image using the absolute path format from project root
-import MainLogoImage from '/MAIN.png'; // <--- Path assumes MAIN.png is in the project root
+// Import your main logo image using the absolute path format from public
+import MainLogoImage from '/MAIN.png'; // <--- Path assumes MAIN.png is in the public folder
 
 // REMOVED: All category image imports are no longer needed, as per your request to use solid color circles.
 
@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
   const originalFeaturedProducts = products.slice(0, 6);
 
   // Prepare products for the horizontal marquee.
-  // They will now use the images defined in ProductContext.tsx (which are direct paths from project root).
+  // They will now use the images defined in ProductContext.tsx (which are direct paths from public).
   const featuredProductsForMarquee = originalFeaturedProducts.map(product => ({
     ...product,
     // The 'image' property will come directly from the product object in ProductContext.

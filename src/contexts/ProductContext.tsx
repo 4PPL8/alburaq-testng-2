@@ -41,7 +41,7 @@ const initialProducts: Product[] = [
     name: 'Balo Color',
     category: 'Cosmetics & Personal Care',
     description: 'High-quality hair color for vibrant and long-lasting results.',
-    image: '/balo-color-1.jpg', // Path from project root
+    image: '/balo-color-1.jpg', // Path from public/
     images: [
       '/balo-color-1.jpg',
       '/balo-color-2.jpg',
@@ -55,7 +55,7 @@ const initialProducts: Product[] = [
     name: 'Grace Color',
     category: 'Cosmetics & Personal Care',
     description: 'Premium hair coloring solution with excellent coverage.',
-    image: '/grace-color-1.jpg', // Path from project root
+    image: '/grace-color-1.jpg', // Path from public/
     images: [
       '/grace-color-1.jpg',
       '/grace-color-2.jpg',
@@ -68,7 +68,7 @@ const initialProducts: Product[] = [
     name: 'Veloria Facial',
     category: 'Cosmetics & Personal Care',
     description: 'Gentle facial cream for smooth and radiant skin.',
-    image: '/veloria-facial-1.jpg', // Path from project root
+    image: '/veloria-facial-1.jpg', // Path from public/
     images: [
       '/veloria-facial-1.jpg',
       '/veloria-facial-2.jpg',
@@ -82,21 +82,20 @@ const initialProducts: Product[] = [
     name: 'Sharp Razor',
     category: 'Razors',
     description: 'Professional-grade razor for precise and comfortable shaving.',
-    image: '/sharp-razor-1.jpg', // Path from project root
+    image: '/sharp-razor-1.jpg', // Path from public/
     images: [
       '/sharp-razor-1.jpg',
       '/sharp-razor-2.jpg',
       '/sharp-razor-3.jpg'
     ],
     features: ['Sharp blade', 'Comfortable grip', 'Precise cutting']
-  }
-  ,
+  },
   {
     id: '5',
     name: 'Ujala Razor',
     category: 'Razors',
     description: 'Reliable razor for everyday grooming needs.',
-    image: '/ujala-razor-1.jpg', // Path from project root
+    image: '/ujala-razor-1.jpg', // Path from public/
     images: [
       '/ujala-razor-1.jpg',
       '/ujala-razor-2.jpg',
@@ -109,7 +108,7 @@ const initialProducts: Product[] = [
     name: 'Mister Clean Toothbrush',
     category: 'Toothbrush',
     description: 'High-quality toothbrush for optimal oral hygiene.',
-    image: '/mister-clean-toothbrush-1.jpg', // Path from project root
+    image: '/mister-clean-toothbrush-1.jpg', // Path from public/
     images: [
       '/mister-clean-toothbrush-1.jpg',
       '/mister-clean-toothbrush-2.jpg',
@@ -123,7 +122,7 @@ const initialProducts: Product[] = [
     name: 'Mahfil Milan',
     category: 'Agarbatti (Incense Sticks)',
     description: 'Premium incense sticks with enchanting fragrance.',
-    image: '/mahfil-milan-1.jpg', // Path from project root
+    image: '/mahfil-milan-1.jpg', // Path from public/
     images: [
       '/mahfil-milan-1.jpg',
       '/mahfil-milan-2.jpg',
@@ -136,7 +135,7 @@ const initialProducts: Product[] = [
     name: 'Golden Milan',
     category: 'Agarbatti (Incense Sticks)',
     description: 'Luxurious incense sticks for a calming atmosphere.',
-    image: '/golden-milan-1.jpg', // Path from project root
+    image: '/golden-milan-1.jpg', // Path from public/
     images: [
       '/golden-milan-1.jpg',
       '/golden-milan-2.jpg',
@@ -150,7 +149,7 @@ const initialProducts: Product[] = [
     name: 'Natural ISP',
     category: 'Natural / Herbal Products',
     description: 'Natural herbal supplement for health and wellness.',
-    image: '/natural-isp-1.jpg', // Path from project root
+    image: '/natural-isp-1.jpg', // Path from public/
     images: [
       '/natural-isp-1.jpg',
       '/natural-isp-2.jpg',
@@ -163,7 +162,7 @@ const initialProducts: Product[] = [
     name: 'Jor Joshanda',
     category: 'Natural / Herbal Products',
     description: 'Traditional herbal remedy for respiratory wellness.',
-    image: '/jor-joshanda-1.jpg', // Path from project root
+    image: '/jor-joshanda-1.jpg', // Path from public/
     images: [
       '/jor-joshanda-1.jpg',
       '/jor-joshanda-2.jpg',
@@ -177,7 +176,7 @@ const initialProducts: Product[] = [
     name: 'Lemon Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'High-quality adhesive tape for various applications.',
-    image: '/lemon-adhesive-tape-1.jpg', // Path from project root
+    image: '/lemon-adhesive-tape-1.jpg', // Direct path from public/
     images: [
       '/lemon-adhesive-tape-1.jpg',
       '/lemon-adhesive-tape-2.jpg',
@@ -191,7 +190,7 @@ const initialProducts: Product[] = [
     name: 'Silicon Nipple',
     category: 'Baby Products (Soothers)',
     description: 'Safe and comfortable silicon soother for babies.',
-    image: '/silicon-nipple-1.jpg', // Path from project root
+    image: '/silicon-nipple-1.jpg', // Direct path from public/
     images: [
       '/silicon-nipple-1.jpg',
       '/silicon-nipple-2.jpg',
