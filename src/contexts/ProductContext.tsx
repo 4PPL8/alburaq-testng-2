@@ -1,4 +1,9 @@
+// src/contexts/ProductContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
+
+// --- Generic placeholder for when NO image is provided (e.g., if admin adds a product without an image) ---
+const DefaultProductPlaceholder = 'https://placehold.co/400x400/CCCCCC/000000?text=No+Image';
+
 
 export interface Product {
   id: string;
@@ -30,12 +35,12 @@ const initialProducts: Product[] = [
     name: 'Balo Color',
     category: 'Cosmetics & Personal Care',
     description: 'High-quality hair color for vibrant and long-lasting results.',
-    image: 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg',
+    image: '/balo-color-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg',
-      'https://via.placeholder.com/200/FF0000/FFFFFF?text=Balo+Color+2', // Added placeholder image 2
-      'https://via.placeholder.com/200/00FF00/FFFFFF?text=Balo+Color+3', // Added placeholder image 3
-      'https://via.placeholder.com/200/0000FF/FFFFFF?text=Balo+Color+4'  // Added placeholder image 4 (for testing more than 3)
+      '/balo-color-1.jpg',
+      '/balo-color-2.jpg',
+      '/balo-color-3.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Long-lasting color', 'Natural ingredients', 'Easy application']
   },
@@ -44,11 +49,11 @@ const initialProducts: Product[] = [
     name: 'Grace Color',
     category: 'Cosmetics & Personal Care',
     description: 'Premium hair coloring solution with excellent coverage.',
-    image: 'https://images.pexels.com/photos/3738673/pexels-photo-3738673.jpeg',
+    image: '/grace-color-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/3738673/pexels-photo-3738673.jpeg',
-      'https://via.placeholder.com/200/FFFF00/000000?text=Grace+Color+2',
-      'https://via.placeholder.com/200/FF00FF/FFFFFF?text=Grace+Color+3'
+      '/grace-color-1.jpg',
+      '/grace-color-2.jpg',
+      '/grace-color-3.jpg'
     ],
     features: ['Premium quality', 'Excellent coverage', 'Hair-friendly formula']
   },
@@ -57,11 +62,11 @@ const initialProducts: Product[] = [
     name: 'Veloria Facial',
     category: 'Cosmetics & Personal Care',
     description: 'Gentle facial cream for smooth and radiant skin.',
-    image: 'https://images.pexels.com/photos/3762879/pexels-photo-3762879.jpeg',
+    image: '/veloria-facial-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/3762879/pexels-photo-3762879.jpeg',
-      'https://via.placeholder.com/200/00FFFF/000000?text=Veloria+Facial+2',
-      'https://via.placeholder.com/200/800000/FFFFFF?text=Veloria+Facial+3'
+      '/veloria-facial-1.jpg',
+      '/veloria-facial-2.jpg',
+      '/veloria-facial-3.jpg'
     ],
     features: ['Gentle formula', 'Radiant skin', 'Moisturizing effect']
   },
@@ -71,11 +76,11 @@ const initialProducts: Product[] = [
     name: 'Sharp Razor',
     category: 'Razors',
     description: 'Professional-grade razor for precise and comfortable shaving.',
-    image: 'https://images.pexels.com/photos/713297/pexels-photo-713297.jpeg',
+    image: '/sharp-razor-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/713297/pexels-photo-713297.jpeg',
-      'https://via.placeholder.com/200/008000/FFFFFF?text=Sharp+Razor+2',
-      'https://via.placeholder.com/200/000080/FFFFFF?text=Sharp+Razor+3'
+      '/sharp-razor-1.jpg',
+      '/sharp-razor-2.jpg',
+      '/sharp-razor-3.jpg'
     ],
     features: ['Sharp blade', 'Comfortable grip', 'Precise cutting']
   },
@@ -84,23 +89,24 @@ const initialProducts: Product[] = [
     name: 'Ujala Razor',
     category: 'Razors',
     description: 'Reliable razor for everyday grooming needs.',
-    image: 'https://images.pexels.com/photos/1319460/pexels-photo-1319460.jpeg',
+    image: '/ujala-razor-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/1319460/pexels-photo-1319460.jpeg',
-      'https://via.placeholder.com/200/808000/FFFFFF?text=Ujala+Razor+2'
+      '/ujala-razor-1.jpg',
+      '/ujala-razal-2.jpg', // Assuming you have this
+      DefaultProductPlaceholder
     ],
     features: ['Reliable quality', 'Everyday use', 'Affordable price']
   },
-  // Toothbrush
   {
     id: '6',
     name: 'Mister Clean Toothbrush',
     category: 'Toothbrush',
     description: 'High-quality toothbrush for optimal oral hygiene.',
-    image: 'https://images.pexels.com/photos/298586/pexels-photo-298586.jpeg',
+    image: '/mister-clean-toothbrush-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/298586/pexels-photo-298586.jpeg',
-      'https://via.placeholder.com/200/800080/FFFFFF?text=Toothbrush+2'
+      '/mister-clean-toothbrush-1.jpg',
+      '/mister-clean-toothbrush-2.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Soft bristles', 'Ergonomic handle', 'Effective cleaning']
   },
@@ -110,10 +116,11 @@ const initialProducts: Product[] = [
     name: 'Mahfil Milan',
     category: 'Agarbatti (Incense Sticks)',
     description: 'Premium incense sticks with enchanting fragrance.',
-    image: 'https://images.pexels.com/photos/6663598/pexels-photo-6663598.jpeg',
+    image: '/mahfil-milan-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/6663598/pexels-photo-6663598.jpeg',
-      'https://via.placeholder.com/200/008080/FFFFFF?text=Mahfil+Milan+2'
+      '/mahfil-milan-1.jpg',
+      '/mahfil-milan-2.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Premium quality', 'Long-lasting fragrance', 'Natural ingredients']
   },
@@ -122,10 +129,11 @@ const initialProducts: Product[] = [
     name: 'Golden Milan',
     category: 'Agarbatti (Incense Sticks)',
     description: 'Luxurious incense sticks for a calming atmosphere.',
-    image: 'https://images.pexels.com/photos/6663604/pexels-photo-6663604.jpeg',
+    image: '/golden-milan-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/6663604/pexels-photo-6663604.jpeg',
-      'https://via.placeholder.com/200/808080/FFFFFF?text=Golden+Milan+2'
+      '/golden-milan-1.jpg',
+      '/golden-milan-2.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Luxurious fragrance', 'Calming effect', 'High-quality materials']
   },
@@ -135,10 +143,11 @@ const initialProducts: Product[] = [
     name: 'Natural ISP',
     category: 'Natural / Herbal Products',
     description: 'Natural herbal supplement for health and wellness.',
-    image: 'https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg',
+    image: '/natural-isp-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg',
-      'https://via.placeholder.com/200/C0C0C0/000000?text=Natural+ISP+2'
+      '/natural-isp-1.jpg',
+      '/natural-isp-2.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Natural ingredients', 'Health benefits', 'Traditional formula']
   },
@@ -147,10 +156,11 @@ const initialProducts: Product[] = [
     name: 'Jor Joshanda',
     category: 'Natural / Herbal Products',
     description: 'Traditional herbal remedy for respiratory wellness.',
-    image: 'https://images.pexels.com/photos/4021807/pexels-photo-4021807.jpeg',
+    image: '/jor-joshanda-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/4021807/pexels-photo-4021807.jpeg',
-      'https://via.placeholder.com/200/D3D3D3/000000?text=Jor+Joshanda+2'
+      '/jor-joshanda-1.jpg',
+      '/jor-joshanda-2.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Traditional remedy', 'Natural herbs', 'Respiratory support']
   },
@@ -160,10 +170,11 @@ const initialProducts: Product[] = [
     name: 'Lemon Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'High-quality adhesive tape for various applications.',
-    image: 'https://images.pexels.com/photos/4226881/pexels-photo-4226881.jpeg',
+    image: '/lemon-adhesive-tape-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/4226881/pexels-photo-4226881.jpeg',
-      'https://via.placeholder.com/200/A9A9A9/000000?text=Lemon+Adh+2'
+      '/lemon-adhesive-tape-1.jpg',
+      '/lemon-adhesive-tape-2.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Strong adhesion', 'Versatile use', 'Durable material']
   },
@@ -173,10 +184,11 @@ const initialProducts: Product[] = [
     name: 'Silicon Nipple',
     category: 'Baby Products (Soothers)',
     description: 'Safe and comfortable silicon soother for babies.',
-    image: 'https://images.pexels.com/photos/1296397/pexels-photo-1296397.jpeg',
+    image: '/silicon-nipple-1.jpg', // Path from project root
     images: [
-      'https://images.pexels.com/photos/1296397/pexels-photo-1296397.jpeg',
-      'https://via.placeholder.com/200/B0C4DE/000000?text=Silicon+Nip+2'
+      '/silicon-nipple-1.jpg',
+      '/silicon-nipple-2.jpg',
+      DefaultProductPlaceholder
     ],
     features: ['Food-grade silicon', 'Comfortable design', 'Easy to clean']
   }
@@ -187,6 +199,10 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // TEMPORARY: Force clear localStorage for products during development
+    // REMOVE THIS LINE BEFORE DEPLOYING TO PRODUCTION!
+    // localStorage.removeItem('products'); // Keep this commented or remove it if you've already cleared it manually
+
     const savedProducts = localStorage.getItem('products');
     if (savedProducts) {
       setProducts(JSON.parse(savedProducts));

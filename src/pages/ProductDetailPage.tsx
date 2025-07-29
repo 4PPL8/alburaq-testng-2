@@ -29,7 +29,8 @@ const ProductDetailPage: React.FC = () => {
   }, [product?.id, allProductImages.length]); // Re-run when product ID or number of images changes
 
   // Determine the current main image to display
-  const currentMainImage = allProductImages[currentImageIndex] || 'https://via.placeholder.com/600x400/CCCCCC/000000?text=No+Image';
+  // Using a generic placeholder as fallback, no external content-specific links
+  const currentMainImage = allProductImages[currentImageIndex] || 'https://placehold.co/600x400/CCCCCC/000000?text=No+Image';
 
   // If product is not found, display a "Product Not Found" message
   if (!product) {
@@ -76,15 +77,14 @@ const ProductDetailPage: React.FC = () => {
                   src={currentMainImage}
                   alt={product.name}
                   className="w-full h-full object-cover transition-all duration-300"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/600x400/CCCCCC/000000?text=Image+Error';
+                  onError={(e) => { // Fallback for broken image links
+                    (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/FF0000/FFFFFF?text=Image+Load+Error'; // Generic placeholder on error
                   }}
                 />
               </div>
               
               {/* Thumbnail Images */}
               {/* Display all available images as thumbnails, allowing the user to click any to make it main */}
-              {/* The "3 little images" request implies a limit, so we'll slice to show only the first 4 (1 main + 3 thumbnails) */}
               {allProductImages.length > 1 && ( // Only show thumbnails if there's more than one image
                 <div className="flex space-x-2 overflow-x-auto pb-2 justify-center">
                   {allProductImages.slice(0, 4).map((image, index) => ( // Show up to 4 images (current + 3 others)
@@ -101,8 +101,8 @@ const ProductDetailPage: React.FC = () => {
                         src={image}
                         alt={`${product.name} thumbnail ${index + 1}`}
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/80x80/E0E0E0/000000?text=X';
+                        onError={(e) => { // Fallback for broken thumbnail image links
+                          (e.target as HTMLImageElement).src = 'https://placehold.co/80x80/E0E0E0/000000?text=X'; // Generic placeholder on error
                         }}
                       />
                     </button>

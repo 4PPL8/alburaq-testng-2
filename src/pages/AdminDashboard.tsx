@@ -1,27 +1,25 @@
 import React, { useState } from 'react';
 import { Plus, Edit3, Trash2, Eye, Upload, X, Check, AlertTriangle, Loader2 } from 'lucide-react';
-import { useProducts, Product } from '../contexts/ProductContext';
+import { useProducts, Product } from '../contexts/ProductContext'; // Import Product interface
 import { useAuth } from '../contexts/AuthContext';
 
 const AdminDashboard: React.FC = () => {
-  const { products, categories, addProduct, updateProduct, deleteProduct } = useProducts();
+  const { products, categories, addProduct, updateProduct, deleteProduct, isLoading: productsLoading } = useProducts(); // Use isLoading from ProductContext
   const { adminInfo } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'manage'>('overview');
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  // FIX 1 & 2: Declare isLoading and isSubmitting, and include images in formData
-  const [isLoading, setIsLoading] = useState(false); // Added for initial data load state (though ProductContext has its own isLoading)
-  const [isSubmitting, setIsSubmitting] = useState(false); // Added for form submission state
+  const [isSubmitting, setIsSubmitting] = useState(false); // Correctly declared here
 
   const [formData, setFormData] = useState({
     name: '',
     category: '',
     description: '',
-    image: '',
+    image: '', // Main image URL (string for base64 or URL)
     features: [''],
-    images: [''] // FIX 2: Added images array to formData
+    images: [''] // Array of additional image URLs
   });
 
   const resetForm = () => {
@@ -31,7 +29,7 @@ const AdminDashboard: React.FC = () => {
       description: '',
       image: '',
       features: [''],
-      images: [''] // FIX 2: Reset images as well
+      images: ['']
     });
   };
 
@@ -45,7 +43,8 @@ const AdminDashboard: React.FC = () => {
         description: product.description,
         image: product.image,
         features: product.features.length > 0 ? product.features : [''],
-        images: product.images && product.images.length > 0 ? product.images : [''] // FIX 2: Handle existing images
+        // Ensure product.images is an array before setting, default to ['']
+        images: product.images && product.images.length > 0 ? product.images : ['']
       });
     } else {
       resetForm();
@@ -73,18 +72,10 @@ const AdminDashboard: React.FC = () => {
     }));
   };
 
-  // FIX 3: Define handleImageChange and removeImage
   const handleImageChange = (index: number, value: string) => {
     setFormData(prev => ({
       ...prev,
       images: prev.images.map((img, i) => i === index ? value : img)
-    }));
-  };
-
-  const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
     }));
   };
 
@@ -109,6 +100,13 @@ const AdminDashboard: React.FC = () => {
     }));
   };
 
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -125,7 +123,7 @@ const AdminDashboard: React.FC = () => {
       reader.onload = (e) => {
         setFormData(prev => ({
           ...prev,
-          image: e.target?.result as string
+          image: e.target?.result as string // Base64 string
         }));
       };
       reader.readAsDataURL(file);
@@ -146,13 +144,13 @@ const AdminDashboard: React.FC = () => {
     const filteredFeatures = formData.features.filter(feature => feature.trim() !== '');
     const filteredImages = formData.images.filter(img => img.trim() !== ''); // Filter out empty image URLs
     
-    const productData = {
+    const productData: Omit<Product, 'id'> = { // Ensure type matches Product interface for add/update
       name: formData.name.trim(),
       category: formData.category,
       description: formData.description.trim(),
       image: formData.image,
       features: filteredFeatures,
-      images: filteredImages // Include additional images
+      images: filteredImages
     };
 
     // Simulate processing time
@@ -167,10 +165,8 @@ const AdminDashboard: React.FC = () => {
     }, 1000);
   };
 
-  // Loading state for initial data load (from the original code)
-  // This 'isLoading' state is separate from ProductContext's isLoading,
-  // but if you remove it, ensure ProductContext's isLoading is passed down or handled.
-  if (isLoading) { // This `isLoading` comes from the `useState` added at the top.
+  // Use the isLoading from ProductContext for dashboard's initial loading state
+  if (productsLoading) { // Use productsLoading here
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -192,10 +188,14 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  // Ensure categoryStats has a fallback for the reduce function if categories is empty
   const categoryStats = categories.map(category => ({
     name: category,
     count: products.filter(p => p.category === category).length
   }));
+  const mostPopularCategory = categoryStats.length > 0
+    ? categoryStats.reduce((max, cat) => cat.count > max.count ? cat : max).name
+    : 'N/A';
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -203,7 +203,8 @@ const AdminDashboard: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {adminInfo?.name}!</p>
+          {/* Ensure adminInfo is not null before accessing .name */}
+          <p className="text-gray-600">Welcome back, {adminInfo?.name || 'Admin'}!</p>
         </div>
 
         {/* Tabs */}
@@ -247,10 +248,12 @@ const AdminDashboard: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Categories</h3>
                 <p className="text-3xl font-bold text-yellow-600">{categories.length}</p>
               </div>
+              {/* This div was the start of the next card, and the previous one was missing a closing tag */}
+              {/* I've ensured each stat card has its own correctly closed div. */}
               <div className="bg-white p-6 rounded-xl shadow-md">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Most Popular Category</h3>
                 <p className="text-lg font-bold text-green-600">
-                  {categoryStats.reduce((max, cat) => cat.count > max.count ? cat : max, categoryStats[0])?.name || 'N/A'}
+                  {mostPopularCategory}
                 </p>
               </div>
             </div>
@@ -277,9 +280,12 @@ const AdminDashboard: React.FC = () => {
                 {products.map((product) => (
                   <div key={product.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <img
-                      src={product.image}
+                      src={product.image} // This will now be a direct path from project root
                       alt={product.name}
                       className="w-full h-32 object-cover rounded-lg mb-3"
+                      onError={(e) => { // onError fallback for robustness
+                        (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Error'; // Generic placeholder
+                      }}
                     />
                     <h4 className="font-semibold text-gray-800 mb-1">{product.name}</h4>
                     <p className="text-xs text-blue-600 mb-2 bg-blue-50 px-2 py-1 rounded">{product.category}</p>
@@ -322,9 +328,12 @@ const AdminDashboard: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <img
-                              src={product.image}
+                              src={product.image} // This will now be a direct path from project root
                               alt={product.name}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
+                              onError={(e) => { // onError fallback for robustness
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/48x48/E0E0E0/000000?text=X'; // Generic placeholder
+                              }}
                             />
                             <div>
                               <div className="text-sm font-medium text-gray-900">{product.name}</div>
@@ -461,6 +470,9 @@ const AdminDashboard: React.FC = () => {
                             src={formData.image}
                             alt="Preview"
                             className="w-32 h-32 object-cover rounded-lg border"
+                            onError={(e) => { // onError fallback for robustness
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Preview+Error'; // Generic placeholder
+                            }}
                           />
                         </div>
                       )}
@@ -475,17 +487,22 @@ const AdminDashboard: React.FC = () => {
                       Additional Product Images
                     </label>
                     <div className="space-y-2">
-                      {/* FIX 3: Use formData.images and correct functions */}
+                      {/* This input allows users to paste external URLs, which will then be stored.
+                          If you want to strictly prevent external URLs here, you would need to:
+                          1. Change type="url" to type="file" and handle multiple file uploads.
+                          2. Add validation in handleImageChange to check if the URL is local or base64.
+                          For now, it allows external URLs if manually entered by admin.
+                      */}
                       {formData.images.map((image, index) => (
                         <div key={index} className="flex items-center space-x-2">
                           <input
-                            type="url"
+                            type="url" // Allows external URLs if admin pastes them
                             value={image}
                             onChange={(e) => handleImageChange(index, e.target.value)}
                             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="Enter image URL"
                           />
-                          {formData.images.length > 1 && (
+                          {formData.images.length > 1 && ( // Only show remove if there's more than one
                             <button
                               type="button"
                               onClick={() => removeImage(index)}
@@ -520,7 +537,7 @@ const AdminDashboard: React.FC = () => {
                             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="Enter a product feature"
                           />
-                          {formData.features.length > 1 && (
+                          {formData.features.length > 1 && ( // Only show remove if there's more than one
                             <button
                               type="button"
                               onClick={() => removeFeature(index)}

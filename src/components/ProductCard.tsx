@@ -13,9 +13,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showCategory = true 
       <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
         <div className="aspect-square overflow-hidden">
           <img
-            src={product.image}
+            src={product.image} // This will now receive direct paths from ProductContext
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => { // onError fallback for image loading issues
+              (e.target as HTMLImageElement).src = 'https://placehold.co/200x200/E0E0E0/000000?text=Image+Error'; // Generic placeholder
+            }}
           />
         </div>
         <div className="p-6">

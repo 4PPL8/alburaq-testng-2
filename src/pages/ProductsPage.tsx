@@ -145,9 +145,12 @@ const ProductsPage: React.FC = () => {
                         <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 flex items-center space-x-6">
                           <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
                             <img
-                              src={product.image}
+                              src={product.image || 'https://via.placeholder.com/96x96/E0E0E0/000000?text=Product'} // Use product.image or placeholder
                               alt={product.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => { // Add onError for robustness
+                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/96x96/E0E0E0/000000?text=Error';
+                              }}
                             />
                           </div>
                           <div className="flex-1">
@@ -169,7 +172,14 @@ const ProductsPage: React.FC = () => {
                         </div>
                       </Link>
                     ) : (
-                      <ProductCard product={product} showCategory={selectedCategory === 'All'} />
+                      // Ensure ProductCard also uses placeholders if its product.image is external
+                      <ProductCard 
+                        product={{ 
+                          ...product, 
+                          image: product.image || 'https://via.placeholder.com/200/E0E0E0/000000?text=Product' // Use product.image or placeholder
+                        }} 
+                        showCategory={selectedCategory === 'All'} 
+                      />
                     )}
                   </div>
                 ))}
