@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, MessageCircle, Send } from 'lucide-react'; // Added Send icon
 
 const ContactPage: React.FC = () => {
   // State for form data
@@ -11,6 +11,9 @@ const ContactPage: React.FC = () => {
     message: ''
   });
 
+  // State to manage the selected sending method: 'email' or 'whatsapp'
+  const [selectedMethod, setSelectedMethod] = useState<'email' | 'whatsapp'>('email'); // Default to email
+
   // Handle input changes for all form fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData(prev => ({
@@ -19,48 +22,59 @@ const ContactPage: React.FC = () => {
     }));
   };
 
-  // Handle form submission
+  // Basic email format validation
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Handle form submission based on selected method
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission (page reload)
 
-    // Basic validation using browser's alert
+    // Basic validation for required fields
     if (!formData.name.trim() || !formData.email.trim() || !formData.subject || !formData.message.trim()) {
-      alert('Please fill in all required fields (Name, Email, Subject, Message).');
+      alert('Please fill in all required fields (Full Name, Email, Subject, Message).');
       return;
     }
-
-    // Basic email format validation
-    const isValidEmail = (email: string): boolean => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    };
-
     if (!isValidEmail(formData.email)) {
       alert('Please enter a valid email address.');
       return;
     }
 
-    // Construct the email body with user's input
-    const emailBody = `
-Name: ${formData.name}
+    // Construct the message content to be pre-filled
+    const messageContent = `
+Hello Al Buraq Industries,
+
+I have an inquiry from your website.
+
+Full Name: ${formData.name}
 Email: ${formData.email}
 Phone: ${formData.phone || 'N/A'}
+Subject: ${formData.subject}
 
 Message:
 ${formData.message}
-    `.trim(); // .trim() removes leading/trailing whitespace
 
-    // Encode subject and body for URL safety (important for mailto links)
-    const encodedSubject = encodeURIComponent(`Inquiry from Website: ${formData.subject}`);
-    const encodedBody = encodeURIComponent(emailBody);
+Thank you.
+    `.trim();
 
-    // Construct the mailto link with the company email as recipient
-    const mailtoLink = `mailto:alburaqindus2000@gmail.com?subject=${encodedSubject}&body=${encodedBody}`;
+    if (selectedMethod === 'email') {
+      // Email (mailto) functionality
+      const encodedSubject = encodeURIComponent(`Inquiry from Website: ${formData.subject}`);
+      const encodedBody = encodeURIComponent(messageContent);
+      const mailtoLink = `mailto:alburaqindus2000@gmail.com?subject=${encodedSubject}&body=${encodedBody}`;
+      window.open(mailtoLink, '_blank');
+    } else { // selectedMethod === 'whatsapp'
+      // WhatsApp functionality
+      // Use the phone number you specified: +923164623026
+      const whatsappNumber = '923164623026'; // WhatsApp link requires number without '+'
+      const encodedMessage = encodeURIComponent(messageContent);
+      const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+      window.open(whatsappLink, '_blank');
+    }
 
-    // Open the user's default email client in a new tab/window
-    window.open(mailtoLink, '_blank');
-
-    // Optionally, clear the form fields after opening the email client
+    // Optionally, clear the form fields after opening the external client
     setFormData({ name: '', phone: '', email: '', subject: '', message: '' });
   };
 
@@ -142,11 +156,11 @@ ${formData.message}
             <div className="mt-8 pt-8 border-t border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Connect With Us</h3>
               <div className="flex space-x-4">
-                {/* WhatsApp Link */}
+                {/* WhatsApp Link (for direct call/chat) */}
                 <a
-                  href="tel:+923164623026"
+                  href="tel:+923164623026" // Direct call for mobile, opens dialer
                   className="bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition-colors duration-200"
-                  title="WhatsApp"
+                  title="WhatsApp Call"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -154,7 +168,7 @@ ${formData.message}
                 </a>
                 {/* Facebook Link */}
                 <a
-                  href="https://www.facebook.com/profile.php?id=61559106203161/"
+                  href="https://www.facebook.com/alburaqindustries/"
                   className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
                   title="Facebook"
                   target="_blank"
@@ -187,7 +201,7 @@ ${formData.message}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                    Full Name
+                    Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -201,7 +215,7 @@ ${formData.message}
                 </div>
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                    Phone Number
+                    Phone Number (Optional)
                   </label>
                   <input
                     type="tel"
@@ -209,14 +223,14 @@ ${formData.message}
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                    placeholder="Your phone number (optional)"
+                    placeholder="Your phone number"
                   />
                 </div>
               </div>
               
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
+                  Email Address <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
@@ -231,7 +245,7 @@ ${formData.message}
 
               <div>
                 <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject
+                  Subject <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="subject"
@@ -251,7 +265,7 @@ ${formData.message}
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                  Message
+                  Message <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   id="message"
@@ -264,11 +278,38 @@ ${formData.message}
                 ></textarea>
               </div>
 
+              {/* New Contact Method Selection */}
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center">
+                <button
+                  type="button"
+                  onClick={() => setSelectedMethod('email')}
+                  className={`flex-1 flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                    selectedMethod === 'email'
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  <Mail className="w-5 h-5 mr-2" /> Send via Email
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedMethod('whatsapp')}
+                  className={`flex-1 flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                    selectedMethod === 'whatsapp'
+                      ? 'bg-green-500 text-white shadow-md'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" /> Send via WhatsApp
+                </button>
+              </div>
+
+              {/* Main Submit Button */}
               <button
                 type="submit"
                 className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
               >
-                Send Message {/* Changed button text back to "Send Message" */}
+                <Send className="w-5 h-5 mr-2 inline-block" /> {selectedMethod === 'email' ? 'Open Email Client' : 'Open WhatsApp Chat'}
               </button>
             </form>
           </div>

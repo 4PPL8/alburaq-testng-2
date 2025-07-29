@@ -4,9 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Package, LogOut, User, UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 // Import your custom logo image here
-// Assuming SNT.png is directly in the 'src' folder
-import SNTLogo from '/SNT.png'; // <--- UPDATED: Correct import path for SNT.png
-
+import SNTLogo from '/SNT.png'; // Assuming SNT.png is directly in the 'src' folder
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,6 +65,17 @@ const Navbar: React.FC = () => {
               }`}
             >
               Products
+            </Link>
+            {/* NEW: About Us Link for Desktop Navigation */}
+            <Link
+              to="/about"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                isActive('/about') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+              }`}
+            >
+              About Us
             </Link>
             <Link
               to="/contact"
@@ -186,6 +195,18 @@ const Navbar: React.FC = () => {
               }`}
             >
               Products
+            </Link>
+            {/* NEW: About Us Link for Mobile Navigation */}
+            <Link
+              to="/about"
+              onClick={() => setIsOpen(false)}
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                isActive('/about') 
+                  ? 'text-blue-600 bg-blue-50' 
+                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+              }`}
+            >
+              About Us
             </Link>
             <Link
               to="/contact"

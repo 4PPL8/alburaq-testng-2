@@ -1,6 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProductProvider } from './contexts/ProductContext';
 import Navbar from './components/Navbar';
@@ -14,10 +13,11 @@ import ContactPage from './pages/ContactPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import AboutUsPage from './pages/AboutUsPage'; // <--- NEW: Import AboutUsPage
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-  
+
   // Pages where footer should not be displayed
   const noFooterPages = ['/login', '/register', '/admin-login', '/admin/login'];
   const shouldShowFooter = !noFooterPages.includes(location.pathname);
@@ -34,6 +34,7 @@ const AppContent: React.FC = () => {
           <Route path="/products/:category" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/about" element={<AboutUsPage />} /> {/* <--- NEW: Add About Us Route */}
           <Route path="/admin-login" element={<AdminLoginPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route
