@@ -1,6 +1,12 @@
 // src/contexts/ProductContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+// --- Define a version for your product data schema ---
+// Increment this number every time you make a significant change to the product data structure
+// or, in this case, when you change how images are stored (from external to local).
+// Start with 1, and increment it to 2 for this change.
+const PRODUCT_DATA_VERSION = 2; // <--- Set this to 2 for this deployment
+
 // --- Generic placeholder for when NO image is provided (e.g., if admin adds a product without an image) ---
 const DefaultProductPlaceholder = 'https://placehold.co/400x400/CCCCCC/000000?text=No+Image';
 
@@ -40,7 +46,7 @@ const initialProducts: Product[] = [
       '/balo-color-1.jpg',
       '/balo-color-2.jpg',
       '/balo-color-3.jpg',
-      DefaultProductPlaceholder
+      DefaultProductPlaceholder // Fallback if fewer than 3 actual images
     ],
     features: ['Long-lasting color', 'Natural ingredients', 'Easy application']
   },
@@ -83,7 +89,8 @@ const initialProducts: Product[] = [
       '/sharp-razor-3.jpg'
     ],
     features: ['Sharp blade', 'Comfortable grip', 'Precise cutting']
-  },
+  }
+  ,
   {
     id: '5',
     name: 'Ujala Razor',
@@ -92,7 +99,7 @@ const initialProducts: Product[] = [
     image: '/ujala-razor-1.jpg', // Path from project root
     images: [
       '/ujala-razor-1.jpg',
-      '/ujala-razal-2.jpg', // Assuming you have this
+      '/ujala-razor-2.jpg',
       DefaultProductPlaceholder
     ],
     features: ['Reliable quality', 'Everyday use', 'Affordable price']
@@ -199,23 +206,31 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // TEMPORARY: Force clear localStorage for products during development
-    // REMOVE THIS LINE BEFORE DEPLOYING TO PRODUCTION!
-    // localStorage.removeItem('products'); // Keep this commented or remove it if you've already cleared it manually
-
-    const savedProducts = localStorage.getItem('products');
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts));
+    const storedData = localStorage.getItem('products_data'); // Changed key to include version
+    
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      // Check if the stored data version matches the current code version
+      if (parsedData.version === PRODUCT_DATA_VERSION) {
+        setProducts(parsedData.products);
+      } else {
+        // Version mismatch: Clear old data and use initialProducts
+        console.log('Product data version mismatch. Clearing old data.');
+        setProducts(initialProducts);
+        localStorage.setItem('products_data', JSON.stringify({ version: PRODUCT_DATA_VERSION, products: initialProducts }));
+      }
     } else {
+      // No data stored: Use initialProducts
       setProducts(initialProducts);
-      localStorage.setItem('products', JSON.stringify(initialProducts));
+      localStorage.setItem('products_data', JSON.stringify({ version: PRODUCT_DATA_VERSION, products: initialProducts }));
     }
     setIsLoading(false);
   }, []);
 
   const saveProducts = (newProducts: Product[]) => {
     setProducts(newProducts);
-    localStorage.setItem('products', JSON.stringify(newProducts));
+    // Save products along with the current version
+    localStorage.setItem('products_data', JSON.stringify({ version: PRODUCT_DATA_VERSION, products: newProducts }));
   };
 
   const categories = [
