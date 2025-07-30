@@ -38,7 +38,7 @@ const initialProducts: Product[] = [
   // Cosmetics & Personal Care
   {
     id: '1',
-    name: 'Balo Color',
+    name: 'Belo Color',
     category: 'Cosmetics & Personal Care',
     description: 'High-quality hair color for vibrant and long-lasting results.',
     image: '/balo-color-1.jpg', // Path from public/
