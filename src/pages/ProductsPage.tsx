@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Filter, Grid, List } from 'lucide-react';
+import { Filter, Grid, List, Search } from 'lucide-react'; // Added Search icon
 import { useProducts } from '../contexts/ProductContext';
 import ProductCard from '../components/ProductCard';
 
@@ -10,18 +10,73 @@ const ProductsPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState(category || 'All');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); // New state for search term
+  const [showSuggestions, setShowSuggestions] = useState(false); // New state for suggestion visibility
 
   const filteredProducts = useMemo(() => {
-    if (selectedCategory === 'All') {
-      return products;
+    let currentProducts = products;
+
+    // Filter by category first
+    if (selectedCategory !== 'All') {
+      currentProducts = currentProducts.filter(product => product.category === selectedCategory);
     }
-    return products.filter(product => product.category === selectedCategory);
-  }, [products, selectedCategory]);
+
+    // Then filter by search term
+    if (searchTerm.trim() !== '') {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      currentProducts = currentProducts.filter(
+        product =>
+          product.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+          product.description.toLowerCase().includes(lowerCaseSearchTerm) ||
+          product.category.toLowerCase().includes(lowerCaseSearchTerm)
+      );
+    }
+    return currentProducts;
+  }, [products, selectedCategory, searchTerm]);
+
+  // Generate suggestions based on products that match the search term
+  const suggestions = useMemo(() => {
+    if (searchTerm.trim() === '') {
+      return [];
+    }
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const matchedProducts = products.filter(
+      product => product.name.toLowerCase().includes(lowerCaseSearchTerm)
+    );
+    // Return unique product names as suggestions, limit to 5
+    const uniqueSuggestions = Array.from(new Set(matchedProducts.map(product => product.name))).slice(0, 5);
+    return uniqueSuggestions;
+  }, [products, searchTerm]);
+
 
   const handleCategoryChange = (newCategory: string) => {
     setSelectedCategory(newCategory);
     setShowFilters(false);
+    setSearchTerm(''); // Clear search term when category changes
   };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setShowSuggestions(true); // Show suggestions when typing
+  };
+
+  const handleSelectSuggestion = (suggestion: string) => {
+    setSearchTerm(suggestion);
+    setShowSuggestions(false); // Hide suggestions after selection
+  };
+
+  // Hide suggestions when clicking outside
+  const handleBlur = () => {
+    // A small delay to allow click on suggestion to register before hiding
+    setTimeout(() => setShowSuggestions(false), 100); 
+  };
+
+  const handleFocus = () => {
+    if (searchTerm.trim() !== '') {
+      setShowSuggestions(true);
+    }
+  };
+
 
   if (isLoading) {
     return (
@@ -77,6 +132,37 @@ const ProductsPage: React.FC = () => {
           </div>
         </div>
 
+        {/* Search Bar Section - NEW */}
+        <div className="mb-8 relative">
+          <div className="relative flex items-center">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search products by name, description, or category..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 shadow-sm"
+            />
+          </div>
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleSelectSuggestion(suggestion)}
+                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <div className={`lg:w-1/4 ${showFilters ? 'block' : 'hidden'} lg:block`}>
@@ -122,11 +208,11 @@ const ProductsPage: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
                 <p className="text-gray-500 mb-4">
-                  No products match your current selection. Try selecting a different category.
+                  No products match your current selection. Try selecting a different category or refining your search.
                 </p>
                 <Link
                   to="/products"
-                  onClick={() => setSelectedCategory('All')}
+                  onClick={() => { setSelectedCategory('All'); setSearchTerm(''); }} // Reset both
                   className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
                 >
                   View All Products
@@ -145,11 +231,11 @@ const ProductsPage: React.FC = () => {
                         <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 flex items-center space-x-6">
                           <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
                             <img
-                              src={product.image || 'https://via.placeholder.com/96x96/E0E0E0/000000?text=Product'} // Use product.image or placeholder
+                              src={product.image || 'https://placehold.co/96x96/E0E0E0/000000?text=Product'} // Use product.image or generic placeholder
                               alt={product.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               onError={(e) => { // Add onError for robustness
-                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/96x96/E0E0E0/000000?text=Error';
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/96x96/E0E0E0/000000?text=Error';
                               }}
                             />
                           </div>
@@ -172,14 +258,7 @@ const ProductsPage: React.FC = () => {
                         </div>
                       </Link>
                     ) : (
-                      // Ensure ProductCard also uses placeholders if its product.image is external
-                      <ProductCard 
-                        product={{ 
-                          ...product, 
-                          image: product.image || 'https://via.placeholder.com/200/E0E0E0/000000?text=Product' // Use product.image or placeholder
-                        }} 
-                        showCategory={selectedCategory === 'All'} 
-                      />
+                      <ProductCard product={product} showCategory={selectedCategory === 'All'} />
                     )}
                   </div>
                 ))}

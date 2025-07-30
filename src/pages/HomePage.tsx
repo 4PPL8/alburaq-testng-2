@@ -5,8 +5,8 @@ import { ArrowRight, Package, Shield, Truck, Star, Zap } from 'lucide-react';
 import { useProducts } from '../contexts/ProductContext';
 import ProductCard from '../components/ProductCard';
 
-// Import your main logo image using the absolute path format from public
-import MainLogoImage from '/MAIN.png'; // <--- Path assumes MAIN.png is in the public folder
+// Import your main logo image using the absolute path format
+import MainLogoImage from '/MAIN.png'; // Path assumes MAIN.png is in the project root
 
 // REMOVED: All category image imports are no longer needed, as per your request to use solid color circles.
 
@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
   const originalFeaturedProducts = products.slice(0, 6);
 
   // Prepare products for the horizontal marquee.
-  // They will now use the images defined in ProductContext.tsx (which are direct paths from public).
+  // They will now use the images defined in ProductContext.tsx (which are direct paths from project root).
   const featuredProductsForMarquee = originalFeaturedProducts.map(product => ({
     ...product,
     // The 'image' property will come directly from the product object in ProductContext.
@@ -178,22 +178,51 @@ const HomePage: React.FC = () => {
             </p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {categories.map((category, index) => (
-              <Link
-                key={category}
-                to={`/products/${encodeURIComponent(category)}`}
-                className="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 text-center group"
-              >
-                {/* Solid colored div for the circular category icon */}
-                <div className="w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center bg-blue-100 text-blue-600 font-bold text-xs uppercase overflow-hidden shadow-md">
-                  {/* Display the first two letters of the category name */}
-                  {category.substring(0, 2)}
-                </div>
-                <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors duration-200 text-sm">
-                  {category}
-                </h3>
-              </Link>
-            ))}
+            {categories.map((category, index) => {
+              // Determine column index (0-3) based on the grid layout
+              const columnIndex = index % 4; 
+              let bgColorClass = '';
+              let textColorClass = '';
+
+              switch (columnIndex) {
+                case 0: // First column (0, 4, 8, ...)
+                  bgColorClass = 'bg-blue-100';
+                  textColorClass = 'text-blue-600';
+                  break;
+                case 1: // Second column (1, 5, 9, ...)
+                  bgColorClass = 'bg-yellow-100';
+                  textColorClass = 'text-yellow-600';
+                  break;
+                case 2: // Third column (2, 6, 10, ...)
+                  bgColorClass = 'bg-green-100';
+                  textColorClass = 'text-green-600';
+                  break;
+                case 3: // Fourth column (3, 7, 11, ...)
+                  bgColorClass = 'bg-purple-100';
+                  textColorClass = 'text-purple-600';
+                  break;
+                default: // Fallback
+                  bgColorClass = 'bg-gray-100';
+                  textColorClass = 'text-gray-600';
+              }
+
+              return (
+                <Link
+                  key={category}
+                  to={`/products/${encodeURIComponent(category)}`}
+                  className="bg-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 text-center group"
+                >
+                  {/* Solid colored div for the circular category icon */}
+                  <div className={`w-16 h-16 rounded-full mx-auto mb-3 flex items-center justify-center font-bold text-xs uppercase overflow-hidden shadow-md ${bgColorClass} ${textColorClass}`}>
+                    {/* Display the first two letters of the category name */}
+                    {category.substring(0, 2)}
+                  </div>
+                  <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors duration-200 text-sm">
+                    {category}
+                  </h3>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -209,7 +238,7 @@ const HomePage: React.FC = () => {
               Discover some of our most popular products
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start"> {/* ADDED: items-start for top alignment */}
             {/* Products are pulled from ProductContext and rendered as ProductCard components */}
             {featuredProductsForTopPicks.map((product) => (
               <ProductCard key={product.id} product={product} />
