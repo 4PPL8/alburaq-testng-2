@@ -25,14 +25,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Demo admin credentials - in production, this would be handled securely on the backend
-const ADMIN_CREDENTIALS = {
-  name: 'Admin',
-  email: 'admin@alburaqindustries.com',
-  password: 'admin123'
-};
 
 // Additional admin user
-const ADMIN_CREDENTIALS_2 = {
+const ADMIN_CREDENTIALS = {
   name: 'hamid',
   email: 'hzubair25@gmail.com',
   password: '123ha45mid'
@@ -174,13 +169,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       password === ADMIN_CREDENTIALS.password
     );
     
-    const isSecondAdmin = (
-      name === ADMIN_CREDENTIALS_2.name &&
-      email === ADMIN_CREDENTIALS_2.email &&
-      password === ADMIN_CREDENTIALS_2.password
-    );
-    
-    if (isFirstAdmin || isSecondAdmin) {
+   
+    if (isFirstAdmin) {
       const sessionData = { name, email };
       localStorage.setItem('admin_session', JSON.stringify(sessionData));
       setIsAdminAuthenticated(true);
@@ -197,10 +187,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       password === ADMIN_CREDENTIALS.password
     );
     
-    const isSecondAdmin = (
-      email === ADMIN_CREDENTIALS_2.email &&
-      password === ADMIN_CREDENTIALS_2.password
-    );
+    
     
     if (isFirstAdmin) {
       const sessionData = { name: ADMIN_CREDENTIALS.name, email };
@@ -208,13 +195,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAdminAuthenticated(true);
       setAdminInfo(sessionData);
       return true;
-    } else if (isSecondAdmin) {
-      const sessionData = { name: ADMIN_CREDENTIALS_2.name, email };
-      localStorage.setItem('admin_session', JSON.stringify(sessionData));
-      setIsAdminAuthenticated(true);
-      setAdminInfo(sessionData);
-      return true;
-    }
+    } 
     return false;
   };
   const logoutAdmin = () => {

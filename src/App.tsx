@@ -13,11 +13,13 @@ import ContactPage from './pages/ContactPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import AboutUsPage from './pages/AboutUsPage'; // <--- NEW: Import AboutUsPage
+import AboutUsPage from './pages/AboutUsPage';
+import { ToastContainer } from 'react-toastify'; // <--- NEW: Import ToastContainer
+import 'react-toastify/dist/ReactToastify.css'; // <--- NEW: Import toastify CSS
 
 const AppContent: React.FC = () => {
   const location = useLocation();
-
+  
   // Pages where footer should not be displayed
   const noFooterPages = ['/login', '/register', '/admin-login', '/admin/login'];
   const shouldShowFooter = !noFooterPages.includes(location.pathname);
@@ -34,7 +36,7 @@ const AppContent: React.FC = () => {
           <Route path="/products/:category" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/about" element={<AboutUsPage />} /> {/* <--- NEW: Add About Us Route */}
+          <Route path="/about" element={<AboutUsPage />} />
           <Route path="/admin-login" element={<AdminLoginPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route
@@ -56,6 +58,7 @@ const AppContent: React.FC = () => {
         </Routes>
       </main>
       {shouldShowFooter && <Footer />}
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover /> {/* <--- NEW: Add ToastContainer here */}
     </div>
   );
 };

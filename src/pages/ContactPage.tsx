@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, MessageCircle, Send } from 'lucide-react'; // Added Send icon
+import { Mail, Phone, MapPin, Clock, MessageCircle, Send, CheckSquare, Square } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { useProducts, Product } from '../contexts/ProductContext';
 
 const ContactPage: React.FC = () => {
+  const { products } = useProducts(); // Get products from context
+
   // State for form data
   const [formData, setFormData] = useState({
     name: '',
@@ -10,6 +14,9 @@ const ContactPage: React.FC = () => {
     subject: '',
     message: ''
   });
+
+  // State for selected products
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]); // Stores IDs of selected products
 
   // State to manage the selected sending method: 'email' or 'whatsapp'
   const [selectedMethod, setSelectedMethod] = useState<'email' | 'whatsapp'>('email'); // Default to email
@@ -20,6 +27,21 @@ const ContactPage: React.FC = () => {
       ...prev,
       [e.target.id]: e.target.value
     }));
+    // If subject changes, clear selected products if it's no longer a product-related subject
+    if (e.target.id === 'subject') {
+      if (!['product-inquiry', 'bulk-order', 'product-order'].includes(e.target.value)) {
+        setSelectedProducts([]);
+      }
+    }
+  };
+
+  // Handle product checkbox changes
+  const handleProductSelection = (productId: string) => {
+    setSelectedProducts(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId) // Deselect
+        : [...prev, productId] // Select
+    );
   };
 
   // Basic email format validation
@@ -28,19 +50,33 @@ const ContactPage: React.FC = () => {
     return emailRegex.test(email);
   };
 
-  // Handle form submission based on selected method
+  // Determine if the product selection section should be shown
+  const showProductSelection = ['product-inquiry', 'bulk-order', 'product-order'].includes(formData.subject);
+
+  // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission (page reload)
 
     // Basic validation for required fields
     if (!formData.name.trim() || !formData.email.trim() || !formData.subject || !formData.message.trim()) {
-      alert('Please fill in all required fields (Full Name, Email, Subject, Message).');
+      toast.error('Please fill in all required fields (Full Name, Email, Subject, Message).');
       return;
     }
     if (!isValidEmail(formData.email)) {
-      alert('Please enter a valid email address.');
+      toast.error('Please enter a valid email address.');
       return;
     }
+    // Validate if product selection is required but no products are selected
+    if (showProductSelection && selectedProducts.length === 0) {
+      toast.error('Please select at least one product for your inquiry.');
+      return;
+    }
+
+    // Prepare selected product names for the message
+    const selectedProductNames = products
+      .filter(p => selectedProducts.includes(p.id))
+      .map(p => p.name)
+      .join(', ');
 
     // Construct the message content to be pre-filled
     const messageContent = `
@@ -52,6 +88,8 @@ Full Name: ${formData.name}
 Email: ${formData.email}
 Phone: ${formData.phone || 'N/A'}
 Subject: ${formData.subject}
+
+${showProductSelection && selectedProductNames ? `Selected Products: ${selectedProductNames}\n` : ''}
 
 Message:
 ${formData.message}
@@ -65,17 +103,22 @@ Thank you.
       const encodedBody = encodeURIComponent(messageContent);
       const mailtoLink = `mailto:alburaqindus2000@gmail.com?subject=${encodedSubject}&body=${encodedBody}`;
       window.open(mailtoLink, '_blank');
+      toast.success('Opening your email client with the pre-filled message!');
     } else { // selectedMethod === 'whatsapp'
       // WhatsApp functionality
       // Use the phone number you specified: +923164623026
       const whatsappNumber = '923164623026'; // WhatsApp link requires number without '+'
       const encodedMessage = encodeURIComponent(messageContent);
+      // The wa.me link is generally reliable. Sometimes, very long messages or certain characters
+      // can cause issues. Ensure message is well-formed.
       const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
       window.open(whatsappLink, '_blank');
+      toast.success('Opening WhatsApp with the pre-filled message!');
     }
 
     // Optionally, clear the form fields after opening the external client
     setFormData({ name: '', phone: '', email: '', subject: '', message: '' });
+    setSelectedProducts([]); // Clear selected products after submission
   };
 
   return (
@@ -119,7 +162,7 @@ Thank you.
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-1">Phone Number</h3>
-                  <p className="text-gray-600">+923164623026</p>
+                  <p className="text-gray-600">+92 42 37667691</p>
                   <p className="text-sm text-gray-500 mt-1">Available during business hours</p>
                 </div>
               </div>
@@ -158,7 +201,7 @@ Thank you.
               <div className="flex space-x-4">
                 {/* WhatsApp Link (for direct call/chat) */}
                 <a
-                  href="tel:+923164623026" // Direct call for mobile, opens dialer
+                  href="tel:+923164623026"
                   className="bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition-colors duration-200"
                   title="WhatsApp Call"
                   target="_blank"
@@ -166,9 +209,9 @@ Thank you.
                 >
                   <MessageCircle className="h-5 w-5" />
                 </a>
-                {/* Facebook Link */}
+                {/* Facebook Link - UPDATED URL */}
                 <a
-                  href="https://www.facebook.com/profile.php?id=61559106203161/"
+                  href="https://www.facebook.com/profile.php?id=61559106203161" // Updated Facebook URL
                   className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
                   title="Facebook"
                   target="_blank"
@@ -255,13 +298,37 @@ Thank you.
                   required
                 >
                   <option value="">Select a subject</option>
+                  <option value="product-order">Product Order</option> {/* MOVED: Product Order option to top */}
                   <option value="product-inquiry">Product Inquiry</option>
-                  <option value="order-information">Order Information</option>
                   <option value="bulk-order">Bulk Order</option>
+                  <option value="order-information">Order Information</option>
                   <option value="general-question">General Question</option>
                   <option value="other">Other</option>
                 </select>
               </div>
+
+              {/* Conditional Product Selection Section */}
+              {showProductSelection && (
+                <div className="space-y-4 border p-4 rounded-lg bg-gray-50">
+                  <h4 className="text-lg font-semibold text-gray-800">Select Products for Order:</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-2">
+                    {products.map(product => (
+                      <label key={product.id} className="flex items-center space-x-2 text-gray-700 cursor-pointer hover:bg-gray-100 p-2 rounded-md transition-colors duration-150">
+                        <input
+                          type="checkbox"
+                          checked={selectedProducts.includes(product.id)}
+                          onChange={() => handleProductSelection(product.id)}
+                          className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" // ADDED: h-5 w-5 for consistent size
+                        />
+                        <span>{product.name} ({product.category})</span>
+                      </label>
+                    ))}
+                    {products.length === 0 && (
+                      <p className="text-gray-500 col-span-full text-center">No products available for selection.</p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">

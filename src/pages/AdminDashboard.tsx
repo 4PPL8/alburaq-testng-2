@@ -2,16 +2,43 @@ import React, { useState } from 'react';
 import { Plus, Edit3, Trash2, Eye, Upload, X, Check, AlertTriangle, Loader2 } from 'lucide-react';
 import { useProducts, Product } from '../contexts/ProductContext'; // Import Product interface
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify'; // Import toast (ToastContainer is in App.tsx)
+
+// Custom Confirmation Modal component for Delete
+const ConfirmDeleteModal: React.FC<{ productId: string, onConfirm: () => void, onCancel: () => void }> = ({ productId, onConfirm, onCancel }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full text-center">
+      <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+      <h3 className="text-xl font-semibold text-gray-800 mb-4">Confirm Deletion</h3>
+      <p className="text-gray-600 mb-6">Are you sure you want to delete this product? This action cannot be undone.</p>
+      <div className="flex justify-center space-x-4">
+        <button
+          onClick={onCancel}
+          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={onConfirm}
+          className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 
 const AdminDashboard: React.FC = () => {
-  const { products, categories, addProduct, updateProduct, deleteProduct, isLoading: productsLoading } = useProducts(); // Use isLoading from ProductContext
+  const { products, categories, addProduct, updateProduct, deleteProduct, isLoading: productsLoading } = useProducts();
   const { adminInfo } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'manage'>('overview');
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Correctly declared here
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -43,7 +70,6 @@ const AdminDashboard: React.FC = () => {
         description: product.description,
         image: product.image,
         features: product.features.length > 0 ? product.features : [''],
-        // Ensure product.images is an array before setting, default to ['']
         images: product.images && product.images.length > 0 ? product.images : ['']
       });
     } else {
@@ -107,15 +133,16 @@ const AdminDashboard: React.FC = () => {
     }));
   };
 
+  // Handles main product image file upload and converts to Base64 (reverted)
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
-        alert('Image size must be less than 2MB');
+        toast.error('Image size must be less than 2MB.');
         return;
       }
       if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        alert('Only JPG and PNG formats are supported');
+        toast.error('Only JPG and PNG formats are supported.');
         return;
       }
 
@@ -123,50 +150,50 @@ const AdminDashboard: React.FC = () => {
       reader.onload = (e) => {
         setFormData(prev => ({
           ...prev,
-          image: e.target?.result as string // Base64 string
+          image: e.target?.result as string // Store Base64 string
         }));
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); // Read file as Base64
     }
   };
 
+  // Handles form submission for adding or updating a product
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Validation
     if (!formData.name.trim() || !formData.category || !formData.description.trim() || !formData.image) {
-      alert('Please fill in all required fields');
+      toast.error('Please fill in all required fields.');
       setIsSubmitting(false);
       return;
     }
 
     const filteredFeatures = formData.features.filter(feature => feature.trim() !== '');
-    const filteredImages = formData.images.filter(img => img.trim() !== ''); // Filter out empty image URLs
+    const filteredImages = formData.images.filter(img => img.trim() !== '');
     
-    const productData: Omit<Product, 'id'> = { // Ensure type matches Product interface for add/update
+    const productData: Omit<Product, 'id'> = {
       name: formData.name.trim(),
       category: formData.category,
       description: formData.description.trim(),
-      image: formData.image,
+      image: formData.image, // This now holds Base64 or direct path
       features: filteredFeatures,
       images: filteredImages
     };
 
-    // Simulate processing time
     setTimeout(() => {
       if (modalMode === 'add') {
         addProduct(productData);
+        toast.success('Product added successfully!');
       } else if (selectedProduct) {
         updateProduct(selectedProduct.id, productData);
+        toast.success('Product updated successfully!');
       }
       setIsSubmitting(false);
       handleCloseModal();
     }, 1000);
   };
 
-  // Use the isLoading from ProductContext for dashboard's initial loading state
-  if (productsLoading) { // Use productsLoading here
+  if (productsLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -179,16 +206,21 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (deleteConfirm === id) {
-      deleteProduct(id);
+    setDeleteConfirm(id);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteConfirm) {
+      deleteProduct(deleteConfirm);
+      toast.success('Product deleted successfully!');
       setDeleteConfirm(null);
-    } else {
-      setDeleteConfirm(id);
-      setTimeout(() => setDeleteConfirm(null), 3000);
     }
   };
 
-  // Ensure categoryStats has a fallback for the reduce function if categories is empty
+  const handleCancelDelete = () => {
+    setDeleteConfirm(null);
+  };
+
   const categoryStats = categories.map(category => ({
     name: category,
     count: products.filter(p => p.category === category).length
@@ -199,11 +231,19 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      {/* ToastContainer is now in App.tsx */}
+      {deleteConfirm && (
+        <ConfirmDeleteModal
+          productId={deleteConfirm}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-          {/* Ensure adminInfo is not null before accessing .name */}
           <p className="text-gray-600">Welcome back, {adminInfo?.name || 'Admin'}!</p>
         </div>
 
@@ -248,7 +288,7 @@ const AdminDashboard: React.FC = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Categories</h3>
                 <p className="text-3xl font-bold text-yellow-600">{categories.length}</p>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-md"> {/* This is the div for "Most Popular Category" */}
+              <div className="bg-white p-6 rounded-xl shadow-md">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Most Popular Category</h3>
                 <p className="text-lg font-bold text-green-600">
                   {mostPopularCategory}
@@ -278,11 +318,11 @@ const AdminDashboard: React.FC = () => {
                 {products.map((product) => (
                   <div key={product.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                     <img
-                      src={product.image} // This will now be a direct path from project root
+                      src={product.image}
                       alt={product.name}
                       className="w-full h-32 object-cover rounded-lg mb-3"
-                      onError={(e) => { // onError fallback for robustness
-                        (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Error'; // Generic placeholder
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Error';
                       }}
                     />
                     <h4 className="font-semibold text-gray-800 mb-1">{product.name}</h4>
@@ -326,11 +366,11 @@ const AdminDashboard: React.FC = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <img
-                              src={product.image} // This will now be a direct path from project root
+                              src={product.image}
                               alt={product.name}
                               className="w-12 h-12 object-cover rounded-lg mr-4"
-                              onError={(e) => { // onError fallback for robustness
-                                (e.target as HTMLImageElement).src = 'https://placehold.co/48x48/E0E0E0/000000?text=X'; // Generic placeholder
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/48x48/E0E0E0/000000?text=X';
                               }}
                             />
                             <div>
@@ -383,7 +423,7 @@ const AdminDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Modal */}
+        {/* Modal for Add/Edit Product */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -468,8 +508,8 @@ const AdminDashboard: React.FC = () => {
                             src={formData.image}
                             alt="Preview"
                             className="w-32 h-32 object-cover rounded-lg border"
-                            onError={(e) => { // onError fallback for robustness
-                                (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Preview+Error'; // Generic placeholder
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Preview+Error';
                             }}
                           />
                         </div>
@@ -485,22 +525,16 @@ const AdminDashboard: React.FC = () => {
                       Additional Product Images
                     </label>
                     <div className="space-y-2">
-                      {/* This input allows users to paste external URLs, which will then be stored.
-                          If you want to strictly prevent external URLs here, you would need to:
-                          1. Change type="url" to type="file" and handle multiple file uploads.
-                          2. Add validation in handleImageChange to check if the URL is local or base64.
-                          For now, it allows external URLs if manually entered by admin.
-                      */}
                       {formData.images.map((image, index) => (
                         <div key={index} className="flex items-center space-x-2">
                           <input
-                            type="url" // Allows external URLs if admin pastes them
+                            type="url"
                             value={image}
                             onChange={(e) => handleImageChange(index, e.target.value)}
                             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="Enter image URL"
                           />
-                          {formData.images.length > 1 && ( // Only show remove if there's more than one
+                          {formData.images.length > 1 && (
                             <button
                               type="button"
                               onClick={() => removeImage(index)}
@@ -535,7 +569,7 @@ const AdminDashboard: React.FC = () => {
                             className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             placeholder="Enter a product feature"
                           />
-                          {formData.features.length > 1 && ( // Only show remove if there's more than one
+                          {formData.features.length > 1 && (
                             <button
                               type="button"
                               onClick={() => removeFeature(index)}
