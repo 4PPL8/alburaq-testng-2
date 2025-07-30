@@ -35,7 +35,7 @@ const initialProducts: Product[] = [
     name: 'Belo Color',
     category: 'Cosmetics & Personal Care',
     description: 'High-quality hair color for vibrant and long-lasting results.',
-    image: '/balo-color-1.jpg', // Path from project root
+    image: '/balo-color-1.jpg', // Path from public/
     images: [
       '/balo-color-1.jpg',
       '/balo-color-2.jpg',
@@ -49,7 +49,7 @@ const initialProducts: Product[] = [
     name: 'Grace Color',
     category: 'Cosmetics & Personal Care',
     description: 'Premium hair coloring solution with excellent coverage.',
-    image: '/grace-color-1.jpg', // Path from project root
+    image: '/grace-color-1.jpg', // Path from public/
     images: [
       '/grace-color-1.jpg',
       '/grace-color-2.jpg',
@@ -62,7 +62,7 @@ const initialProducts: Product[] = [
     name: 'Veloria Facial',
     category: 'Cosmetics & Personal Care',
     description: 'Gentle facial cream for smooth and radiant skin.',
-    image: '/veloria-facial-1.jpg', // Path from project root
+    image: '/veloria-facial-1.jpg', // Path from public/
     images: [
       '/veloria-facial-1.jpg',
       '/veloria-facial-2.jpg',
@@ -76,7 +76,7 @@ const initialProducts: Product[] = [
     name: 'Sharp Razor',
     category: 'Razors',
     description: 'Professional-grade razor for precise and comfortable shaving.',
-    image: '/sharp-razor-1.jpg', // Path from project root
+    image: '/sharp-razor-1.jpg', // Path from public/
     images: [
       '/sharp-razor-1.jpg',
       '/sharp-razor-2.jpg',
@@ -89,7 +89,7 @@ const initialProducts: Product[] = [
     name: 'Ujala Razor',
     category: 'Razors',
     description: 'Reliable razor for everyday grooming needs.',
-    image: '/ujala-razor-1.jpg', // Path from project root
+    image: '/ujala-razor-1.jpg', // Path from public/
     images: [
       '/ujala-razor-1.jpg',
       '/ujala-razor-2.jpg',
@@ -102,7 +102,7 @@ const initialProducts: Product[] = [
     name: 'Mister Clean Toothbrush',
     category: 'Toothbrush',
     description: 'High-quality toothbrush for optimal oral hygiene.',
-    image: '/mister-clean-toothbrush-1.jpg', // Path from project root
+    image: '/mister-clean-toothbrush-1.jpg', // Path from public/
     images: [
       '/mister-clean-toothbrush-1.jpg',
       '/mister-clean-toothbrush-2.jpg',
@@ -116,7 +116,7 @@ const initialProducts: Product[] = [
     name: 'Mahfil Milan',
     category: 'Agarbatti (Incense Sticks)',
     description: 'Premium incense sticks with enchanting fragrance.',
-    image: '/mahfil-milan-1.jpg', // Path from project root
+    image: '/mahfil-milan-1.jpg', // Path from public/
     images: [
       '/mahfil-milan-1.jpg',
       '/mahfil-milan-2.jpg',
@@ -142,7 +142,7 @@ const initialProducts: Product[] = [
     name: 'Golden Milan',
     category: 'Agarbatti (Incense Sticks)',
     description: 'Luxurious incense sticks for a calming atmosphere.',
-    image: '/golden-milan-1.jpg', // Path from project root
+    image: '/golden-milan-1.jpg', // Path from public/
     images: [
       '/golden-milan-1.jpg',
       '/golden-milan-2.jpg',
@@ -156,7 +156,7 @@ const initialProducts: Product[] = [
     name: 'Natural ISP',
     category: 'Natural / Herbal Products',
     description: 'Natural herbal supplement for health and wellness.',
-    image: '/natural-isp-1.jpg', // Path from project root
+    image: '/natural-isp-1.jpg', // Path from public/
     images: [
       '/natural-isp-1.jpg',
       '/natural-isp-2.jpg',
@@ -169,7 +169,7 @@ const initialProducts: Product[] = [
     name: 'Jor Joshanda',
     category: 'Natural / Herbal Products',
     description: 'Traditional herbal remedy for respiratory wellness.',
-    image: '/jor-joshanda-1.jpg', // Path from project root
+    image: '/jor-joshanda-1.jpg', // Path from public/
     images: [
       '/jor-joshanda-1.jpg',
       '/jor-joshanda-2.jpg',
@@ -183,7 +183,7 @@ const initialProducts: Product[] = [
     name: 'Lemon Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'High-quality adhesive tape for various applications.',
-    image: '/lemon-adhesive-tape-1.jpg', // Direct path from project root
+    image: '/lemon-adhesive-tape-1.jpg', // Direct path from public/
     images: [
       '/lemon-adhesive-tape-1.jpg',
       '/lemon-adhesive-tape-2.jpg',
@@ -196,9 +196,9 @@ const initialProducts: Product[] = [
     name: 'Dark Red Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'Strong adhesive tape in a dark red color.',
-    image: 'https://placehold.co/400x400/8B0000/FFFFFF?text=Dark+Red+Tape', // Generic placeholder
+    image: '/dark-red-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/8B0000/FFFFFF?text=Dark+Red+Tape',
+      '/dark-red-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -209,9 +209,9 @@ const initialProducts: Product[] = [
     name: 'Brown Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'Standard brown packaging tape for secure sealing.',
-    image: 'https://placehold.co/400x400/A52A2A/FFFFFF?text=Brown+Tape', // Generic placeholder
+    image: '/brown-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/A52A2A/FFFFFF?text=Brown+Tape',
+      '/brown-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -219,12 +219,12 @@ const initialProducts: Product[] = [
   },
   {
     id: '17', // New ID
-    name: 'Super Yellowish Adhesive Tape',
+    name: 'Yellowish Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'Highly visible yellowish tape for marking and sealing.',
-    image: 'https://placehold.co/400x400/FFD700/000000?text=Yellow+Tape', // Generic placeholder
+    image: '/super-yellowish-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/FFD700/000000?text=Yellow+Tape',
+      '/super-yellowish-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -235,9 +235,9 @@ const initialProducts: Product[] = [
     name: 'Masking Tape',
     category: 'Adhesive Tape',
     description: 'Crepe paper masking tape for painting and general purpose use.',
-    image: 'https://placehold.co/400x400/F0E68C/000000?text=Masking+Tape', // Generic placeholder
+    image: '/masking-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/F0E68C/000000?text=Masking+Tape',
+      '/masking-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -248,9 +248,9 @@ const initialProducts: Product[] = [
     name: 'Transparent Tape',
     category: 'Adhesive Tape',
     description: 'Clear adhesive tape for invisible mending and sealing.',
-    image: 'https://placehold.co/400x400/ADD8E6/000000?text=Transparent+Tape', // Generic placeholder
+    image: '/transparent-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/ADD8E6/000000?text=Transparent+Tape',
+      '/transparent-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -262,9 +262,9 @@ const initialProducts: Product[] = [
     name: 'Hit Tape',
     category: 'PVC Tape',
     description: 'Durable PVC electrical insulation tape.',
-    image: 'https://placehold.co/400x400/FF0000/FFFFFF?text=Hit+Tape', // Generic placeholder
+    image: '/hit-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/FF0000/FFFFFF?text=Hit+Tape',
+      '/hit-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -275,9 +275,9 @@ const initialProducts: Product[] = [
     name: 'Snake Tape',
     category: 'PVC Tape',
     description: 'High-quality PVC tape with strong adhesive properties.',
-    image: 'https://placehold.co/400x400/008000/FFFFFF?text=Snake+Tape', // Generic placeholder
+    image: '/snake-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/008000/FFFFFF?text=Snake+Tape',
+      '/snake-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -288,9 +288,9 @@ const initialProducts: Product[] = [
     name: 'Gold Tape',
     category: 'PVC Tape',
     description: 'Premium gold-colored PVC tape for various applications.',
-    image: 'https://placehold.co/400x400/FFD700/000000?text=Gold+Tape', // Generic placeholder
+    image: '/gold-tape-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/FFD700/000000?text=Gold+Tape',
+      '/gold-tape-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -302,9 +302,9 @@ const initialProducts: Product[] = [
     name: 'Lead Pencil',
     category: 'Stationery',
     description: 'High-quality graphite pencil for writing and drawing.',
-    image: 'https://placehold.co/400x400/A9A9A9/FFFFFF?text=Lead+Pencil', // Generic placeholder
+    image: '/lead-pencil-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/A9A9A9/FFFFFF?text=Lead+Pencil',
+      '/lead-pencil-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -315,28 +315,16 @@ const initialProducts: Product[] = [
     name: 'Color Pencil',
     category: 'Stationery',
     description: 'Vibrant color pencils for creative artwork.',
-    image: 'https://placehold.co/400x400/FF6347/FFFFFF?text=Color+Pencil', // Generic placeholder
+    image: '/color-pencil-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/FF6347/FFFFFF?text=Color+Pencil',
+      '/color-pencil-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
     features: ['Bright colors', 'Smooth blending', 'Non-toxic']
   },
-  {
-    id: '25', // New ID
-    name: 'Top Pencil',
-    category: 'Stationery',
-    description: 'Premium pencil with an eraser top for convenience.',
-    image: 'https://placehold.co/400x400/4682B4/FFFFFF?text=Top+Pencil', // Generic placeholder
-    images: [
-      'https://placehold.co/400x400/4682B4/FFFFFF?text=Top+Pencil',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
-    ],
-    features: ['Integrated eraser', 'Strong lead', 'Comfortable to hold']
-  },
-  // Stationery Tapes - NEW CATEGORY PRODUCTS
+  // REMOVED: Top Pencil product
+  // Stationery Tapes - Images remain placeholders as requested
   {
     id: '26', // New ID
     name: '333 Tape',
@@ -447,7 +435,7 @@ const initialProducts: Product[] = [
     name: 'Silicon Nipple',
     category: 'Baby Products (Soothers)',
     description: 'Safe and comfortable silicon soother for babies.',
-    image: '/silicon-nipple-1.jpg', // Direct path from project root
+    image: '/silicon-nipple-1.jpg', // Direct path from public/
     images: [
       '/silicon-nipple-1.jpg',
       '/silicon-nipple-2.jpg',
@@ -460,9 +448,9 @@ const initialProducts: Product[] = [
     name: 'Camera Nipple',
     category: 'Baby Products (Soothers)',
     description: 'Innovative soother designed for easy monitoring and comfort.',
-    image: 'https://placehold.co/400x400/48D1CC/000000?text=Camera+Nipple', // Generic placeholder
+    image: '/camera-nipple-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/48D1CC/000000?text=Camera+Nipple',
+      '/camera-nipple-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -474,9 +462,9 @@ const initialProducts: Product[] = [
     name: 'Grace Bright',
     category: 'Cleaning Products',
     description: 'Powerful cleaning solution for sparkling surfaces.',
-    image: 'https://placehold.co/400x400/00CED1/000000?text=Grace+Bright', // Generic placeholder
+    image: '/grace-bright-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/00CED1/000000?text=Grace+Bright',
+      '/grace-bright-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -487,9 +475,9 @@ const initialProducts: Product[] = [
     name: 'Shine X Scourer',
     category: 'Cleaning Products',
     description: 'Heavy-duty scourer for tough grime and stains.',
-    image: 'https://placehold.co/400x400/7B68EE/FFFFFF?text=Shine+X+Scourer', // Generic placeholder
+    image: '/shine-x-scourer-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/7B68EE/FFFFFF?text=Shine+X+Scourer',
+      '/shine-x-scourer-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -500,9 +488,9 @@ const initialProducts: Product[] = [
     name: 'Tissue',
     category: 'Cleaning Products',
     description: 'Soft and absorbent tissues for everyday cleaning needs.',
-    image: 'https://placehold.co/400x400/F0F8FF/000000?text=Tissue', // Generic placeholder
+    image: '/tissue-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/F0F8FF/000000?text=Tissue',
+      '/tissue-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -514,9 +502,9 @@ const initialProducts: Product[] = [
     name: 'Rat Book (Mouse/Rat Catcher)',
     category: 'Pest Control',
     description: 'Effective and humane trap for catching mice and rats.',
-    image: 'https://placehold.co/400x400/B22222/FFFFFF?text=Rat+Book', // Generic placeholder
+    image: '/rat-book-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/B22222/FFFFFF?text=Rat+Book',
+      '/rat-book-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -528,9 +516,9 @@ const initialProducts: Product[] = [
     name: 'Turk Glue',
     category: 'Craft Supplies',
     description: 'Strong adhesive glue for various craft projects.',
-    image: 'https://placehold.co/400x400/8B4513/FFFFFF?text=Turk+Glue', // Generic placeholder
+    image: '/turk-glue-1.jpg', // Path from public/
     images: [
-      'https://placehold.co/400x400/8B4513/FFFFFF?text=Turk+Glue',
+      '/turk-glue-1.jpg',
       DefaultProductPlaceholder,
       DefaultProductPlaceholder
     ],
@@ -546,17 +534,15 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     // TEMPORARY FOR DEVELOPMENT/DEBUGGING: Force clear localStorage for products
     // This will ensure the initialProducts are always loaded on refresh.
     // YOU MUST REMOVE THIS LINE BEFORE DEPLOYING TO PRODUCTION!
-    localStorage.removeItem('products_data'); // <--- REMOVED VERSION CHECK, NOW ALWAYS CLEARS
+    localStorage.removeItem('products_data'); // Always clears for dev
 
-    const savedProducts = localStorage.getItem('products_data'); // Using the key 'products_data'
+    const savedProducts = localStorage.getItem('products_data');
     
     if (savedProducts) {
       const parsedData = JSON.parse(savedData);
-      setProducts(parsedData.products); // Assuming 'products' property exists in stored data
+      setProducts(parsedData.products);
     } else {
-      // No data stored: Use initialProducts
       setProducts(initialProducts);
-      // Store initial products in localStorage (without versioning)
       localStorage.setItem('products_data', JSON.stringify({ products: initialProducts }));
     }
     setIsLoading(false);
@@ -564,7 +550,6 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const saveProducts = (newProducts: Product[]) => {
     setProducts(newProducts);
-    // Save products to localStorage (without versioning)
     localStorage.setItem('products_data', JSON.stringify({ products: newProducts }));
   };
 
