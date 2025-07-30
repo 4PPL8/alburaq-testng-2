@@ -168,7 +168,7 @@ Thank you.
                 </a>
                 {/* Facebook Link */}
                 <a
-                  href="https://www.facebook.com/alburaqindustries/"
+                  href="https://www.facebook.com/profile.php?id=61559106203161/"
                   className="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200"
                   title="Facebook"
                   target="_blank"
