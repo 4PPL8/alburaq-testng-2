@@ -39,8 +39,8 @@ const initialProducts: Product[] = [
     images: [
       '/balo-color-1.jpg',
       '/balo-color-2.jpg',
-      '/balo-color-3.jpg',
-      DefaultProductPlaceholder
+      '/balo-color-3.jpg'
+      
     ],
     features: ['Long-lasting color', 'Natural ingredients', 'Easy application']
   },
@@ -51,7 +51,6 @@ const initialProducts: Product[] = [
     description: 'Premium hair coloring solution with excellent coverage.',
     image: '/grace-color-1.jpg', // Path from public/
     images: [
-      '/grace-color-1.jpg',
       '/grace-color-2.jpg',
       '/grace-color-3.jpg'
     ],
@@ -64,7 +63,6 @@ const initialProducts: Product[] = [
     description: 'Gentle facial cream for smooth and radiant skin.',
     image: '/veloria-facial-1.jpg', // Path from public/
     images: [
-      '/veloria-facial-1.jpg',
       '/veloria-facial-2.jpg',
       '/veloria-facial-3.jpg'
     ],
@@ -78,9 +76,8 @@ const initialProducts: Product[] = [
     description: 'Professional-grade razor for precise and comfortable shaving.',
     image: '/sharp-razor-1.jpg', // Path from public/
     images: [
-      '/sharp-razor-1.jpg',
-      '/sharp-razor-2.jpg',
-      '/sharp-razor-3.jpg'
+      '/sharp-razor-2.png',
+      '/sharp-razor-3.png'
     ],
     features: ['Sharp blade', 'Comfortable grip', 'Precise cutting']
   },
@@ -91,9 +88,9 @@ const initialProducts: Product[] = [
     description: 'Reliable razor for everyday grooming needs.',
     image: '/ujala-razor-1.jpg', // Path from public/
     images: [
-      '/ujala-razor-1.jpg',
       '/ujala-razor-2.jpg',
-      DefaultProductPlaceholder
+      '/ujala-razor-3.png'
+      
     ],
     features: ['Reliable quality', 'Everyday use', 'Affordable price']
   },
@@ -104,9 +101,9 @@ const initialProducts: Product[] = [
     description: 'High-quality toothbrush for optimal oral hygiene.',
     image: '/mister-clean-toothbrush-1.jpg', // Path from public/
     images: [
-      '/mister-clean-toothbrush-1.jpg',
+      
       '/mister-clean-toothbrush-2.jpg',
-      DefaultProductPlaceholder
+      '/mister-clean-toothbrush-3.png'
     ],
     features: ['Soft bristles', 'Ergonomic handle', 'Effective cleaning']
   },
@@ -119,8 +116,7 @@ const initialProducts: Product[] = [
     image: '/mahfil-milan-1.jpg', // Path from public/
     images: [
       '/mahfil-milan-1.jpg',
-      '/mahfil-milan-2.jpg',
-      DefaultProductPlaceholder
+      '/mahfil-milan-2.png'
     ],
     features: ['Premium quality', 'Long-lasting fragrance', 'Natural ingredients']
   },
@@ -129,11 +125,12 @@ const initialProducts: Product[] = [
     name: 'Mahfil Milan (Extra)', // Differentiated name for clarity
     category: 'Agarbatti (Incense Sticks)',
     description: 'Another batch of premium incense sticks with enchanting fragrance.',
-    image: '/mahfil-milan-1.jpg', // Same image as original Mahfil Milan
+    image: '/mahfil-milan-extra-1.png', // Same image as original Mahfil Milan
     images: [
-      '/mahfil-milan-1.jpg',
-      '/mahfil-milan-2.jpg',
-      DefaultProductPlaceholder
+      '/mahfil-milan-extra-2.jpg',
+      '/mahfil-milan-extra-3.png'
+
+      
     ],
     features: ['Same premium quality', 'Great for bulk purchase']
   },
@@ -142,11 +139,11 @@ const initialProducts: Product[] = [
     name: 'Golden Milan',
     category: 'Agarbatti (Incense Sticks)',
     description: 'Luxurious incense sticks for a calming atmosphere.',
-    image: '/golden-milan-1.jpg', // Path from public/
+    image: '/golden-milan-2.png', // Path from public/
     images: [
       '/golden-milan-1.jpg',
-      '/golden-milan-2.jpg',
-      DefaultProductPlaceholder
+      '/golden-milan-3.png'
+      
     ],
     features: ['Luxurious fragrance', 'Calming effect', 'High-quality materials']
   },
@@ -159,8 +156,8 @@ const initialProducts: Product[] = [
     image: '/natural-isp-1.jpg', // Path from public/
     images: [
       '/natural-isp-1.jpg',
-      '/natural-isp-2.jpg',
-      DefaultProductPlaceholder
+      '/natural-isp-2.jpg'
+      
     ],
     features: ['Natural ingredients', 'Health benefits', 'Traditional formula']
   },
@@ -171,9 +168,9 @@ const initialProducts: Product[] = [
     description: 'Traditional herbal remedy for respiratory wellness.',
     image: '/jor-joshanda-1.jpg', // Path from public/
     images: [
-      '/jor-joshanda-1.jpg',
       '/jor-joshanda-2.jpg',
-      DefaultProductPlaceholder
+      '/jor-joshanda-3.png'
+      
     ],
     features: ['Traditional remedy', 'Natural herbs', 'Respiratory support']
   },
@@ -219,7 +216,7 @@ const initialProducts: Product[] = [
   },
   {
     id: '17', // New ID
-    name: 'Yellowish Adhesive Tape',
+    name: 'Super Yellowish Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'Highly visible yellowish tape for marking and sealing.',
     image: '/super-yellowish-tape-1.jpg', // Path from public/
@@ -256,7 +253,7 @@ const initialProducts: Product[] = [
     ],
     features: ['Invisible finish', 'Strong bond', 'Versatile']
   },
-  // PVC Tapes - NEW CATEGORY PRODUCTS
+  // PVC Tapes
   {
     id: '20', // New ID
     name: 'Hit Tape',
@@ -264,9 +261,9 @@ const initialProducts: Product[] = [
     description: 'Durable PVC electrical insulation tape.',
     image: '/hit-tape-1.jpg', // Path from public/
     images: [
-      '/hit-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/hit-tape-2.png',
+      '/hit-tape-3.png'
+      
     ],
     features: ['Electrical insulation', 'Strong adhesion', 'Weather resistant']
   },
@@ -277,9 +274,9 @@ const initialProducts: Product[] = [
     description: 'High-quality PVC tape with strong adhesive properties.',
     image: '/snake-tape-1.jpg', // Path from public/
     images: [
-      '/snake-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/snake-tape-2.png',
+      '/snake-tape-3.png',
+      
     ],
     features: ['High adhesion', 'Flexible', 'Durable']
   },
@@ -290,13 +287,13 @@ const initialProducts: Product[] = [
     description: 'Premium gold-colored PVC tape for various applications.',
     image: '/gold-tape-1.jpg', // Path from public/
     images: [
-      '/gold-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/gold-tape-2.png',
+      '/gold-tape-3.png'
+      
     ],
     features: ['Premium look', 'Strong bond', 'Versatile']
   },
-  // Stationery - NEW CATEGORY PRODUCTS
+  // Stationery
   {
     id: '23', // New ID
     name: 'Lead Pencil',
@@ -304,9 +301,8 @@ const initialProducts: Product[] = [
     description: 'High-quality graphite pencil for writing and drawing.',
     image: '/lead-pencil-1.jpg', // Path from public/
     images: [
-      '/lead-pencil-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/lead-pencil-2.png'
+      
     ],
     features: ['Smooth writing', 'Durable lead', 'Comfortable grip']
   },
@@ -315,16 +311,15 @@ const initialProducts: Product[] = [
     name: 'Color Pencil',
     category: 'Stationery',
     description: 'Vibrant color pencils for creative artwork.',
-    image: '/color-pencil-1.jpg', // Path from public/
+    image: '/color-pencil-1.png', // Path from public/
     images: [
-      '/color-pencil-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/color-pencil-2.png',
+      '/color-pencil-3.png',
+     
     ],
     features: ['Bright colors', 'Smooth blending', 'Non-toxic']
   },
-  // REMOVED: Top Pencil product
-  // Stationery Tapes - Images remain placeholders as requested
+  // Stationery Tapes - UPDATED: Images are now placeholders as requested
   {
     id: '26', // New ID
     name: '333 Tape',
@@ -437,9 +432,9 @@ const initialProducts: Product[] = [
     description: 'Safe and comfortable silicon soother for babies.',
     image: '/silicon-nipple-1.jpg', // Direct path from public/
     images: [
-      '/silicon-nipple-1.jpg',
-      '/silicon-nipple-2.jpg',
-      DefaultProductPlaceholder
+      '/silicon-nipple-3.png',
+      '/silicon-nipple-4.png'
+      
     ],
     features: ['Food-grade silicon', 'Comfortable design', 'Easy to clean']
   },
@@ -450,9 +445,9 @@ const initialProducts: Product[] = [
     description: 'Innovative soother designed for easy monitoring and comfort.',
     image: '/camera-nipple-1.jpg', // Path from public/
     images: [
-      '/camera-nipple-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/camera-nipple-2.png',
+      '/camera-nipple-3.png'
+      
     ],
     features: ['Unique design', 'Comfortable', 'Safe material']
   },
@@ -464,9 +459,9 @@ const initialProducts: Product[] = [
     description: 'Powerful cleaning solution for sparkling surfaces.',
     image: '/grace-bright-1.jpg', // Path from public/
     images: [
-      '/grace-bright-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/grace-bright-2.png',
+     '/grace-bright-3.png'
+     
     ],
     features: ['Streak-free clean', 'Fast-acting', 'Fresh scent']
   },
@@ -477,9 +472,9 @@ const initialProducts: Product[] = [
     description: 'Heavy-duty scourer for tough grime and stains.',
     image: '/shine-x-scourer-1.jpg', // Path from public/
     images: [
-      '/shine-x-scourer-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/shine-x-scourer-2.png',
+      '/shine-x-scourer-3.png'
+      
     ],
     features: ['Removes tough stains', 'Durable', 'Easy to grip']
   },
@@ -490,9 +485,8 @@ const initialProducts: Product[] = [
     description: 'Soft and absorbent tissues for everyday cleaning needs.',
     image: '/tissue-1.jpg', // Path from public/
     images: [
-      '/tissue-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/tissue-2.png',
+      '/tissue-3.png'
     ],
     features: ['Soft', 'Absorbent', 'Convenient']
   },
@@ -504,9 +498,9 @@ const initialProducts: Product[] = [
     description: 'Effective and humane trap for catching mice and rats.',
     image: '/rat-book-1.jpg', // Path from public/
     images: [
-      '/rat-book-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      
+      '/rat-book-2.png',
+      '/rat-book-3.png'
     ],
     features: ['Non-toxic', 'Reusable', 'Easy to set']
   },
