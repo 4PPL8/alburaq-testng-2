@@ -38,8 +38,8 @@ const initialProducts: Product[] = [
     image: '/balo-color-1.jpg', // Path from public/
     images: [
       '/balo-color-1.jpg',
-      '/balo-color-2.jpg',
-      '/balo-color-3.jpg'
+      '/balo-color-2.png',
+      '/balo-color-3.png'
       
     ],
     features: ['Long-lasting color', 'Natural ingredients', 'Easy application']
@@ -49,10 +49,11 @@ const initialProducts: Product[] = [
     name: 'Grace Color',
     category: 'Cosmetics & Personal Care',
     description: 'Premium hair coloring solution with excellent coverage.',
-    image: '/grace-color-1.jpg', // Path from public/
+    image: '/grace-color-2.png', // Path from public/
     images: [
-      '/grace-color-2.jpg',
-      '/grace-color-3.jpg'
+      '/grace-color-2.png',
+      '/grace-color-1.jpg',
+      '/grace-color-3.png'
     ],
     features: ['Premium quality', 'Excellent coverage', 'Hair-friendly formula']
   },
@@ -61,10 +62,11 @@ const initialProducts: Product[] = [
     name: 'Veloria Facial',
     category: 'Cosmetics & Personal Care',
     description: 'Gentle facial cream for smooth and radiant skin.',
-    image: '/veloria-facial-1.jpg', // Path from public/
+    image: '/veloria-facial-2.png', // Path from public/
     images: [
-      '/veloria-facial-2.jpg',
-      '/veloria-facial-3.jpg'
+      '/veloria-facial-2.png',
+      '/veloria-facial-1.jpg',
+      '/veloria-facial-3.png'
     ],
     features: ['Gentle formula', 'Radiant skin', 'Moisturizing effect']
   },
@@ -76,6 +78,7 @@ const initialProducts: Product[] = [
     description: 'Professional-grade razor for precise and comfortable shaving.',
     image: '/sharp-razor-1.jpg', // Path from public/
     images: [
+      '/sharp-razor-1.jpg',
       '/sharp-razor-2.png',
       '/sharp-razor-3.png'
     ],
@@ -88,6 +91,7 @@ const initialProducts: Product[] = [
     description: 'Reliable razor for everyday grooming needs.',
     image: '/ujala-razor-1.jpg', // Path from public/
     images: [
+      '/ujala-razor-1.jpg',
       '/ujala-razor-2.jpg',
       '/ujala-razor-3.png'
       
@@ -101,7 +105,7 @@ const initialProducts: Product[] = [
     description: 'High-quality toothbrush for optimal oral hygiene.',
     image: '/mister-clean-toothbrush-1.jpg', // Path from public/
     images: [
-      
+      '/mister-clean-toothbrush-1.jpg',
       '/mister-clean-toothbrush-2.jpg',
       '/mister-clean-toothbrush-3.png'
     ],
@@ -116,6 +120,7 @@ const initialProducts: Product[] = [
     image: '/mahfil-milan-1.jpg', // Path from public/
     images: [
       '/mahfil-milan-1.jpg',
+      '/mahfil-milan-1.jpg',
       '/mahfil-milan-2.png'
     ],
     features: ['Premium quality', 'Long-lasting fragrance', 'Natural ingredients']
@@ -125,10 +130,11 @@ const initialProducts: Product[] = [
     name: 'Mahfil Milan (Extra)', // Differentiated name for clarity
     category: 'Agarbatti (Incense Sticks)',
     description: 'Another batch of premium incense sticks with enchanting fragrance.',
-    image: '/mahfil-milan-extra-1.png', // Same image as original Mahfil Milan
+    image: '/mehfil-millan-extra-1.png', // Same image as original Mahfil Milan
     images: [
-      '/mahfil-milan-extra-2.jpg',
-      '/mahfil-milan-extra-3.png'
+      '/mehfil-millan-extra-1.png',
+      '/mehfil-millan-extra-2.jpg',
+      '/mehfil-millan-extra-3.png'
 
       
     ],
@@ -141,6 +147,7 @@ const initialProducts: Product[] = [
     description: 'Luxurious incense sticks for a calming atmosphere.',
     image: '/golden-milan-2.png', // Path from public/
     images: [
+      '/golden-milan-2.png',
       '/golden-milan-1.jpg',
       '/golden-milan-3.png'
       
@@ -156,6 +163,7 @@ const initialProducts: Product[] = [
     image: '/natural-isp-1.jpg', // Path from public/
     images: [
       '/natural-isp-1.jpg',
+      '/natural-isp-1.jpg',
       '/natural-isp-2.jpg'
       
     ],
@@ -168,6 +176,7 @@ const initialProducts: Product[] = [
     description: 'Traditional herbal remedy for respiratory wellness.',
     image: '/jor-joshanda-1.jpg', // Path from public/
     images: [
+      '/jor-joshanda-1.jpg', 
       '/jor-joshanda-2.jpg',
       '/jor-joshanda-3.png'
       
@@ -261,6 +270,7 @@ const initialProducts: Product[] = [
     description: 'Durable PVC electrical insulation tape.',
     image: '/hit-tape-1.jpg', // Path from public/
     images: [
+      '/hit-tape-1.jpg',
       '/hit-tape-2.png',
       '/hit-tape-3.png'
       
@@ -274,6 +284,7 @@ const initialProducts: Product[] = [
     description: 'High-quality PVC tape with strong adhesive properties.',
     image: '/snake-tape-1.jpg', // Path from public/
     images: [
+      '/snake-tape-1.jpg',
       '/snake-tape-2.png',
       '/snake-tape-3.png',
       
@@ -287,6 +298,7 @@ const initialProducts: Product[] = [
     description: 'Premium gold-colored PVC tape for various applications.',
     image: '/gold-tape-1.jpg', // Path from public/
     images: [
+      '/gold-tape-1.jpg',
       '/gold-tape-2.png',
       '/gold-tape-3.png'
       
@@ -301,6 +313,7 @@ const initialProducts: Product[] = [
     description: 'High-quality graphite pencil for writing and drawing.',
     image: '/lead-pencil-1.jpg', // Path from public/
     images: [
+      '/lead-pencil-1.jpg',
       '/lead-pencil-2.png'
       
     ],
@@ -313,6 +326,7 @@ const initialProducts: Product[] = [
     description: 'Vibrant color pencils for creative artwork.',
     image: '/color-pencil-1.png', // Path from public/
     images: [
+      '/color-pencil-1.png',
       '/color-pencil-2.png',
       '/color-pencil-3.png',
      
@@ -432,6 +446,7 @@ const initialProducts: Product[] = [
     description: 'Safe and comfortable silicon soother for babies.',
     image: '/silicon-nipple-1.jpg', // Direct path from public/
     images: [
+      '/silicon-nipple-1.jpg',
       '/silicon-nipple-3.png',
       '/silicon-nipple-4.png'
       
@@ -445,6 +460,7 @@ const initialProducts: Product[] = [
     description: 'Innovative soother designed for easy monitoring and comfort.',
     image: '/camera-nipple-1.jpg', // Path from public/
     images: [
+      '/camera-nipple-1.jpg',
       '/camera-nipple-2.png',
       '/camera-nipple-3.png'
       
@@ -459,6 +475,7 @@ const initialProducts: Product[] = [
     description: 'Powerful cleaning solution for sparkling surfaces.',
     image: '/grace-bright-1.jpg', // Path from public/
     images: [
+      '/grace-bright-1.jpg',
       '/grace-bright-2.png',
      '/grace-bright-3.png'
      
@@ -472,6 +489,7 @@ const initialProducts: Product[] = [
     description: 'Heavy-duty scourer for tough grime and stains.',
     image: '/shine-x-scourer-1.jpg', // Path from public/
     images: [
+      '/shine-x-scourer-1.jpg',
       '/shine-x-scourer-2.png',
       '/shine-x-scourer-3.png'
       
@@ -485,6 +503,7 @@ const initialProducts: Product[] = [
     description: 'Soft and absorbent tissues for everyday cleaning needs.',
     image: '/tissue-1.jpg', // Path from public/
     images: [
+      '/tissue-1.jpg',
       '/tissue-2.png',
       '/tissue-3.png'
     ],
@@ -498,42 +517,219 @@ const initialProducts: Product[] = [
     description: 'Effective and humane trap for catching mice and rats.',
     image: '/rat-book-1.jpg', // Path from public/
     images: [
-      
+      '/rat-book-1.jpg',
       '/rat-book-2.png',
       '/rat-book-3.png'
     ],
     features: ['Non-toxic', 'Reusable', 'Easy to set']
   },
+ 
   // Craft Supplies - NEW CATEGORY PRODUCT
+ 
   {
-    id: '39', // New ID
-    name: 'Turk Glue',
-    category: 'Craft Supplies',
-    description: 'Strong adhesive glue for various craft projects.',
-    image: '/turk-glue-1.jpg', // Path from public/
+    id: '41',
+    name: 'Grace Bleach',
+    category: 'Cosmetics & Personal Care',
+    description: 'Gentle skin bleach that lightens facial hair and evens skin tone.',
+    image: '/grace-bleach-1.png',
     images: [
-      '/turk-glue-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/grace-bleach-1.png',
+      '/grace-bleach-2.png',
+      '/grace-bleach-3.png'
     ],
-    features: ['Strong bond', 'Fast drying', 'Versatile for crafts']
-  }
+    features: [
+      'Mild formula for sensitive skin',
+      'Instant glow',
+      'Easy to use'
+    ]
+  },
+  {
+    id: '42',
+    name: 'Veloria Skin Polish',
+    category: 'Cosmetics & Personal Care',
+    description: 'Exfoliating polish for removing dead skin and giving a smooth, radiant look.',
+    image: '/veloria-skin-polish-1.png',
+    images: [
+      '/veloria-skin-polish-1.png',
+      '/veloria-skin-polish-2.png',
+      '/veloria-skin-polish-3.png'
+    ],
+    features: [
+      'Deep exfoliation',
+      'Brightens skin',
+      'Suitable for all skin types'
+    ]
+  },
+  {
+    id: '43',
+    name: 'Veloria Remover',
+    category: 'Cosmetics & Personal Care',
+    description: 'Effective cream-based hair remover for smooth and soft skin.',
+    image: '/veloria-remover-1.png',
+    images: [
+      '/veloria-remover-1.png',
+      '/veloria-remover-2.png',
+      '/veloria-remover-3.png'
+    ],
+    features: [
+      'Quick and painless',
+      'Removes fine hair',
+      'Leaves skin moisturized'
+    ]
+  },
+  {
+    id: '44',
+    name: 'Veloria Bleach',
+    category: 'Cosmetics & Personal Care',
+    description: 'Herbal bleach that lightens dark facial hair and gives fairer skin.',
+    image: '/veloria-bleach-1.png',
+    images: [
+      '/veloria-bleach-1.png',
+      '/veloria-bleach-2.png',
+      '/veloria-bleach-3.png'
+    ],
+    features: [
+      'Herbal ingredients',
+      'Fast results',
+      'No skin irritation'
+    ]
+  },
+  {
+    id: '45',
+    name: 'Hit Lotion',
+    category: 'Cosmetics & Personal Care',
+    description: 'Anti-mosquito lotion with long-lasting protection and a fragrant, silky formula.',
+    image: '/hit-anti-mosquito-lotion-1.jpg',
+    images: [
+      '/hit-anti-mosquito-lotion-1.jpg',
+      '/hit-anti-mosquito-lotion-1.jpg',
+      '/hit-anti-mosquito-lotion-2.png'
+      
+    ],
+    features: [
+      'Soft and fragrant',
+      'Contains Vitamin E & Lavender',
+      'Long-lasting protection'
+    ]
+  },
+  {
+    id: '46',
+    name: 'Neat Remover',
+    category: 'Cosmetics & Personal Care',
+    description: 'Cream remover for unwanted body hair with a smooth, quick-action formula.',
+    image: '/neat-remover-1.png',
+    images: [
+      '/neat-remover-1.png',
+      '/neat-remover-2.png',
+      '/neat-remover-3.png'
+    ],
+    features: [
+      'Easy to apply',
+      'Works in minutes',
+      'Smooth skin after use'
+    ]
+  },
+  {
+  id: '47',
+  name: 'Turk Elfi',
+  category: 'Craft Supplies',
+  description: 'Premium quality elfi adhesive used for crafts, nails, or multipurpose cosmetic use.',
+  image: '/turk-elfi-1.png',
+  images: [
+    
+    '/turk-elfi-1.png',
+    '/turk-elfi-2.png'
+  ],
+  features: [
+    'Strong hold',
+    'Quick drying',
+    'Multipurpose use'
+  ]
+},
+{
+  id: '48',
+  name: 'Turk Glue 20 Gram',
+  category: 'Craft Supplies',
+  description: 'Compact 20g Turk glue suitable for precise application in arts, crafts, or beauty.',
+  image: '/turk-glue-20g-1.jpg',
+  images: [
+    '/turk-glue-20g-1.jpg',
+    '/turk-glue-20g-2.png'
+  ],
+  features: [
+    '20g tube',
+    'Easy to apply',
+    'Strong and fast bonding'
+  ]
+},
+{
+  id: '49',
+  name: 'Turk Glue 50 Gram',
+  category: 'Craft Supplies',
+  description: 'Larger 50g Turk glue ideal for extended use in crafting and professional projects.',
+  image: '/turk-glue-50g-1.png',
+  images: [
+    '/turk-glue-50g-1.png',
+    '/turk-glue-50g-2.png'
+  ],
+  features: [
+    '50g capacity',
+    'Ideal for large projects',
+    'Durable, strong hold'
+  ]
+},
+{
+  id: '50',
+  name: 'Belo Color (Brown)',
+  category: 'Cosmetics & Personal Care',
+  description: 'High-quality brown hair color for vibrant, rich, and long-lasting results.',
+  image: '/balo-color-brown-1.png',
+  images: [
+    '/balo-color-brown-1.png',
+    '/balo-color-brown-2.png',
+    '/balo-color-brown-3.png'
+  ],
+  features: [
+    'Rich brown tone',
+    'Long-lasting color',
+    'Natural ingredients'
+    
+  ]
+},
+{
+  id: '51',
+  name: 'Grace Color – Brown',
+  category: 'Cosmetics & Personal Care',
+  description: 'Premium brown hair coloring solution with excellent coverage and a natural finish.',
+  image: '/grace-color-brown-1.png',
+  images: [
+    '/grace-color-brown-1.png',
+    '/grace-color-brown-2.png',
+    '/grace-color-brown-3.png'
+  ],
+  features: [
+    'Rich brown shade',
+    'Excellent coverage',
+    'Hair-friendly formula'
+    
+  ]
+}
+
+
+
+
+   
+  // ...existing code...
 ];
 
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // TEMPORARY FOR DEVELOPMENT/DEBUGGING: Force clear localStorage for products
-    // This will ensure the initialProducts are always loaded on refresh.
-    // YOU MUST REMOVE THIS LINE BEFORE DEPLOYING TO PRODUCTION!
-    localStorage.removeItem('products_data'); // Always clears for dev
-
     const savedProducts = localStorage.getItem('products_data');
-    
     if (savedProducts) {
-      const parsedData = JSON.parse(savedData);
+      const parsedData = JSON.parse(savedProducts);
       setProducts(parsedData.products);
     } else {
       setProducts(initialProducts);

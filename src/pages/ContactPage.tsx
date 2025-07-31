@@ -174,9 +174,10 @@ Thank you.
                 <div>
                   <h3 className="text-lg font-semibold text-gray-800 mb-1">Address</h3>
                   <p className="text-gray-600">
-                    Al Buraq Industries<br />
-                    ShahAlam Market<br />
-                    Lahore, Pakistan
+                    Al buraq industries <br />
+                    floor no 1 Madina centre<br />
+                    near Japan centre<br />
+                    shahalam market lahore
                   </p>
                 </div>
               </div>

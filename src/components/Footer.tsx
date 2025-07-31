@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-yellow-400" />
-                <span className="text-gray-300">ShahAlam Market, Lahore, Pakistan</span>
+                <span className="text-gray-300">Al Buraq Industries, Floor No 1, Madina Centre, Near Japan Centre, Shahalam Market, Lahore</span>
               </div>
             </div>
           </div>
@@ -44,12 +44,7 @@ const Footer: React.FC = () => {
               <Link to="/products" className="block text-gray-300 hover:text-white transition-colors duration-200">
                 Products
               </Link>
-              <Link to="/contact" className="block text-gray-300 hover:text-white transition-colors duration-200">
-                Contact
-              </Link>
-              <Link to="/admin/login" className="block text-gray-400 hover:text-gray-300 transition-colors duration-200 text-sm">
-                Admin Access
-              </Link>
+              
             </div>
           </div>
 
