@@ -24,6 +24,7 @@ interface ProductContextType {
   deleteProduct: (id: string) => void;
   getProduct: (id: string) => Product | undefined;
   getProductsByCategory: (category: string) => Product[];
+  clearProductsData: () => void;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -49,8 +50,9 @@ const initialProducts: Product[] = [
     name: 'Grace Color',
     category: 'Cosmetics & Personal Care',
     description: 'Premium hair coloring solution with excellent coverage.',
-    image: '/grace-color-2.png', // Path from public/
+    image: '/grace-color-0.png', // Path from public/
     images: [
+      '/grace-color-0.png',
       '/grace-color-2.png',
       '/grace-color-1.jpg',
       '/grace-color-3.png'
@@ -599,9 +601,9 @@ const initialProducts: Product[] = [
     name: 'Hit Lotion',
     category: 'Cosmetics & Personal Care',
     description: 'Anti-mosquito lotion with long-lasting protection and a fragrant, silky formula.',
-    image: '/hit-anti-mosquito-lotion-1.jpg',
+    image: '/hit-lotion-0.png',
     images: [
-      '/hit-anti-mosquito-lotion-1.jpg',
+      '/hit-lotion-0.png',
       '/hit-anti-mosquito-lotion-1.jpg',
       '/hit-anti-mosquito-lotion-2.png'
       
@@ -696,6 +698,25 @@ const initialProducts: Product[] = [
     
   ]
 },
+// ...existing code...
+  {
+    id: '52',
+    name: 'Turk Razor',
+    category: 'Razors',
+    description: 'High-quality razor for smooth and precise shaving experience.',
+    image: '/turk-razor-1.png',
+    images: [
+      '/turk-razor-1.png',
+      '/turk-razor-2.png',
+      '/turk-razor-3.png'
+    ],
+    features: [
+      'Sharp and durable blade',
+      'Comfortable grip',
+      'Suitable for all skin types'
+    ]
+  },
+// ...existing code...
 {
   id: '51',
   name: 'Grace Color – Brown',
@@ -769,6 +790,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     saveProducts(newProducts);
   };
 
+  const clearProductsData = () => {
+  localStorage.removeItem('products_data');
+  setProducts(initialProducts);
+};
+
   const updateProduct = (id: string, updatedProduct: Omit<Product, 'id'>) => {
     const newProducts = products.map(product =>
       product.id === id ? { ...updatedProduct, id, images: updatedProduct.images || [updatedProduct.image] } : product
@@ -798,7 +824,8 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       updateProduct,
       deleteProduct,
       getProduct,
-      getProductsByCategory
+      getProductsByCategory,
+      clearProductsData
     }}>
       {children}
     </ProductContext.Provider>
