@@ -44,6 +44,24 @@ const initialProducts: Product[] = [
     ],
     features: ['Long-lasting color', 'Natural ingredients', 'Easy application']
   },
+   {
+    id: '50',
+    name: 'Belo Color (Brown)',
+    category: 'Cosmetics & Personal Care',
+    description: 'High-quality brown hair color for vibrant, rich, and long-lasting results.',
+    image: '/belo-color-brown-0.png',
+    images: [
+      '/belo-color-brown-0.png',
+      '/balo-color-brown-1.png',
+      '/balo-color-brown-2.png',
+      '/balo-color-brown-3.png'
+    ],
+    features: [
+      'Rich brown tone',
+      'Long-lasting color',
+      'Natural ingredients'
+    ]
+  },
   {
     id: '2',
     name: 'Grace Color',
@@ -57,6 +75,23 @@ const initialProducts: Product[] = [
       '/grace-color-3.png'
     ],
     features: ['Premium quality', 'Excellent coverage', 'Hair-friendly formula']
+  },
+   {
+    id: '51',
+    name: 'Grace Color – Brown',
+    category: 'Cosmetics & Personal Care',
+    description: 'Premium brown hair coloring solution with excellent coverage and a natural finish.',
+    image: '/grace-color-brown-1.png',
+    images: [
+      '/grace-color-brown-1.png',
+      '/grace-color-brown-2.png',
+      '/grace-color-brown-3.png'
+    ],
+    features: [
+      'Rich brown shade',
+      'Excellent coverage',
+      'Hair-friendly formula'
+    ]
   },
   {
     id: '3',
@@ -173,41 +208,28 @@ const initialProducts: Product[] = [
       'Smooth skin after use'
     ]
   },
+ 
   {
-    id: '50',
-    name: 'Belo Color (Brown)',
+    id: '53',
+    name: 'Neat Bleach',
     category: 'Cosmetics & Personal Care',
-    description: 'High-quality brown hair color for vibrant, rich, and long-lasting results.',
-    image: '/belo-color-brown-0.png',
+    description: 'Gentle bleach for lightening facial hair and brightening skin tone.',
+    image: '/neat-bleach-1.png',
     images: [
-      '/belo-color-brown-0.png',
-      '/balo-color-brown-1.png',
-      '/balo-color-brown-2.png',
-      '/balo-color-brown-3.png'
+      '/neat-bleach-1.png',
+      '/neat-bleach-2.png',
+      '/neat-bleach-3.png',
+      '/neat-bleach-4.png'
     ],
     features: [
-      'Rich brown tone',
-      'Long-lasting color',
-      'Natural ingredients'
+      'Gentle on skin',
+      'Brightens complexion',
+      'Easy application'
     ]
   },
-  {
-    id: '51',
-    name: 'Grace Color – Brown',
-    category: 'Cosmetics & Personal Care',
-    description: 'Premium brown hair coloring solution with excellent coverage and a natural finish.',
-    image: '/grace-color-brown-1.png',
-    images: [
-      '/grace-color-brown-1.png',
-      '/grace-color-brown-2.png',
-      '/grace-color-brown-3.png'
-    ],
-    features: [
-      'Rich brown shade',
-      'Excellent coverage',
-      'Hair-friendly formula'
-    ]
-  },
+
+ 
+ 
 
   // Razors
   {
