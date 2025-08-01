@@ -39,8 +39,8 @@ const initialProducts: Product[] = [
     image: '/balo-color-1.jpg',
     images: [
       '/balo-color-1.jpg',
-      '/balo-color-2.png',
-      '/balo-color-3.png'
+      '/balo-color-3.png',
+      '/balo-color-2.png'
     ],
     features: ['Long-lasting color', 'Natural ingredients', 'Easy application']
   },
@@ -234,7 +234,7 @@ const initialProducts: Product[] = [
   // Razors
   {
     id: '4',
-    name: 'Sharp Razor',
+    name: 'Sharp Ultra Razor',
     category: 'Razors',
     description: 'Professional-grade razor for precise and comfortable shaving.',
     image: '/sharp-razor-1.jpg',
@@ -275,11 +275,47 @@ const initialProducts: Product[] = [
       'Suitable for all skin types'
     ]
   },
+    {
+    id: '54',
+    name: 'Sharp Hygiene Razor',
+    category: 'Razors',
+    description: 'Hygienic razor designed for safe and comfortable shaving.',
+    image: '/sharp-hygiene-razor-1.png',
+    images: [
+      '/sharp-hygiene-razor-1.png',
+      '/sharp-hygiene-razor-2.png',
+      '/sharp-hygiene-razor-3.png',
+      '/sharp-hygiene-razor-4.png'
+       
+    ],
+    features: [
+      'Hygienic design',
+      'Safe for sensitive skin',
+      'Comfortable grip'
+    ]
+  },
+  {
+    id: '55',
+    name: 'Sharp Paki Razor',
+    category: 'Razors',
+    description: 'Traditional Paki razor for precise and smooth shaving.',
+    image: '/sharp-paki-razor-1.png',
+    images: [
+      '/sharp-paki-razor-1.png',
+      '/sharp-paki-razor-2.png',
+      '/sharp-paki-razor-3.png'
+    ],
+    features: [
+      'Traditional style',
+      'Precise shaving',
+      'Durable blade'
+    ]
+  },
 
   // Toothbrush
   {
     id: '6',
-    name: 'Mister Clean Toothbrush',
+    name: 'Mr Clean Toothbrush',
     category: 'Toothbrush',
     description: 'High-quality toothbrush for optimal oral hygiene.',
     image: '/mister-clean-toothbrush-1.jpg',
@@ -340,15 +376,13 @@ const initialProducts: Product[] = [
     description: 'Natural herbal supplement for health and wellness.',
     image: '/natural-isp-1.jpg',
     images: [
-      '/natural-isp-1.jpg',
-      '/natural-isp-1.jpg',
-      '/natural-isp-2.jpg'
+      '/natural-isp-1.jpg'
     ],
     features: ['Natural ingredients', 'Health benefits', 'Traditional formula']
   },
   {
     id: '10',
-    name: 'Jor Joshanda',
+    name: 'Natural Joshanda',
     category: 'Natural / Herbal Products',
     description: 'Traditional herbal remedy for respiratory wellness.',
     image: '/jor-joshanda-1.jpg',
@@ -359,6 +393,21 @@ const initialProducts: Product[] = [
     ],
     features: ['Traditional remedy', 'Natural herbs', 'Respiratory support']
   },
+    {
+    id: '57',
+    name: 'Punjabi Ispagol',
+    category: 'Natural / Herbal Products',
+    description: 'High-quality ispagol (psyllium husk) for digestive health.',
+    image: '/natural-isp-2.jpg',
+    images: [
+      '/natural-isp-2.jpg'
+    ],
+    features: [
+      'Supports digestion',
+      'Natural fiber',
+      'Easy to use'
+    ]
+  },
 
   // Adhesive Tape
   {
@@ -366,9 +415,9 @@ const initialProducts: Product[] = [
     name: 'Lemon Adhesive Tape',
     category: 'Adhesive Tape',
     description: 'High-quality adhesive tape for various applications.',
-    image: '/lemon-adhesive-tape-1.jpg',
+    image: '/lemn-adhesive-tape-1.jpg',
     images: [
-      '/lemon-adhesive-tape-1.jpg',
+      '/lemn-adhesive-tape-1.jpg',
       '/lemon-adhesive-tape-2.jpg',
       DefaultProductPlaceholder
     ],
@@ -496,16 +545,29 @@ const initialProducts: Product[] = [
   },
   {
     id: '24',
-    name: 'Color Pencil',
+    name: 'Sonex Color Pencil',
     category: 'Stationery',
     description: 'Vibrant color pencils for creative artwork.',
     image: '/color-pencil-1.png',
     images: [
       '/color-pencil-1.png',
-      '/color-pencil-2.png',
-      '/color-pencil-3.png'
+      '/sonex-2.png',
+      '/sonex-3.png'
     ],
     features: ['Bright colors', 'Smooth blending', 'Non-toxic']
+  },
+  {
+    id: '56',
+    name: 'Good Colored Pencil',
+    category: 'Stationery',
+    description: 'Color pencils for creative artwork, perfect for artists and students.',
+    image: '/color-pencil-2.png',
+    images: [
+      '/color-pencil-2.png',
+      '/color-pencil-3.png',
+      '/good-3.png'
+    ],
+    features: ['Good Pigmentation', 'Smooth blending', 'Non-toxic']
   },
 
   // Stationery Tapes
@@ -645,14 +707,27 @@ const initialProducts: Product[] = [
   // Cleaning Products
   {
     id: '35',
-    name: 'Grace Bright',
+    name: 'Grace Bright (Green)',
     category: 'Cleaning Products',
     description: 'Powerful cleaning solution for sparkling surfaces.',
     image: '/grace-bright-1.jpg',
     images: [
       '/grace-bright-1.jpg',
-      '/grace-bright-2.png',
-      '/grace-bright-3.png'
+      '/grace-bright-2.png'
+    ],
+    features: ['Streak-free clean', 'Fast-acting', 'Fresh scent']
+  },
+   {
+    id: '80',
+    name: 'Grace Bright (Black)',
+    category: 'Cleaning Products',
+    description: 'Powerful cleaning solution for sparkling surfaces.',
+    image: '/grace-bright-3.png',
+    images: [
+      '/grace-bright-3.png',
+      '/grace-bright-4.png'
+      
+      
     ],
     features: ['Streak-free clean', 'Fast-acting', 'Fresh scent']
   },
@@ -664,8 +739,35 @@ const initialProducts: Product[] = [
     image: '/shine-x-scourer-1.jpg',
     images: [
       '/shine-x-scourer-1.jpg',
+      '/shine-x-scourer-4.png',
+      '/shine-x-scourer-5.png'
+
+      
+    ],
+    features: ['Removes tough stains', 'Durable', 'Easy to grip']
+  },
+  {
+   id: '58',
+    name: 'Shine X Scourer',
+    category: 'Cleaning Products',
+    description: 'Heavy-duty scourer for tough grime and stains.',
+    image: '/shine-x-scourer-2.png',
+    images: [
       '/shine-x-scourer-2.png',
-      '/shine-x-scourer-3.png'
+      '/shine-x-scourer-6.png',
+      '/shine-x-scourer-7.png'
+    ],
+    features: ['Removes tough stains', 'Durable', 'Easy to grip']
+  },
+  {
+   id: '59',
+    name: 'Shine X Scourer',
+    category: 'Cleaning Products',
+    description: 'Heavy-duty scourer for tough grime and stains.',
+    image: '/shine-x-scourer-3.png',
+    images: [
+      '/shine-x-scourer-3.png',
+      '/shine-x-scourer-8.png'
     ],
     features: ['Removes tough stains', 'Durable', 'Easy to grip']
   },

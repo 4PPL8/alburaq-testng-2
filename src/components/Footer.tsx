@@ -62,13 +62,28 @@ const Footer: React.FC = () => {
                 Customer Support
               </a>
               <div className="flex space-x-4 mt-4">
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200">
+                <a
+                  href="https://wa.me/923164623026"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-white transition-colors duration-200"
+                >
                   WhatsApp
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200">
+                <a
+                  href="https://www.facebook.com/profile.php?id=61559106203161"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-white transition-colors duration-200"
+                >
                   Facebook
                 </a>
-                <a href="#" className="text-gray-300 hover:text-white transition-colors duration-200">
+                <a
+                  href="https://www.instagram.com/alburaqindustries"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-300 hover:text-white transition-colors duration-200"
+                >
                   Instagram
                 </a>
               </div>
