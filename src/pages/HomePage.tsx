@@ -25,6 +25,7 @@ const HomePage: React.FC = () => {
     ...getProductsByCategory('Natural / Herbal Products', 1),
     ...getProductsByCategory('Toothbrush', 1),
     ...getProductsByCategory('Adhesive Tape', 1),
+    ...getProductsByCategory('PVC Tape', 1),
     ...getProductsByCategory('Craft Supplies', 1),
     ...getProductsByCategory('Cleaning Products', 1),
     ...getProductsByCategory('Baby Care', 1),
