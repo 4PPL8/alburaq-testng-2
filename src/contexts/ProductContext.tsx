@@ -446,10 +446,10 @@ const initialProducts: Product[] = [
     name: 'Hit Tape',
     category: 'PVC Tape',
     description: 'Durable PVC electrical insulation tape.',
-    image: '/hit-tape-1.jpg',
+    image: '/hit-tape-2.png',
     images: [
-      '/hit-tape-1.jpg',
       '/hit-tape-2.png',
+      '/hit-tape-1.jpg',
       '/hit-tape-3.png'
     ],
     features: ['Electrical insulation', 'Strong adhesion', 'Weather resistant']

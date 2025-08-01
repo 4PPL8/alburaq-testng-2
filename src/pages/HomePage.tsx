@@ -13,26 +13,26 @@ import MainLogoImage from '/MAIN.png'; // Path assumes MAIN.png is in the projec
 
 const HomePage: React.FC = () => {
   const { products, categories, isLoading } = useProducts();
-  
-  // Get the featured products as before (first 6 products)
-  const originalFeaturedProducts = products.slice(0, 6);
 
-  // Prepare products for the horizontal marquee.
-  // They will now use the images defined in ProductContext.tsx (which are direct paths from project root).
-  const featuredProductsForMarquee = originalFeaturedProducts.map(product => ({
-    ...product,
-    // The 'image' property will come directly from the product object in ProductContext.
-    // No override with placeholders here.
-  }));
-  
-  // Prepare products for the static "Our Top Picks" section.
-  // They will also use the images defined in ProductContext.tsx.
-  const featuredProductsForTopPicks = originalFeaturedProducts.map(product => ({
-    ...product,
-    // The 'image' property will come directly from the product object in ProductContext.
-    // No override with placeholders here.
-  }));
+  // Helper function to get N products from a category
+  const getProductsByCategory = (category: string, count: number) =>
+    products.filter(p => p.category === category).slice(0, count);
 
+  // Select featured products by category
+  const featuredProductsForTopPicks = [
+    ...getProductsByCategory('Cosmetics & Personal Care', 1),
+    ...getProductsByCategory('Razors', 1),
+    ...getProductsByCategory('Natural / Herbal Products', 1),
+    ...getProductsByCategory('Toothbrush', 1),
+    ...getProductsByCategory('Adhesive Tape', 1),
+    ...getProductsByCategory('Craft Supplies', 1),
+    ...getProductsByCategory('Cleaning Products', 1),
+    ...getProductsByCategory('Baby Care', 1),
+    ...getProductsByCategory('Pest Control', 1),
+    ...getProductsByCategory('Stationery', 1),
+  ];
+
+  const featuredProductsForMarquee = featuredProductsForTopPicks;
 
   // REMOVED: The 'categoryImages' object is no longer needed as categories will display solid color circles.
 
