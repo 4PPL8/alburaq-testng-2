@@ -12,7 +12,7 @@ const AboutUsPage: React.FC = () => {
           <div className="md:w-1/2 relative">
             {/* Placeholder image for the CEO */}
             <img
-              src="/CEO.png" // Placeholder for CEO image
+              src="/CEO.jpg" // Placeholder for CEO image
               alt="CEO"
               className="w-full h-full object-cover"
             />
