@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Filter, Grid, List, Search } from 'lucide-react'; // Added Search icon
 import { useProducts } from '../contexts/ProductContext';
 import ProductCard from '../components/ProductCard';
+import ImageSkeleton from '../components/ImageSkeleton';
 
 const ProductsPage: React.FC = () => {
   const { category } = useParams();
@@ -80,10 +81,10 @@ const ProductsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Loading Products...</h2>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="text-center bg-white p-8 rounded-xl shadow-md border border-gray-200 max-w-md w-full animate-fadeIn">
+          <div className="animate-spin rounded-full h-14 w-14 border-b-2 border-t-2 border-primary-500 mx-auto mb-6"></div>
+          <h2 className="text-xl font-medium text-gray-800 mb-3">Loading Products...</h2>
           <p className="text-gray-600">Please wait while we load our product catalog</p>
         </div>
       </div>
@@ -91,39 +92,41 @@ const ProductsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-8 animate-fadeIn">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+        <div className="mb-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4 pb-3 border-b border-gray-200">
             {selectedCategory === 'All' ? 'All Products' : selectedCategory}
           </h1>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <p className="text-gray-600">
+            <p className="text-gray-700 font-medium bg-primary-50 px-4 py-2 rounded-full shadow-sm inline-block border border-primary-100">
               {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
             </p>
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 md:hidden"
+                className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-primary-50 transition-all duration-300 shadow-sm hover:shadow-md md:hidden focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
               >
-                <Filter className="h-4 w-4" />
-                <span>Filters</span>
+                <Filter className="h-4 w-4 text-primary-500" />
+                <span className="font-medium">Filters</span>
               </button>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 bg-white p-1 rounded-lg shadow-sm border border-gray-200">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded-lg transition-colors duration-200 ${
-                    viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'bg-white text-gray-600 hover:bg-gray-50'
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    viewMode === 'grid' ? 'bg-primary-100 text-primary-600 shadow-sm' : 'bg-white text-gray-600 hover:bg-primary-50'
                   }`}
+                  aria-label="Grid view"
                 >
                   <Grid className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-lg transition-colors duration-200 ${
-                    viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'bg-white text-gray-600 hover:bg-gray-50'
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    viewMode === 'list' ? 'bg-primary-100 text-primary-600 shadow-sm' : 'bg-white text-gray-600 hover:bg-primary-50'
                   }`}
+                  aria-label="List view"
                 >
                   <List className="h-4 w-4" />
                 </button>
@@ -132,7 +135,7 @@ const ProductsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Search Bar Section - NEW */}
+        {/* Search Bar Section */}
         <div className="mb-8 relative">
           <div className="relative flex items-center">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -145,16 +148,17 @@ const ProductsPage: React.FC = () => {
               onChange={handleSearchChange}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 shadow-sm"
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 shadow-sm hover:shadow-md bg-white"
+              aria-label="Search products"
             />
           </div>
           {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
+            <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto animate-fadeIn">
               {suggestions.map((suggestion, index) => (
                 <button
                   key={index}
                   onClick={() => handleSelectSuggestion(suggestion)}
-                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150"
+                  className="w-full text-left px-4 py-2 text-gray-800 hover:bg-primary-50 hover:text-primary-600 transition-all duration-150 border-b border-gray-100 last:border-b-0"
                 >
                   {suggestion}
                 </button>
@@ -166,15 +170,15 @@ const ProductsPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <div className={`lg:w-1/4 ${showFilters ? 'block' : 'hidden'} lg:block`}>
-            <div className="bg-white p-6 rounded-xl shadow-md sticky top-24">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Categories</h3>
+            <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 sticky top-24">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">Categories</h3>
               <div className="space-y-2">
                 <button
                   onClick={() => handleCategoryChange('All')}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 ${
+                  className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 ${
                     selectedCategory === 'All'
-                      ? 'bg-blue-100 text-blue-600 font-medium'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-primary-100 text-primary-600 font-medium shadow-sm border border-primary-200'
+                      : 'text-gray-700 hover:bg-gray-50 border border-transparent hover:border-gray-200'
                   }`}
                 >
                   All Products ({products.length})
@@ -185,10 +189,10 @@ const ProductsPage: React.FC = () => {
                     <button
                       key={cat}
                       onClick={() => handleCategoryChange(cat)}
-                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors duration-200 ${
+                      className={`w-full text-left px-3 py-2 rounded-lg transition-all duration-300 ${
                         selectedCategory === cat
-                          ? 'bg-blue-100 text-blue-600 font-medium'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-primary-100 text-primary-600 font-medium shadow-sm border border-primary-200'
+                          : 'text-gray-700 hover:bg-gray-50 border border-transparent hover:border-gray-200'
                       }`}
                     >
                       {cat} ({count})
@@ -202,18 +206,18 @@ const ProductsPage: React.FC = () => {
           {/* Products Grid/List */}
           <div className="lg:w-3/4">
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-4">
-                  <Grid className="h-16 w-16 mx-auto" />
+              <div className="text-center py-12 bg-white rounded-xl shadow-md border border-gray-200 p-8">
+                <div className="bg-gray-50 h-20 w-20 mx-auto rounded-full flex items-center justify-center mb-6 border border-gray-200 shadow-sm">
+                  <Grid className="h-10 w-10 text-primary-400" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-600 mb-2">No products found</h3>
-                <p className="text-gray-500 mb-4">
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">No products found</h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
                   No products match your current selection. Try selecting a different category or refining your search.
                 </p>
                 <Link
                   to="/products"
-                  onClick={() => { setSelectedCategory('All'); setSearchTerm(''); }} // Reset both
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  onClick={() => { setSelectedCategory('All'); setSearchTerm(''); }}
+                  className="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
                 >
                   View All Products
                 </Link>
@@ -227,32 +231,32 @@ const ProductsPage: React.FC = () => {
                 {filteredProducts.map((product) => (
                   <div key={product.id}>
                     {viewMode === 'list' ? (
-                      <Link to={`/product/${product.id}`} className="group">
-                        <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6 flex items-center space-x-6">
-                          <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
-                            <img
-                              src={product.image || 'https://placehold.co/96x96/E0E0E0/000000?text=Product'} // Use product.image or generic placeholder
+                      <Link to={`/product/${product.id}`} className="group block">
+                        <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col sm:flex-row items-center sm:space-x-6 border border-gray-200 hover:border-primary-200">
+                          <div className="w-32 h-32 sm:w-24 sm:h-24 rounded-lg overflow-hidden flex-shrink-0 mb-4 sm:mb-0 border border-gray-100">
+                            <ImageSkeleton
+                              src={product.image || ''}
                               alt={product.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              onError={(e) => { // Add onError for robustness
-                                (e.target as HTMLImageElement).src = 'https://placehold.co/96x96/E0E0E0/000000?text=Error';
-                              }}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                             />
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-2">
-                              <h3 className="text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition-colors duration-200">
+                          <div className="flex-1 text-center sm:text-left">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
+                              <h3 className="text-lg font-semibold text-gray-800 group-hover:text-primary-600 transition-colors duration-300">
                                 {product.name}
                               </h3>
-                              <span className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-100 rounded-full">
+                              <span className="px-3 py-1 text-xs font-medium text-primary-600 bg-primary-100 rounded-full inline-block shadow-sm border border-primary-200">
                                 {product.category}
                               </span>
                             </div>
                             <p className="text-gray-600 mb-4 line-clamp-2">
                               {product.description}
                             </p>
-                            <div className="text-blue-600 text-sm font-medium">
-                              View Details →
+                            <div className="text-primary-600 text-sm font-medium group-hover:translate-x-1 transition-transform duration-300 inline-flex items-center">
+                              View Details
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
                             </div>
                           </div>
                         </div>

@@ -24,65 +24,62 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50">
+    <nav className="bg-white shadow-lg sticky top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              {/* Replaced Lucide React Package icon with an <img> tag for your custom logo */}
-              {/* The surrounding div keeps the circular shape and centering */}
-              <div className="w-10 h-10 rounded-full flex items-center justify-center mr-2 overflow-hidden">
+            <Link to="/" className="flex items-center space-x-2 group">
+              <div className="w-12 h-12 rounded-full flex items-center justify-center mr-2 overflow-hidden bg-gradient-to-br from-white-50 to-white-100 p-1 shadow-sm group-hover:shadow-md transition-all duration-300">
                 <img 
-                  src={SNTLogo} // Use your imported SNTLogo here
+                  src={SNTLogo}
                   alt="Al Buraq Industries Logo" 
-                  className="w-full h-full object-contain" // object-contain ensures the image scales within its container
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" 
                 />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-yellow-500 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-yellow-500 bg-clip-text text-transparent group-hover:from-primary-700 group-hover:to-yellow-600 transition-all duration-300">
                 Al Buraq Industries
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
             <Link
               to="/"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                 isActive('/') 
-                  ? 'text-blue-600 bg-blue-50' 
-                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                  ? 'text-primary-600 bg-primary-50 shadow-sm' 
+                  : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50 hover:shadow-sm'
               }`}
             >
               Home
             </Link>
             <Link
               to="/products"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                 isActive('/products') 
-                  ? 'text-blue-600 bg-blue-50' 
-                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                  ? 'text-primary-600 bg-primary-50 shadow-sm' 
+                  : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50 hover:shadow-sm'
               }`}
             >
               Products
             </Link>
-            {/* NEW: About Us Link for Desktop Navigation */}
             <Link
               to="/about"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                 isActive('/about') 
-                  ? 'text-blue-600 bg-blue-50' 
-                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                  ? 'text-primary-600 bg-primary-50 shadow-sm' 
+                  : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50 hover:shadow-sm'
               }`}
             >
               About Us
             </Link>
             <Link
               to="/contact"
-              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                 isActive('/contact') 
-                  ? 'text-blue-600 bg-blue-50' 
-                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                  ? 'text-primary-600 bg-primary-50 shadow-sm' 
+                  : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50 hover:shadow-sm'
               }`}
             >
               Contact
@@ -93,20 +90,20 @@ const Navbar: React.FC = () => {
               <>
                 <Link
                   to="/login"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                     isActive('/login') 
-                      ? 'text-blue-600 bg-blue-50' 
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                      ? 'text-primary-600 bg-primary-50 shadow-sm' 
+                      : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50 hover:shadow-sm'
                   }`}
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                     isActive('/register') 
-                      ? 'text-yellow-600 bg-yellow-50' 
-                      : 'text-gray-700 hover:text-yellow-600 hover:bg-yellow-50'
+                      ? 'bg-yellow-500 text-white shadow-md' 
+                      : 'bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-md'
                   }`}
                 >
                   Sign Up
@@ -117,13 +114,13 @@ const Navbar: React.FC = () => {
             {/* User Session */}
             {isUserAuthenticated && (
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <User className="h-4 w-4 text-gray-600" />
-                  <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+                <div className="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-full">
+                  <User className="h-4 w-4 text-primary-600" />
+                  <span className="text-sm font-medium text-gray-700">Welcome, {user?.name}</span>
                 </div>
                 <button
                   onClick={handleUserLogout}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-all duration-300 hover:shadow-sm"
                   title="Logout"
                 >
                   <LogOut className="h-4 w-4" />
@@ -136,19 +133,20 @@ const Navbar: React.FC = () => {
               <>
                 <Link
                   to="/admin/dashboard"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                     isActive('/admin/dashboard') || isActive('/admin')
-                      ? 'text-yellow-600 bg-yellow-50' 
-                      : 'text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50'
+                      ? 'bg-yellow-500 text-white shadow-md' 
+                      : 'bg-yellow-400 text-white hover:bg-yellow-500 hover:shadow-md'
                   }`}
                 >
                   Admin Panel
                 </Link>
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">Welcome, {adminInfo?.name}</span>
+                <div className="flex items-center space-x-2 bg-gray-50 px-3 py-1.5 rounded-full">
+                  <User className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm font-medium text-gray-700">Welcome, {adminInfo?.name}</span>
                   <button
                     onClick={handleAdminLogout}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors duration-200"
+                    className="p-1 text-red-600 hover:bg-red-50 rounded-full transition-all duration-300 hover:shadow-sm ml-1"
                     title="Logout"
                   >
                     <LogOut className="h-4 w-4" />
@@ -162,7 +160,8 @@ const Navbar: React.FC = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
+              className="p-2 rounded-md text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
+              aria-label="Toggle menu"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -172,8 +171,8 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t shadow-lg">
-          <div className="px-2 pt-2 pb-3 space-y-1">
+        <div className="md:hidden bg-white border-t shadow-lg animate-fadeIn">
+          <div className="px-2 pt-2 pb-3 space-y-1 max-h-[80vh] overflow-y-auto">
             <Link
               to="/"
               onClick={() => setIsOpen(false)}

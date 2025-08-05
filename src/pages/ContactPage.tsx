@@ -239,89 +239,115 @@ Thank you.
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-gray-800 mb-6">Send us a Message</h3>
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-primary-100 transform transition-all duration-300 hover:shadow-2xl hover:border-primary-300 animate-fadeIn">
+            <h3 className="text-3xl font-bold text-gray-800 mb-6 relative pb-3 inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-1 after:w-full after:bg-primary-500 after:rounded-full">Send us a Message</h3>
+            <form onSubmit={handleSubmit} className="space-y-6 animate-fadeIn">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="group">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2 group-focus-within:text-primary-600 transition-colors duration-200">
                     Full Name <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    id="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                    placeholder="Your full name"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      id="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-3 focus:ring-primary-200 focus:border-primary-400 transition-all duration-300 shadow-sm hover:shadow-md outline-none"
+                      placeholder="Your full name"
+                      required
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="group">
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2 group-focus-within:text-primary-600 transition-colors duration-200">
                     Phone Number (Optional)
                   </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                    placeholder="Your phone number"
-                  />
+                  <div className="relative">
+                    <input
+                      type="tel"
+                      id="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-3 focus:ring-primary-200 focus:border-primary-400 transition-all duration-300 shadow-sm hover:shadow-md outline-none"
+                      placeholder="Your phone number"
+                    />
+                  </div>
                 </div>
               </div>
               
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="group">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2 group-focus-within:text-primary-600 transition-colors duration-200">
                   Email Address <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                  placeholder="your.email@example.com"
-                  required
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400 group-focus-within:text-primary-500 transition-colors duration-200" />
+                  </div>
+                  <input
+                    type="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-3 focus:ring-primary-200 focus:border-primary-400 transition-all duration-300 shadow-sm hover:shadow-md outline-none"
+                    placeholder="your.email@example.com"
+                    required
+                  />
+                </div>
               </div>
 
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="group">
+                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2 group-focus-within:text-primary-600 transition-colors duration-200">
                   Subject <span className="text-red-500">*</span>
                 </label>
-                <select
-                  id="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                  required
-                >
+                <div className="relative">
+                  <select
+                    id="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-3 focus:ring-primary-200 focus:border-primary-400 transition-all duration-300 shadow-sm hover:shadow-md appearance-none bg-white outline-none"
+                    required
+                  >
                   <option value="">Select a subject</option>
-                  <option value="product-order">Product Order</option> {/* MOVED: Product Order option to top */}
+                  <option value="product-order">Product Order</option>
                   <option value="product-inquiry">Product Inquiry</option>
                   <option value="bulk-order">Bulk Order</option>
                   <option value="order-information">Order Information</option>
                   <option value="general-question">General Question</option>
                   <option value="other">Other</option>
                 </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary-500">
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
               {/* Conditional Product Selection Section */}
               {showProductSelection && (
-                <div className="space-y-4 border p-4 rounded-lg bg-gray-50">
-                  <h4 className="text-lg font-semibold text-gray-800">Select Products for Order:</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-2">
+                <div className="space-y-4 border border-primary-300 p-5 rounded-lg bg-primary-50 shadow-inner transition-all duration-300 hover:shadow-md">
+                  <h4 className="text-lg font-semibold text-gray-800 flex items-center border-b border-primary-200 pb-2">
+                    <CheckSquare className="h-5 w-5 text-primary-600 mr-2" />
+                    Select Products for Order:
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-primary-50">
                     {products.map(product => (
-                      <label key={product.id} className="flex items-center space-x-2 text-gray-700 cursor-pointer hover:bg-gray-100 p-2 rounded-md transition-colors duration-150">
-                        <input
-                          type="checkbox"
-                          checked={selectedProducts.includes(product.id)}
-                          onChange={() => handleProductSelection(product.id)}
-                          className="form-checkbox h-5 w-5 text-blue-600 rounded focus:ring-blue-500" // ADDED: h-5 w-5 for consistent size
-                        />
-                        <span>{product.name} ({product.category})</span>
+                      <label key={product.id} className="flex items-center space-x-2 text-gray-700 cursor-pointer hover:bg-white hover:shadow p-3 rounded-md transition-all duration-200 border border-transparent hover:border-primary-300">
+                        <div className="relative flex items-center justify-center">
+                          {selectedProducts.includes(product.id) ? (
+                            <CheckSquare className="h-5 w-5 text-primary-600" />
+                          ) : (
+                            <Square className="h-5 w-5 text-gray-400 hover:text-primary-400 transition-colors duration-200" />
+                          )}
+                          <input
+                            type="checkbox"
+                            checked={selectedProducts.includes(product.id)}
+                            onChange={() => handleProductSelection(product.id)}
+                            className="absolute opacity-0 w-5 h-5 cursor-pointer"
+                          />
+                        </div>
+                        <span className="font-medium">{product.name} <span className="text-sm text-gray-500">({product.category})</span></span>
                       </label>
                     ))}
                     {products.length === 0 && (
@@ -331,30 +357,32 @@ Thank you.
                 </div>
               )}
 
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="group">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2 group-focus-within:text-primary-600 transition-colors duration-200">
                   Message <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  value={formData.message}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
-                  placeholder="Please provide details about your inquiry..."
-                  required
-                ></textarea>
+                <div className="relative">
+                  <textarea
+                    id="message"
+                    rows={4}
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-3 focus:ring-primary-200 focus:border-primary-400 transition-all duration-300 shadow-sm hover:shadow-md resize-y min-h-[140px] outline-none"
+                    placeholder="Please provide details about your inquiry..."
+                    required
+                  ></textarea>
+                </div>
               </div>
 
-              {/* New Contact Method Selection */}
-              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center">
+              {/* Contact Method Selection */}
+              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center mt-8">
                 <button
                   type="button"
                   onClick={() => setSelectedMethod('email')}
-                  className={`flex-1 flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                  className={`flex-1 flex items-center justify-center px-6 py-4 rounded-lg font-semibold transition-all duration-300 ${
                     selectedMethod === 'email'
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      ? 'bg-primary-600 text-white shadow-lg ring-2 ring-primary-300 transform scale-105 hover:bg-primary-700'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-primary-600 border border-gray-200 hover:border-primary-300'
                   }`}
                 >
                   <Mail className="w-5 h-5 mr-2" /> Send via Email
@@ -362,10 +390,10 @@ Thank you.
                 <button
                   type="button"
                   onClick={() => setSelectedMethod('whatsapp')}
-                  className={`flex-1 flex items-center justify-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+                  className={`flex-1 flex items-center justify-center px-6 py-4 rounded-lg font-semibold transition-all duration-300 ${
                     selectedMethod === 'whatsapp'
-                      ? 'bg-green-500 text-white shadow-md'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300 transform scale-105 hover:bg-green-600'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-green-600 border border-gray-200 hover:border-green-300'
                   }`}
                 >
                   <MessageCircle className="w-5 h-5 mr-2" /> Send via WhatsApp
@@ -375,9 +403,13 @@ Thank you.
               {/* Main Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
+                className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold py-4 rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mt-6 group relative overflow-hidden"
               >
-                <Send className="w-5 h-5 mr-2 inline-block" /> {selectedMethod === 'email' ? 'Open Email Client' : 'Open WhatsApp Chat'}
+                <span className="absolute inset-0 w-full h-full transition-all duration-300 ease-out transform translate-x-0 -skew-x-12 bg-primary-400 group-hover:translate-x-full group-hover:skew-x-12 opacity-40"></span>
+                <span className="absolute inset-0 w-full h-full transition-all duration-300 ease-out transform skew-x-12 bg-primary-700 group-hover:translate-x-full group-hover:-skew-x-12 opacity-40"></span>
+                <span className="relative flex items-center justify-center">
+                  <Send className="w-5 h-5 mr-2 animate-pulse" /> {selectedMethod === 'email' ? 'Open Email Client' : 'Open WhatsApp Chat'}
+                </span>
               </button>
             </form>
           </div>

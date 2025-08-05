@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ProductProvider } from './contexts/ProductContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Breadcrumb from './components/Breadcrumb';
 import HomePage from './pages/HomePage';
 import RegisterPage from './pages/RegisterPage';
 import LoginPage from './pages/LoginPage';
@@ -27,6 +28,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+      <Breadcrumb />
       <main className="min-h-screen">
         <Routes>
           <Route path="/" element={<HomePage />} />
