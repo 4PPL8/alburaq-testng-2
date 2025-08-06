@@ -119,32 +119,40 @@ const HomePage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Individual feature cards */}
             <div className="text-center group">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors duration-300">
-                <Shield className="h-8 w-8 text-blue-600" />
+              <div className="feature-icon-1">
+                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-200 transition-colors duration-300">
+                  <Shield className="h-8 w-8 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">Quality Assured</h3>
+                <p className="text-gray-600">High-quality products that meet industry standards and customer expectations.</p>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Quality Assured</h3>
-              <p className="text-gray-600">High-quality products that meet industry standards and customer expectations.</p>
             </div>
             <div className="text-center group">
-              <div className="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-yellow-200 transition-colors duration-300">
-                <Package className="h-8 w-8 text-yellow-600" />
+              <div className="feature-icon-2">
+                <div className="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-yellow-200 transition-colors duration-300">
+                  <Package className="h-8 w-8 text-yellow-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">Diverse Range</h3>
+                <p className="text-gray-600">From personal care to household items, we have everything you need.</p>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Diverse Range</h3>
-              <p className="text-gray-600">From personal care to household items, we have everything you need.</p>
             </div>
             <div className="text-center group">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors duration-300">
-                <Truck className="h-8 w-8 text-green-600" />
+              <div className="feature-icon-3">
+                <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors duration-300">
+                  <Truck className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">Cash on Delivery</h3>
+                <p className="text-gray-600">Convenient payment option available for your peace of mind.</p>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Cash on Delivery</h3>
-              <p className="text-gray-600">Convenient payment option available for your peace of mind.</p>
             </div>
             <div className="text-center group">
-              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition-colors duration-300">
-                <Star className="h-8 w-8 text-purple-600" />
+              <div className="feature-icon-4">
+                <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-200 transition-colors duration-300">
+                  <Star className="h-8 w-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">Reliability</h3>
+                <p className="text-gray-600">Trusted by customers for consistent quality and dependable service.</p>
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Reliability</h3>
-              <p className="text-gray-600">Trusted by customers for consistent quality and dependable service.</p>
             </div>
           </div>
         </div>

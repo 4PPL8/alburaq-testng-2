@@ -20,3 +20,37 @@
 .animate-marquee-container:hover {
   animation-play-state: paused; /* Pause animation on hover */
 }
+
+/* Feature Icon Zoom Animation */
+@keyframes featureZoom {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.10);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+/* Animation classes for each feature */
+.feature-icon-1 {
+  animation: featureZoom 12s infinite;
+  animation-delay: 0s;
+}
+
+.feature-icon-2 {
+  animation: featureZoom 12s infinite;
+  animation-delay: 3s;
+}
+
+.feature-icon-3 {
+  animation: featureZoom 12s infinite;
+  animation-delay: 6s;
+}
+
+.feature-icon-4 {
+  animation: featureZoom 12s infinite;
+  animation-delay: 9s;
+}
