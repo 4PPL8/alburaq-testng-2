@@ -8,7 +8,7 @@ import ImageSkeleton from '../components/ImageSkeleton';
 const ProductsPage: React.FC = () => {
   const { category } = useParams();
   const { products, categories, isLoading } = useProducts();
-  const [selectedCategory, setSelectedCategory] = useState(category || 'All');
+  const [selectedCategory, setSelectedCategory] = useState(category ?? 'All');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // New state for search term

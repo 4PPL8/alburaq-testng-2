@@ -13,6 +13,7 @@ const AboutUsPage: React.FC = () => {
             {/* Placeholder image for the CEO */}
             <img
               src="/CEO.jpg" // Placeholder for CEO image
+
               alt="CEO"
               className="w-full h-full object-cover"
             />

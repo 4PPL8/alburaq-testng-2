@@ -392,8 +392,8 @@ Thank you.
                   onClick={() => setSelectedMethod('whatsapp')}
                   className={`flex-1 flex items-center justify-center px-6 py-4 rounded-lg font-semibold transition-all duration-300 ${
                     selectedMethod === 'whatsapp'
-                      ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300 transform scale-105 hover:bg-green-600'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-green-600 border border-gray-200 hover:border-green-300'
+                      ? 'bg-primary-600 text-white shadow-lg ring-2 ring-primary-300 transform scale-105 hover:bg-primary-700'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-primary-600 border border-gray-200 hover:border-primary-300'
                   }`}
                 >
                   <MessageCircle className="w-5 h-5 mr-2" /> Send via WhatsApp

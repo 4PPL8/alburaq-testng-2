@@ -602,11 +602,9 @@ const initialProducts: Product[] = [
     name: '777 Tape',
     category: 'Stationery Tapes',
     description: 'High-performance stationery tape for demanding tasks.',
-    image: 'https://placehold.co/400x400/FF69B4/FFFFFF?text=777+Tape',
+    image: '/777.png',
     images: [
-      'https://placehold.co/400x400/FF69B4/FFFFFF?text=777+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/777.png'
     ],
     features: ['Extra strong', 'Long-lasting', 'Heavy-duty']
   },
@@ -615,11 +613,9 @@ const initialProducts: Product[] = [
     name: '888 Tape',
     category: 'Stationery Tapes',
     description: 'Economical stationery tape for everyday needs.',
-    image: 'https://placehold.co/400x400/BA55D3/FFFFFF?text=888+Tape',
+    image: '/888.png',
     images: [
-      'https://placehold.co/400x400/BA55D3/FFFFFF?text=888+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/888.png'
     ],
     features: ['Cost-effective', 'Good adhesion', 'General use']
   },
@@ -628,11 +624,9 @@ const initialProducts: Product[] = [
     name: '999 Tape',
     category: 'Stationery Tapes',
     description: 'Premium clear tape for professional applications.',
-    image: 'https://placehold.co/400x400/9370DB/FFFFFF?text=999+Tape',
+    image: '/9999.png',
     images: [
-      'https://placehold.co/400x400/9370DB/FFFFFF?text=999+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/9999.png'
     ],
     features: ['Crystal clear', 'Strong hold', 'Invisible finish']
   },
@@ -641,11 +635,9 @@ const initialProducts: Product[] = [
     name: '1000 Tape',
     category: 'Stationery Tapes',
     description: 'Bulk stationery tape for high-volume usage.',
-    image: 'https://placehold.co/400x400/8A2BE2/FFFFFF?text=1000+Tape',
+    image: '/1000.png',
     images: [
-      'https://placehold.co/400x400/8A2BE2/FFFFFF?text=1000+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/1000.png'
     ],
     features: ['Large roll', 'Economical', 'Reliable']
   },
@@ -654,11 +646,9 @@ const initialProducts: Product[] = [
     name: '2000 Tape',
     category: 'Stationery Tapes',
     description: 'Extra strong stationery tape for heavy-duty applications.',
-    image: 'https://placehold.co/400x400/4B0082/FFFFFF?text=2000+Tape',
+    image: '/2000.png',
     images: [
-      'https://placehold.co/400x400/4B0082/FFFFFF?text=2000+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/2000.png'
     ],
     features: ['Super strong', 'Industrial grade', 'Long-lasting']
   },
@@ -667,11 +657,9 @@ const initialProducts: Product[] = [
     name: '3000 Tape',
     category: 'Stationery Tapes',
     description: 'Specialty tape for unique stationery and craft needs.',
-    image: 'https://placehold.co/400x400/800080/FFFFFF?text=3000+Tape',
+    image: '/3000.png',
     images: [
-      'https://placehold.co/400x400/800080/FFFFFF?text=3000+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/3000.png'
     ],
     features: ['Special adhesive', 'Unique application', 'High quality']
   },

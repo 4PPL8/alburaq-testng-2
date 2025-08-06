@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
                   className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" 
                 />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-yellow-500 bg-clip-text text-transparent group-hover:from-primary-700 group-hover:to-yellow-600 transition-all duration-300">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-yellow-500 bg-clip-text text-transparent group-hover:from-blue-700 group-hover:to-yellow-600 transition-all duration-300">
                 Al Buraq Industries
               </span>
             </Link>
