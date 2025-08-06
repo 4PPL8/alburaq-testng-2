@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, MessageCircle, Send, CheckSquare, Square } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, Phone, MapPin, Clock, MessageCircle, Send, CheckSquare, Square, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useProducts, Product } from '../contexts/ProductContext';
+import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 const ContactPage: React.FC = () => {
   const { products } = useProducts(); // Get products from context
+  const { user, isUserAuthenticated } = useAuth(); // Get authentication context
 
   // State for form data
   const [formData, setFormData] = useState({
@@ -14,6 +17,17 @@ const ContactPage: React.FC = () => {
     subject: '',
     message: ''
   });
+  
+  // Prefill form with user data if authenticated
+  useEffect(() => {
+    if (isUserAuthenticated && user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || prev.name,
+        email: user.email || prev.email
+      }));
+    }
+  }, [isUserAuthenticated, user]);
 
   // State for selected products
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]); // Stores IDs of selected products
@@ -56,6 +70,12 @@ const ContactPage: React.FC = () => {
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Prevent default form submission (page reload)
+    
+    // Check if user is authenticated
+    if (!isUserAuthenticated) {
+      toast.error('Please log in to send a message.');
+      return;
+    }
 
     // Basic validation for required fields
     if (!formData.name.trim() || !formData.email.trim() || !formData.subject || !formData.message.trim()) {
@@ -378,37 +398,61 @@ Thank you.
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 justify-center mt-8">
                 <button
                   type="button"
-                  onClick={() => setSelectedMethod('email')}
+                  onClick={() => isUserAuthenticated && setSelectedMethod('email')}
+                  disabled={!isUserAuthenticated}
                   className={`flex-1 flex items-center justify-center px-6 py-4 rounded-lg font-semibold transition-all duration-300 ${
-                    selectedMethod === 'email'
-                      ? 'bg-primary-600 text-white shadow-lg ring-2 ring-primary-300 transform scale-105 hover:bg-primary-700'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-primary-600 border border-gray-200 hover:border-primary-300'
+                    !isUserAuthenticated 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-70 border border-gray-200'
+                      : selectedMethod === 'email'
+                        ? 'bg-primary-600 text-white shadow-lg ring-2 ring-primary-300 transform scale-105 hover:bg-primary-700'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-primary-600 border border-gray-200 hover:border-primary-300'
                   }`}
                 >
                   <Mail className="w-5 h-5 mr-2" /> Send via Email
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedMethod('whatsapp')}
+                  onClick={() => isUserAuthenticated && setSelectedMethod('whatsapp')}
+                  disabled={!isUserAuthenticated}
                   className={`flex-1 flex items-center justify-center px-6 py-4 rounded-lg font-semibold transition-all duration-300 ${
-                    selectedMethod === 'whatsapp'
-                      ? 'bg-primary-600 text-white shadow-lg ring-2 ring-primary-300 transform scale-105 hover:bg-primary-700'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-primary-600 border border-gray-200 hover:border-primary-300'
+                    !isUserAuthenticated 
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-70 border border-gray-200'
+                      : selectedMethod === 'whatsapp'
+                        ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-300 transform scale-105 hover:bg-green-600'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-green-600 border border-gray-200 hover:border-green-300'
                   }`}
                 >
                   <MessageCircle className="w-5 h-5 mr-2" /> Send via WhatsApp
                 </button>
               </div>
 
+              {/* Authentication Status Message */}
+              {!isUserAuthenticated && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4 flex items-center">
+                  <AlertCircle className="h-5 w-5 text-yellow-500 mr-2" />
+                  <div>
+                    <p className="text-yellow-700 font-medium">You need to be logged in to send a message</p>
+                    <p className="text-yellow-600 text-sm mt-1">
+                      Please <Link to="/login" className="text-primary-600 font-medium hover:underline">log in</Link> or <Link to="/register" className="text-primary-600 font-medium hover:underline">register</Link> to contact us
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {/* User Status Display is hidden as requested */}
+              
               {/* Main Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold py-4 rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mt-6 group relative overflow-hidden"
+                className={`w-full bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold py-4 rounded-lg transition-all duration-300 transform shadow-lg mt-6 group relative overflow-hidden ${isUserAuthenticated ? 'hover:from-primary-700 hover:to-primary-800 hover:scale-105 hover:shadow-xl' : 'opacity-70 cursor-not-allowed'}`}
               >
-                <span className="absolute inset-0 w-full h-full transition-all duration-300 ease-out transform translate-x-0 -skew-x-12 bg-primary-400 group-hover:translate-x-full group-hover:skew-x-12 opacity-40"></span>
-                <span className="absolute inset-0 w-full h-full transition-all duration-300 ease-out transform skew-x-12 bg-primary-700 group-hover:translate-x-full group-hover:-skew-x-12 opacity-40"></span>
+                <span className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out transform translate-x-0 -skew-x-12 bg-primary-400 ${isUserAuthenticated ? 'group-hover:translate-x-full group-hover:skew-x-12' : ''} opacity-40`}></span>
+                <span className={`absolute inset-0 w-full h-full transition-all duration-300 ease-out transform skew-x-12 bg-primary-700 ${isUserAuthenticated ? 'group-hover:translate-x-full group-hover:-skew-x-12' : ''} opacity-40`}></span>
                 <span className="relative flex items-center justify-center">
-                  <Send className="w-5 h-5 mr-2 animate-pulse" /> {selectedMethod === 'email' ? 'Open Email Client' : 'Open WhatsApp Chat'}
+                  <Send className="w-5 h-5 mr-2" /> 
+                  {isUserAuthenticated 
+                    ? (selectedMethod === 'email' ? 'Open Email Client' : 'Open WhatsApp Chat')
+                    : 'Please Log In to Send Message'}
                 </span>
               </button>
             </form>
