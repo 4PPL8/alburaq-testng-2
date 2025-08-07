@@ -1,15 +1,21 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Filter, Grid, List, Search } from 'lucide-react'; // Added Search icon
+import { Filter, Grid, List, Search } from 'lucide-react';
 import { useProducts } from '../contexts/ProductContext';
 import ProductCard from '../components/ProductCard';
 import ImageSkeleton from '../components/ImageSkeleton';
+import { FixedSizeList as VirtualList } from 'react-window';
+import { useWindowSize } from '../hooks/useWindowSize';
+import VirtualizedProductRow from '../components/VirtualizedProductRow';
+
+
 
 const ProductsPage: React.FC = () => {
   const { category } = useParams();
   const { products, categories, isLoading } = useProducts();
   const [selectedCategory, setSelectedCategory] = useState(category ?? 'All');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'virtual'>('grid');
+  const windowSize = useWindowSize();
   const [showFilters, setShowFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // New state for search term
   const [showSuggestions, setShowSuggestions] = useState(false); // New state for suggestion visibility
@@ -50,33 +56,37 @@ const ProductsPage: React.FC = () => {
   }, [products, searchTerm]);
 
 
-  const handleCategoryChange = (newCategory: string) => {
+  // Memoize the category change handler to prevent unnecessary re-renders
+  const handleCategoryChange = useCallback((newCategory: string) => {
     setSelectedCategory(newCategory);
     setShowFilters(false);
     setSearchTerm(''); // Clear search term when category changes
-  };
+  }, []);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Memoize the search change handler
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     setShowSuggestions(true); // Show suggestions when typing
-  };
+  }, []);
 
-  const handleSelectSuggestion = (suggestion: string) => {
+  // Memoize the suggestion selection handler
+  const handleSelectSuggestion = useCallback((suggestion: string) => {
     setSearchTerm(suggestion);
     setShowSuggestions(false); // Hide suggestions after selection
-  };
+  }, []);
 
-  // Hide suggestions when clicking outside
-  const handleBlur = () => {
+  // Hide suggestions when clicking outside - memoized
+  const handleBlur = useCallback(() => {
     // A small delay to allow click on suggestion to register before hiding
     setTimeout(() => setShowSuggestions(false), 100); 
-  };
+  }, []);
 
-  const handleFocus = () => {
+  // Memoize the focus handler
+  const handleFocus = useCallback(() => {
     if (searchTerm.trim() !== '') {
       setShowSuggestions(true);
     }
-  };
+  }, [searchTerm]);
 
 
   if (isLoading) {
@@ -129,6 +139,22 @@ const ProductsPage: React.FC = () => {
                   aria-label="List view"
                 >
                   <List className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('virtual')}
+                  className={`p-2 rounded-lg transition-all duration-300 ${
+                    viewMode === 'virtual' ? 'bg-primary-100 text-primary-600 shadow-sm' : 'bg-white text-gray-600 hover:bg-primary-50'
+                  }`}
+                  aria-label="Virtual list view"
+                  title="Virtual list (optimized for large datasets)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="3" y1="15" x2="21" y2="15"></line>
+                    <line x1="12" y1="9" x2="12" y2="21"></line>
+                  </svg>
+                  <span className="sr-only">Virtual List</span>
                 </button>
               </div>
             </div>
@@ -221,6 +247,21 @@ const ProductsPage: React.FC = () => {
                 >
                   View All Products
                 </Link>
+              </div>
+            ) : viewMode === 'virtual' ? (
+              <div className="bg-white rounded-xl shadow-md border border-gray-200 p-4">
+                <VirtualList
+                  height={Math.min(600, windowSize.height * 0.7)} // Limit height to 70% of viewport or 600px
+                  width="100%"
+                  itemCount={filteredProducts.length}
+                  itemSize={120} // Height of each item in the list
+                  itemData={{
+                    products: filteredProducts,
+                    showCategory: selectedCategory === 'All'
+                  }}
+                >
+                  {VirtualizedProductRow}
+                </VirtualList>
               </div>
             ) : (
               <div className={

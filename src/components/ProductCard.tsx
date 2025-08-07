@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Product } from '../contexts/ProductContext';
 import ImageSkeleton from './ImageSkeleton';
@@ -8,7 +8,8 @@ interface ProductCardProps {
   showCategory?: boolean;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, showCategory = true }) => {
+// Using memo to prevent unnecessary re-renders when parent components update
+const ProductCard: React.FC<ProductCardProps> = memo(({ product, showCategory = true }) => {
   return (
     <Link to={`/product/${product.id}`} className="group block">
       <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100">
@@ -41,6 +42,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showCategory = true 
       </div>
     </Link>
   );
-};
+});
+
+// Add display name for better debugging
+ProductCard.displayName = 'ProductCard';
 
 export default ProductCard;
