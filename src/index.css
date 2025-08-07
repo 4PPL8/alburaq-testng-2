@@ -34,6 +34,16 @@
   }
 }
 
+/* Yellow glow animation for the Browse Products button */
+@keyframes yellowGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px 2px rgba(255, 214, 0, 0.3), 0 0 10px rgba(255, 214, 0, 0.2), 0 0 15px rgba(255, 214, 0, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 10px 4px rgba(255, 214, 0, 0.5), 0 0 20px rgba(255, 214, 0, 0.3), 0 0 30px rgba(255, 214, 0, 0.2);
+  }
+}
+
 /* Animation classes for each feature */
 .feature-icon-1 {
   animation: featureZoom 12s infinite;
@@ -48,6 +58,14 @@
 .feature-icon-3 {
   animation: featureZoom 12s infinite;
   animation-delay: 6s;
+}
+
+/* Yellow glow button animation */
+.yellow-glow-button {
+  position: relative;
+  animation: yellowGlow 2s infinite;
+  /* Add a subtle outline to enhance the glow effect */
+  outline: 1px solid rgba(255, 214, 0, 0.1);
 }
 
 .feature-icon-4 {

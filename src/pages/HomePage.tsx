@@ -89,7 +89,7 @@ const HomePage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 to="/products"
-                className="inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-semibold rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="inline-flex items-center px-8 py-4 bg-yellow-500 text-blue-900 font-semibold rounded-full hover:bg-yellow-400 transition-all duration-300 transform hover:scale-105 shadow-lg yellow-glow-button"
               >
                 Browse Products
                 <ArrowRight className="ml-2 h-5 w-5" />
