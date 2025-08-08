@@ -1,8 +1,29 @@
 import React from 'react';
+import SEO from '../components/SEO';
 
 const AboutUsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 py-8 text-white"> {/* Changed background to blue gradient and text to white */}
+      {/* SEO Component */}
+      <SEO
+        title="About Us | Al Buraq Industries"
+        description="Learn about Al Buraq Industries, our vision, mission, and commitment to providing high-quality products. Meet our CEO and discover our company values."
+        type="website"
+        image="/CEO.jpg"
+        schema={{
+          "@type": "AboutPage",
+          "name": "About Al Buraq Industries",
+          "description": "Learn about Al Buraq Industries, our vision, mission, and commitment to providing high-quality products.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Al Buraq Industries",
+            "logo": {
+              "@type": "ImageObject",
+              "url": `${window.location.origin}/MAIN.png`
+            }
+          }
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl md:text-5xl font-bold text-center mb-12">About Us</h1> {/* Removed text-gray-800 as parent is now white text */}
 

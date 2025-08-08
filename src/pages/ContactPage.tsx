@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useProducts, Product } from '../contexts/ProductContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const ContactPage: React.FC = () => {
   const { products } = useProducts(); // Get products from context
@@ -143,6 +144,33 @@ Thank you.
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* SEO Component */}
+      <SEO
+        title="Contact Us | Al Buraq Industries"
+        description="Get in touch with Al Buraq Industries for product inquiries, orders, and customer support. We're here to help with all your product needs."
+        type="website"
+        schema={{
+          "@type": "ContactPage",
+          "name": "Contact Al Buraq Industries",
+          "description": "Get in touch with Al Buraq Industries for product inquiries, orders, and customer support.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Al Buraq Industries",
+            "logo": {
+              "@type": "ImageObject",
+              "url": `${window.location.origin}/MAIN.png`
+            },
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+923164623026",
+              "contactType": "customer service",
+              "email": "alburaqindus2000@gmail.com",
+              "areaServed": "PK",
+              "availableLanguage": ["English", "Urdu"]
+            }
+          }
+        }}
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

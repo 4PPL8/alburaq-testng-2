@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Package, Shield, Truck, Star, Zap } from 'lucide-react';
 import { useProducts } from '../contexts/ProductContext';
 import ProductCard from '../components/ProductCard';
+import SEO from '../components/SEO';
 
 // Import your main logo image using the absolute path format
 import MainLogoImage from '/MAIN.png'; // Path assumes MAIN.png is in the project root
@@ -53,6 +54,25 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      {/* SEO Component */}
+      <SEO
+        title="Al Buraq Industries | High-Quality Products for Your Everyday Needs"
+        description="Al Buraq Industries offers a diverse range of high-quality personal care products, stationery, adhesives, baby essentials, herbal remedies, and household items. Discover reliable, durable, and valuable products for your everyday needs."
+        type="website"
+        image="/MAIN.png"
+        schema={{
+          "@type": "Organization",
+          "name": "Al Buraq Industries",
+          "url": window.location.origin,
+          "logo": `${window.location.origin}/MAIN.png`,
+          "description": "Al Buraq Industries offers a diverse range of high-quality personal care products, stationery, adhesives, baby essentials, herbal remedies, and household items.",
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+92-000-0000000",
+            "contactType": "customer service"
+          }
+        }}
+      />
       {/* Hero Section: Main banner with company logo, name, and call-to-action buttons */}
       <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
         <div className="absolute inset-0 bg-black opacity-20"></div> {/* Dark overlay for visual depth */}

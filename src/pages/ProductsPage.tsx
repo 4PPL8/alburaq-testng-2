@@ -7,6 +7,7 @@ import ImageSkeleton from '../components/ImageSkeleton';
 import { FixedSizeList as VirtualList } from 'react-window';
 import { useWindowSize } from '../hooks/useWindowSize';
 import VirtualizedProductRow from '../components/VirtualizedProductRow';
+import SEO from '../components/SEO';
 
 
 
@@ -89,6 +90,15 @@ const ProductsPage: React.FC = () => {
   }, [searchTerm]);
 
 
+  // Generate SEO title and description based on selected category
+  const seoTitle = selectedCategory === 'All' 
+    ? 'All Products | Al Buraq Industries' 
+    : `${selectedCategory} Products | Al Buraq Industries`;
+    
+  const seoDescription = selectedCategory === 'All'
+    ? 'Browse our complete catalog of high-quality products. Al Buraq Industries offers a wide range of products to meet your needs.'
+    : `Browse our selection of ${selectedCategory} products. Al Buraq Industries offers high-quality ${selectedCategory.toLowerCase()} to meet your needs.`;
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -102,7 +112,32 @@ const ProductsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 animate-fadeIn">
+    <div className="min-h-screen bg-gray-50 py-8">
+      {/* SEO Component */}
+      <SEO
+        title={seoTitle}
+        description={seoDescription}
+        type="website"
+        schema={{
+          "@type": "ItemList",
+          "itemListElement": filteredProducts.slice(0, 10).map((product, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Product",
+              "name": product.name,
+              "image": product.image,
+              "description": product.description,
+              "url": `${window.location.origin}/product/${product.id}`,
+              "category": product.category,
+              "brand": {
+                "@type": "Brand",
+                "name": "Al Buraq Industries"
+              }
+            }
+          }))
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 bg-white p-6 rounded-xl shadow-md border border-gray-200">

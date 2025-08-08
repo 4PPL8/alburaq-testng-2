@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, Package, Check } from 'lucide-react';
 import { useProducts } from '../contexts/ProductContext';
+import SEO from '../components/SEO';
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -55,6 +56,31 @@ const ProductDetailPage: React.FC = () => {
   // If product is found, render the detail page
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      {/* SEO Component with Product Schema */}
+      <SEO
+        title={`${product.name} | Al Buraq Industries`}
+        description={`${product.description.substring(0, 150)}${product.description.length > 150 ? '...' : ''}`}
+        type="product"
+        image={product.image}
+        schema={{
+          "@type": "Product",
+          "name": product.name,
+          "image": allProductImages,
+          "description": product.description,
+          "category": product.category,
+          "offers": {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "priceCurrency": "PKR",
+            "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+            "url": window.location.href
+          },
+          "brand": {
+            "@type": "Brand",
+            "name": "Al Buraq Industries"
+          }
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb / Back to Products Link */}
         <div className="mb-8">
