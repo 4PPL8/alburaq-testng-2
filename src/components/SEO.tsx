@@ -28,6 +28,9 @@ const SEO: React.FC<SEOProps> = ({
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={url} />
+        <link rel="icon" type="image/png" href="/SNT2.png" />
+        <link rel="shortcut icon" type="image/png" href="/SNT2.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/SNT2.png" />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content={type} />
