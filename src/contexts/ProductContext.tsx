@@ -15,16 +15,24 @@ export interface Product {
   images?: string[]; // Optional array of image URLs
 }
 
+interface SyncStatus {
+  syncing: boolean;
+  lastSynced: Date | null;
+  error: string | null;
+  isGitHubEnabled: boolean;
+}
+
 interface ProductContextType {
   products: Product[];
   isLoading: boolean;
   categories: string[];
-  addProduct: (product: Omit<Product, 'id'>) => void;
-  updateProduct: (id: string, product: Omit<Product, 'id'>) => void;
-  deleteProduct: (id: string) => void;
+  addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
+  updateProduct: (id: string, product: Omit<Product, 'id'>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
   getProduct: (id: string) => Product | undefined;
   getProductsByCategory: (category: string) => Product[];
   clearProductsData: () => void;
+  syncStatus: SyncStatus;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -839,20 +847,63 @@ const initialProducts: Product[] = [
   }
 ];
 
+// Import the ProductService
+import ProductService from '../services/ProductService';
+
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [syncStatus, setSyncStatus] = useState<{ syncing: boolean; lastSynced: Date | null; error: string | null }>({ 
+    syncing: false, 
+    lastSynced: null, 
+    error: null 
+  });
+  
+  // Initialize ProductService
+  const productService = React.useMemo(() => new ProductService(), []);
 
   useEffect(() => {
-    // Always clear localStorage and reload initialProducts on every reload (for development)
-    localStorage.removeItem('products_data');
+    // For development, we'll still use initialProducts but in production
+    // this would load from the GitHub repository
     setProducts(initialProducts);
     setIsLoading(false);
   }, []);
 
-  const saveProducts = (newProducts: Product[]) => {
+  // Save products to both localStorage and GitHub repository
+  const saveProducts = async (newProducts: Product[]) => {
     setProducts(newProducts);
     localStorage.setItem('products_data', JSON.stringify({ products: newProducts }));
+    
+    // If GitHub integration is enabled, sync with repository
+    if (productService.isInitialized()) {
+      setSyncStatus(prev => ({ ...prev, syncing: true, error: null }));
+      
+      try {
+        const result = await productService.saveProducts(newProducts);
+        if (result.success) {
+          setSyncStatus(prev => ({ 
+            ...prev, 
+            syncing: false, 
+            lastSynced: new Date(),
+            error: null 
+          }));
+        } else {
+          setSyncStatus(prev => ({ 
+            ...prev, 
+            syncing: false, 
+            error: result.message 
+          }));
+          console.error('Failed to sync with GitHub:', result.message);
+        }
+      } catch (error) {
+        setSyncStatus(prev => ({ 
+          ...prev, 
+          syncing: false, 
+          error: error instanceof Error ? error.message : 'Unknown error' 
+        }));
+        console.error('Error syncing with GitHub:', error);
+      }
+    }
   };
 
   const categories = [
@@ -886,11 +937,41 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   setProducts(initialProducts);
 };
 
-  const updateProduct = (id: string, updatedProduct: Omit<Product, 'id'>) => {
+  const updateProduct = async (id: string, updatedProduct: Omit<Product, 'id'>) => {
+    // Process image uploads if they are data URLs
+    let processedImage = updatedProduct.image;
+    let processedImages = updatedProduct.images || [];
+    
+    // If the main image is a data URL, upload it
+    if (updatedProduct.image.startsWith('data:')) {
+      const fileName = `product_${id}_main_${Date.now()}.png`;
+      processedImage = await uploadProductImage(updatedProduct.image, fileName);
+    }
+    
+    // Process additional images if they are data URLs
+    if (updatedProduct.images && updatedProduct.images.length > 0) {
+      const uploadPromises = updatedProduct.images.map(async (img, index) => {
+        if (img.startsWith('data:')) {
+          const fileName = `product_${id}_${index}_${Date.now()}.png`;
+          return await uploadProductImage(img, fileName);
+        }
+        return img;
+      });
+      
+      processedImages = await Promise.all(uploadPromises);
+    }
+    
+    const processedProduct = {
+      ...updatedProduct,
+      image: processedImage,
+      images: processedImages.length > 0 ? processedImages : [processedImage]
+    };
+    
     const newProducts = products.map(product =>
-      product.id === id ? { ...updatedProduct, id, images: updatedProduct.images || [updatedProduct.image] } : product
+      product.id === id ? { ...processedProduct, id } : product
     );
-    saveProducts(newProducts);
+    
+    await saveProducts(newProducts);
   };
 
   const deleteProduct = (id: string) => {
@@ -916,7 +997,11 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       deleteProduct,
       getProduct,
       getProductsByCategory,
-      clearProductsData
+      clearProductsData,
+      syncStatus: {
+        ...syncStatus,
+        isGitHubEnabled: productService.isInitialized()
+      }
     }}>
       {children}
     </ProductContext.Provider>

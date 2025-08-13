@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Plus, Edit3, Trash2, Eye, Upload, X, Check, AlertTriangle, Loader2 } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { Plus, Edit3, Trash2, Eye, Upload, X, Check, AlertTriangle, Loader2, Github, RefreshCw } from 'lucide-react';
 import { useProducts, Product } from '../contexts/ProductContext'; // Import Product interface
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify'; // Import toast (ToastContainer is in App.tsx)
@@ -31,7 +31,15 @@ const ConfirmDeleteModal: React.FC<{ productId: string, onConfirm: () => void, o
 
 
 const AdminDashboard: React.FC = () => {
-  const { products, categories, addProduct, updateProduct, deleteProduct, isLoading: productsLoading } = useProducts();
+  const { 
+    products, 
+    categories, 
+    addProduct, 
+    updateProduct, 
+    deleteProduct, 
+    isLoading: productsLoading,
+    syncStatus 
+  } = useProducts();
   const { adminInfo } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'manage'>('overview');
   const [showModal, setShowModal] = useState(false);
@@ -133,7 +141,7 @@ const AdminDashboard: React.FC = () => {
     }));
   };
 
-  // Handles main product image file upload and converts to Base64 (reverted)
+  // Handles main product image file upload and converts to Base64
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -157,8 +165,32 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  // Handles additional image file upload and converts to Base64
+  const handleAdditionalImageUpload = useCallback((index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('Image size must be less than 2MB.');
+        return;
+      }
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        toast.error('Only JPG and PNG formats are supported.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFormData(prev => ({
+          ...prev,
+          images: prev.images.map((img, i) => i === index ? e.target?.result as string : img)
+        }));
+      };
+      reader.readAsDataURL(file); // Read file as Base64
+    }
+  }, []);
+
   // Handles form submission for adding or updating a product
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
@@ -180,17 +212,21 @@ const AdminDashboard: React.FC = () => {
       images: filteredImages
     };
 
-    setTimeout(() => {
+    try {
       if (modalMode === 'add') {
-        addProduct(productData);
-        toast.success('Product added successfully!');
+        await addProduct(productData);
+        toast.success('Product added successfully and synced to GitHub!');
       } else if (selectedProduct) {
-        updateProduct(selectedProduct.id, productData);
-        toast.success('Product updated successfully!');
+        await updateProduct(selectedProduct.id, productData);
+        toast.success('Product updated successfully and synced to GitHub!');
       }
-      setIsSubmitting(false);
       handleCloseModal();
-    }, 1000);
+    } catch (error) {
+      toast.error(`Failed to ${modalMode === 'add' ? 'add' : 'update'} product: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+       setIsSubmitting(false);
+     }
+    }
   };
 
   if (productsLoading) {
@@ -209,11 +245,18 @@ const AdminDashboard: React.FC = () => {
     setDeleteConfirm(id);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (deleteConfirm) {
-      deleteProduct(deleteConfirm);
-      toast.success('Product deleted successfully!');
-      setDeleteConfirm(null);
+      setIsSubmitting(true);
+      try {
+        await deleteProduct(deleteConfirm);
+        toast.success('Product deleted successfully and synced to GitHub!');
+      } catch (error) {
+        toast.error(`Failed to delete product: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      } finally {
+        setIsSubmitting(false);
+        setDeleteConfirm(null);
+      }
     }
   };
 
@@ -243,8 +286,38 @@ const AdminDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {adminInfo?.name || 'Admin'}!</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
+              <p className="text-gray-600">Welcome back, {adminInfo?.name || 'Admin'}!</p>
+            </div>
+            
+            {/* GitHub Sync Status */}
+            {syncStatus.isGitHubEnabled && (
+              <div className="bg-white rounded-lg shadow-sm p-3 flex items-center space-x-3">
+                <Github className="h-5 w-5 text-gray-700" />
+                <div>
+                  <p className="text-sm font-medium text-gray-800">GitHub Sync</p>
+                  <div className="flex items-center">
+                    {syncStatus.syncing ? (
+                      <>
+                        <RefreshCw className="h-3 w-3 text-blue-600 animate-spin mr-1" />
+                        <span className="text-xs text-blue-600">Syncing...</span>
+                      </>
+                    ) : syncStatus.error ? (
+                      <span className="text-xs text-red-600">{syncStatus.error}</span>
+                    ) : syncStatus.lastSynced ? (
+                      <span className="text-xs text-green-600">
+                        Last synced: {syncStatus.lastSynced.toLocaleTimeString()}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-500">Ready to sync</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Tabs */}
@@ -496,12 +569,28 @@ const AdminDashboard: React.FC = () => {
                       Main Product Image *
                     </label>
                     <div className="space-y-4">
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png"
-                        onChange={handleImageUpload}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="url"
+                          name="image"
+                          value={formData.image.startsWith('data:') ? '' : formData.image}
+                          onChange={handleInputChange}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Enter image URL or upload a file"
+                        />
+                        <div className="flex-shrink-0">
+                          <label className="cursor-pointer px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-lg transition-colors duration-200 flex items-center">
+                            <Upload className="w-4 h-4 mr-1" />
+                            <span>Upload</span>
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png"
+                              onChange={handleImageUpload}
+                              className="hidden"
+                            />
+                          </label>
+                        </div>
+                      </div>
                       {formData.image && (
                         <div className="relative">
                           <img
@@ -512,6 +601,11 @@ const AdminDashboard: React.FC = () => {
                                 (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Preview+Error';
                             }}
                           />
+                          {formData.image.startsWith('data:') && (
+                            <span className="absolute top-0 right-0 bg-blue-500 text-white text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg">
+                              New Upload
+                            </span>
+                          )}
                         </div>
                       )}
                       <p className="text-xs text-gray-500">
@@ -524,24 +618,49 @@ const AdminDashboard: React.FC = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Additional Product Images
                     </label>
-                    <div className="space-y-2">
+                    <div className="space-y-4">
                       {formData.images.map((image, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <input
-                            type="url"
-                            value={image}
-                            onChange={(e) => handleImageChange(index, e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Enter image URL"
-                          />
-                          {formData.images.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeImage(index)}
-                              className="text-red-600 hover:text-red-800 p-1"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
+                        <div key={index} className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <input
+                              type="url"
+                              value={image}
+                              onChange={(e) => handleImageChange(index, e.target.value)}
+                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                              placeholder="Enter image URL"
+                            />
+                            <div className="flex-shrink-0">
+                              <label className="cursor-pointer px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-lg transition-colors duration-200">
+                                <Upload className="w-4 h-4" />
+                                <input
+                                  type="file"
+                                  accept="image/jpeg,image/png"
+                                  onChange={handleAdditionalImageUpload(index)}
+                                  className="hidden"
+                                />
+                              </label>
+                            </div>
+                            {formData.images.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="text-red-600 hover:text-red-800 p-1"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
+                          {image && (
+                            <div className="relative">
+                              <img
+                                src={image}
+                                alt={`Additional image ${index + 1}`}
+                                className="w-24 h-24 object-cover rounded-lg border"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src = 'https://placehold.co/96x96/E0E0E0/000000?text=Preview+Error';
+                                }}
+                              />
+                            </div>
                           )}
                         </div>
                       ))}
@@ -552,6 +671,9 @@ const AdminDashboard: React.FC = () => {
                       >
                         + Add Another Image
                       </button>
+                      <p className="text-xs text-gray-500">
+                        Supported formats: JPG, PNG. Max size: 2MB
+                      </p>
                     </div>
                   </div>
 
