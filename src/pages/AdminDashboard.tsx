@@ -100,17 +100,9 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleFeatureChange = (index: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      features: prev.features.map((feature, i) => i === index ? value : feature)
-    }));
-  };
-
-  const handleImageChange = (index: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.map((img, i) => i === index ? value : img)
-    }));
+    const newFeatures = [...formData.features];
+    newFeatures[index] = value;
+    setFormData(prev => ({ ...prev, features: newFeatures }));
   };
 
   const addFeature = () => {
@@ -120,6 +112,18 @@ const AdminDashboard: React.FC = () => {
     }));
   };
 
+  const removeFeature = (index: number) => {
+    const newFeatures = [...formData.features];
+    newFeatures.splice(index, 1);
+    setFormData(prev => ({ ...prev, features: newFeatures.length > 0 ? newFeatures : [''] }));
+  };
+
+  const handleImageChange = (index: number, value: string) => {
+    const newImages = [...formData.images];
+    newImages[index] = value;
+    setFormData(prev => ({ ...prev, images: newImages }));
+  };
+
   const addImage = () => {
     setFormData(prev => ({
       ...prev,
@@ -127,365 +131,207 @@ const AdminDashboard: React.FC = () => {
     }));
   };
 
-  const removeFeature = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      features: prev.features.filter((_, i) => i !== index)
-    }));
-  };
-
   const removeImage = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }));
+    const newImages = [...formData.images];
+    newImages.splice(index, 1);
+    setFormData(prev => ({ ...prev, images: newImages.length > 0 ? newImages : [''] }));
   };
 
-  // Handles main product image file upload and converts to Base64
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error('Image size must be less than 2MB.');
-        return;
-      }
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        toast.error('Only JPG and PNG formats are supported.');
-        return;
-      }
-
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, isMainImage: boolean, index?: number) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setFormData(prev => ({
-          ...prev,
-          image: e.target?.result as string // Store Base64 string
-        }));
+      
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        
+        if (isMainImage) {
+          setFormData(prev => ({ ...prev, image: base64String }));
+        } else if (index !== undefined) {
+          handleImageChange(index, base64String);
+        }
       };
-      reader.readAsDataURL(file); // Read file as Base64
+      
+      reader.readAsDataURL(file);
     }
   };
 
-  // Handles additional image file upload and converts to Base64
-  const handleAdditionalImageUpload = useCallback((index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error('Image size must be less than 2MB.');
-        return;
-      }
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        toast.error('Only JPG and PNG formats are supported.');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setFormData(prev => ({
-          ...prev,
-          images: prev.images.map((img, i) => i === index ? e.target?.result as string : img)
-        }));
-      };
-      reader.readAsDataURL(file); // Read file as Base64
-    }
-  }, []);
-
-  // Handles form submission for adding or updating a product
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     
-    if (!formData.name.trim() || !formData.category || !formData.description.trim() || !formData.image) {
-      toast.error('Please fill in all required fields.');
-      setIsSubmitting(false);
+    // Validate form
+    if (!formData.name || !formData.category || !formData.description || !formData.image) {
+      toast.error('Please fill in all required fields');
       return;
     }
-
-    const filteredFeatures = formData.features.filter(feature => feature.trim() !== '');
-    const filteredImages = formData.images.filter(img => img.trim() !== '');
     
-    const productData: Omit<Product, 'id'> = {
-      name: formData.name.trim(),
-      category: formData.category,
-      description: formData.description.trim(),
-      image: formData.image, // This now holds Base64 or direct path
-      features: filteredFeatures,
-      images: filteredImages
-    };
-
+    setIsSubmitting(true);
+    
     try {
+      // Filter out empty features and images
+      const cleanedFormData = {
+        ...formData,
+        features: formData.features.filter(f => f.trim() !== ''),
+        images: formData.images.filter(img => img.trim() !== '')
+      };
+      
       if (modalMode === 'add') {
-        await addProduct(productData);
-        toast.success('Product added successfully and synced to GitHub!');
+        await addProduct(cleanedFormData);
+        toast.success('Product added successfully');
       } else if (selectedProduct) {
-        await updateProduct(selectedProduct.id, productData);
-        toast.success('Product updated successfully and synced to GitHub!');
+        await updateProduct(selectedProduct.id, cleanedFormData);
+        toast.success('Product updated successfully');
       }
+      
       handleCloseModal();
     } catch (error) {
-      toast.error(`Failed to ${modalMode === 'add' ? 'add' : 'update'} product: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('Error saving product:', error);
+      toast.error('Failed to save product');
     } finally {
-       setIsSubmitting(false);
-     }
+      setIsSubmitting(false);
     }
   };
 
-  if (productsLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Loading Dashboard...</h2>
-          <p className="text-gray-600">Please wait while we load your data</p>
-        </div>
-      </div>
-    );
-  };
-
-  const handleDelete = (id: string) => {
-    setDeleteConfirm(id);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (deleteConfirm) {
-      setIsSubmitting(true);
-      try {
-        await deleteProduct(deleteConfirm);
-        toast.success('Product deleted successfully and synced to GitHub!');
-      } catch (error) {
-        toast.error(`Failed to delete product: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      } finally {
-        setIsSubmitting(false);
-        setDeleteConfirm(null);
-      }
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteProduct(id);
+      setDeleteConfirm(null);
+      toast.success('Product deleted successfully');
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      toast.error('Failed to delete product');
     }
   };
 
-  const handleCancelDelete = () => {
-    setDeleteConfirm(null);
+  const handleSyncWithGitHub = async () => {
+    if (!syncStatus.isGitHubEnabled) {
+      toast.error('GitHub integration is not configured');
+      return;
+    }
+    
+    try {
+      // This will trigger the sync in ProductContext
+      await updateProduct(products[0].id, {
+        ...products[0],
+        name: products[0].name // Just updating with the same data to trigger sync
+      });
+      toast.success('Successfully synced with GitHub');
+    } catch (error) {
+      console.error('Error syncing with GitHub:', error);
+      toast.error('Failed to sync with GitHub');
+    }
   };
-
-  const categoryStats = categories.map(category => ({
-    name: category,
-    count: products.filter(p => p.category === category).length
-  }));
-  const mostPopularCategory = categoryStats.length > 0
-    ? categoryStats.reduce((max, cat) => cat.count > max.count ? cat : max).name
-    : 'N/A';
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      {/* ToastContainer is now in App.tsx */}
-      {deleteConfirm && (
-        <ConfirmDeleteModal
-          productId={deleteConfirm}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-        />
-      )}
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Admin Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {adminInfo?.name || 'Admin'}!</p>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Admin Dashboard</h1>
+        
+        {/* GitHub Sync Status */}
+        {syncStatus.isGitHubEnabled && (
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Github className="w-5 h-5 text-gray-700" />
+              <span className="text-sm text-gray-600">
+                {syncStatus.syncing ? (
+                  <span className="flex items-center">
+                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                    Syncing...
+                  </span>
+                ) : syncStatus.lastSynced ? (
+                  <span>Last synced: {new Date(syncStatus.lastSynced).toLocaleString()}</span>
+                ) : (
+                  <span>Not synced yet</span>
+                )}
+              </span>
             </div>
-            
-            {/* GitHub Sync Status */}
-            {syncStatus.isGitHubEnabled && (
-              <div className="bg-white rounded-lg shadow-sm p-3 flex items-center space-x-3">
-                <Github className="h-5 w-5 text-gray-700" />
-                <div>
-                  <p className="text-sm font-medium text-gray-800">GitHub Sync</p>
-                  <div className="flex items-center">
-                    {syncStatus.syncing ? (
-                      <>
-                        <RefreshCw className="h-3 w-3 text-blue-600 animate-spin mr-1" />
-                        <span className="text-xs text-blue-600">Syncing...</span>
-                      </>
-                    ) : syncStatus.error ? (
-                      <span className="text-xs text-red-600">{syncStatus.error}</span>
-                    ) : syncStatus.lastSynced ? (
-                      <span className="text-xs text-green-600">
-                        Last synced: {syncStatus.lastSynced.toLocaleTimeString()}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-gray-500">Ready to sync</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="mb-8">
-          <div className="flex space-x-1 bg-gray-200 p-1 rounded-lg w-fit">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-6 py-2 rounded-md font-medium transition-colors duration-200 ${
-                activeTab === 'overview'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
+            <button 
+              onClick={handleSyncWithGitHub}
+              disabled={syncStatus.syncing}
+              className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium text-gray-700 transition-colors duration-200 disabled:opacity-50"
             >
-              <Eye className="inline-block w-4 h-4 mr-2" />
-              Product Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('manage')}
-              className={`px-6 py-2 rounded-md font-medium transition-colors duration-200 ${
-                activeTab === 'manage'
-                  ? 'bg-white text-blue-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800'
-              }`}
-            >
-              <Edit3 className="inline-block w-4 h-4 mr-2" />
-              Manage Products
+              <RefreshCw className="w-4 h-4 mr-1" />
+              Sync
             </button>
           </div>
-        </div>
-
+        )}
+      </div>
+      
+      {/* Tabs */}
+      <div className="flex border-b border-gray-200 mb-6">
+        <button
+          className={`px-4 py-2 font-medium text-sm ${activeTab === 'overview' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          Overview
+        </button>
+        <button
+          className={`px-4 py-2 font-medium text-sm ${activeTab === 'manage' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+          onClick={() => setActiveTab('manage')}
+        >
+          Manage Products
+        </button>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow-md p-6">
         {activeTab === 'overview' ? (
-          // Overview Tab
-          <div className="space-y-8">
-            {/* Stats */}
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Dashboard Overview</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Total Products</h3>
+              <div className="bg-blue-50 p-6 rounded-lg">
+                <h3 className="text-lg font-medium text-blue-800 mb-2">Total Products</h3>
                 <p className="text-3xl font-bold text-blue-600">{products.length}</p>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Categories</h3>
-                <p className="text-3xl font-bold text-yellow-600">{categories.length}</p>
+              <div className="bg-green-50 p-6 rounded-lg">
+                <h3 className="text-lg font-medium text-green-800 mb-2">Categories</h3>
+                <p className="text-3xl font-bold text-green-600">{categories.length}</p>
               </div>
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">Most Popular Category</h3>
-                <p className="text-lg font-bold text-green-600">
-                  {mostPopularCategory}
-                </p>
+              <div className="bg-purple-50 p-6 rounded-lg">
+                <h3 className="text-lg font-medium text-purple-800 mb-2">Admin User</h3>
+                <p className="text-xl font-medium text-purple-600">{adminInfo?.email || 'Not logged in'}</p>
               </div>
             </div>
-
-            {/* Category Breakdown */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-6">Category Breakdown</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categoryStats.map((stat) => (
-                  <div key={stat.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700 truncate mr-2">{stat.name}</span>
-                    <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
-                      {stat.count}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Recent Products */}
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <h3 className="text-xl font-semibold text-gray-800 mb-6">All Products</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
-                  <div key={product.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-32 object-cover rounded-lg mb-3"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Error';
-                      }}
-                    />
-                    <h4 className="font-semibold text-gray-800 mb-1">{product.name}</h4>
-                    <p className="text-xs text-blue-600 mb-2 bg-blue-50 px-2 py-1 rounded">{product.category}</p>
-                    <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          // Manage Tab
-          <div className="space-y-6">
-            {/* Add Product Button */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-gray-800">Manage Products</h2>
-              <button
-                onClick={() => handleOpenModal('add')}
-                className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                <Plus className="w-5 h-5 mr-2" />
-                Add Product
-              </button>
-            </div>
-
-            {/* Products Table */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+            
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Products</h3>
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {products.map((product) => (
-                      <tr key={product.id} className="hover:bg-gray-50">
+                    {products.slice(0, 5).map(product => (
+                      <tr key={product.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <img
-                              src={product.image}
-                              alt={product.name}
-                              className="w-12 h-12 object-cover rounded-lg mr-4"
-                              onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://placehold.co/48x48/E0E0E0/000000?text=X';
-                              }}
-                            />
-                            <div>
+                            <div className="flex-shrink-0 h-10 w-10">
+                              <img className="h-10 w-10 rounded-full object-cover" src={product.image} alt={product.name} />
+                            </div>
+                            <div className="ml-4">
                               <div className="text-sm font-medium text-gray-900">{product.name}</div>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                            {product.category}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs truncate">
-                            {product.description}
-                          </div>
+                          <div className="text-sm text-gray-500">{product.category}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex space-x-2">
-                            <button
-                              onClick={() => handleOpenModal('edit', product)}
-                              className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-full transition-colors duration-200"
-                              title="Edit Product"
-                            >
-                              <Edit3 className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(product.id)}
-                              className={`p-2 rounded-full transition-colors duration-200 ${
-                                deleteConfirm === product.id
-                                  ? 'text-red-700 bg-red-100 hover:bg-red-200'
-                                  : 'text-red-600 hover:text-red-900 hover:bg-red-50'
-                              }`}
-                              title={deleteConfirm === product.id ? 'Click again to confirm' : 'Delete Product'}
-                            >
-                              {deleteConfirm === product.id ? (
-                                <AlertTriangle className="w-4 h-4" />
-                              ) : (
-                                <Trash2 className="w-4 h-4" />
-                              )}
-                            </button>
-                          </div>
+                          <button 
+                            onClick={() => handleOpenModal('edit', product)}
+                            className="text-indigo-600 hover:text-indigo-900 mr-3"
+                          >
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => setDeleteConfirm(product.id)}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -494,236 +340,309 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+        ) : (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold text-gray-800">Manage Products</h2>
+              <button
+                onClick={() => handleOpenModal('add')}
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Product
+              </button>
+            </div>
+            
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {products.map(product => (
+                    <tr key={product.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <img className="h-10 w-10 rounded-full object-cover" src={product.image} alt={product.name} />
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-500">{product.category}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-500 truncate max-w-xs">{product.description}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button 
+                          onClick={() => handleOpenModal('edit', product)}
+                          className="text-indigo-600 hover:text-indigo-900 mr-3"
+                          title="Edit"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => setDeleteConfirm(product.id)}
+                          className="text-red-600 hover:text-red-900 mr-3"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <a 
+                          href={`/products/${product.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-600 hover:text-gray-900"
+                          title="View"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
-
-        {/* Modal for Add/Edit Product */}
+        
+        {/* Delete Confirmation Modal */}
+        {deleteConfirm && (
+          <ConfirmDeleteModal 
+            productId={deleteConfirm}
+            onConfirm={() => handleDelete(deleteConfirm)}
+            onCancel={() => setDeleteConfirm(null)}
+          />
+        )}
+        
+        {/* Add/Edit Product Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-semibold text-gray-800">
-                    {modalMode === 'add' ? 'Add New Product' : 'Edit Product'}
-                  </h3>
-                  <button
-                    onClick={handleCloseModal}
-                    className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {modalMode === 'add' ? 'Add New Product' : 'Edit Product'}
+                </h3>
+                <button 
+                  onClick={handleCloseModal}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="space-y-6">
+                <form onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Product Name *
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
                       <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                       />
                     </div>
-
+                    
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Category *
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                       <select
                         name="category"
                         value={formData.category}
                         onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                       >
                         <option value="">Select a category</option>
-                        {categories.map((category) => (
-                          <option key={category} value={category}>
-                            {category}
-                          </option>
+                        {categories.map(category => (
+                          <option key={category} value={category}>{category}</option>
                         ))}
                       </select>
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Description *
-                    </label>
+                  
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                     <textarea
                       name="description"
                       value={formData.description}
                       onChange={handleInputChange}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Main Product Image *
-                    </label>
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="url"
-                          name="image"
-                          value={formData.image.startsWith('data:') ? '' : formData.image}
-                          onChange={handleInputChange}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Enter image URL or upload a file"
-                        />
-                        <div className="flex-shrink-0">
-                          <label className="cursor-pointer px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-lg transition-colors duration-200 flex items-center">
-                            <Upload className="w-4 h-4 mr-1" />
-                            <span>Upload</span>
-                            <input
-                              type="file"
-                              accept="image/jpeg,image/png"
-                              onChange={handleImageUpload}
-                              className="hidden"
+                  
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Main Image</label>
+                    <div className="flex items-center space-x-4">
+                      {formData.image && (
+                        <div className="relative w-24 h-24 border rounded-md overflow-hidden">
+                          <img 
+                            src={formData.image} 
+                            alt="Main product image" 
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, image: '' }))}
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors duration-200"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      )}
+                      
+                      <div className="flex-1">
+                        <div className="flex items-center justify-center w-full">
+                          <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                              <Upload className="w-8 h-8 text-gray-500 mb-2" />
+                              <p className="text-xs text-gray-500">Upload main image</p>
+                            </div>
+                            <input 
+                              type="file" 
+                              className="hidden" 
+                              accept="image/*"
+                              onChange={(e) => handleFileChange(e, true)}
                             />
                           </label>
                         </div>
+                        <p className="mt-1 text-xs text-gray-500">Or enter image URL:</p>
+                        <input
+                          type="text"
+                          name="image"
+                          value={formData.image}
+                          onChange={handleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
+                          placeholder="https://example.com/image.jpg"
+                        />
                       </div>
-                      {formData.image && (
-                        <div className="relative">
-                          <img
-                            src={formData.image}
-                            alt="Preview"
-                            className="w-32 h-32 object-cover rounded-lg border"
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://placehold.co/128x128/E0E0E0/000000?text=Preview+Error';
-                            }}
-                          />
-                          {formData.image.startsWith('data:') && (
-                            <span className="absolute top-0 right-0 bg-blue-500 text-white text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg">
-                              New Upload
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      <p className="text-xs text-gray-500">
-                        Supported formats: JPG, PNG. Max size: 2MB
-                      </p>
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Additional Product Images
-                    </label>
+                  
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Additional Images</label>
                     <div className="space-y-4">
                       {formData.images.map((image, index) => (
-                        <div key={index} className="space-y-2">
-                          <div className="flex items-center space-x-2">
-                            <input
-                              type="url"
-                              value={image}
-                              onChange={(e) => handleImageChange(index, e.target.value)}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                              placeholder="Enter image URL"
-                            />
-                            <div className="flex-shrink-0">
-                              <label className="cursor-pointer px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm rounded-lg transition-colors duration-200">
-                                <Upload className="w-4 h-4" />
-                                <input
-                                  type="file"
-                                  accept="image/jpeg,image/png"
-                                  onChange={handleAdditionalImageUpload(index)}
-                                  className="hidden"
+                        <div key={index} className="flex items-center space-x-4">
+                          {image && (
+                            <div className="relative w-16 h-16 border rounded-md overflow-hidden">
+                              <img 
+                                src={image} 
+                                alt={`Additional image ${index + 1}`} 
+                                className="w-full h-full object-cover"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleImageChange(index, '')}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors duration-200"
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          )}
+                          
+                          <div className="flex-1">
+                            <div className="flex items-center">
+                              <input
+                                type="text"
+                                value={image}
+                                onChange={(e) => handleImageChange(index, e.target.value)}
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="Image URL or upload"
+                              />
+                              <label className="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-200 cursor-pointer">
+                                <Upload className="w-4 h-4 text-gray-600" />
+                                <input 
+                                  type="file" 
+                                  className="hidden" 
+                                  accept="image/*"
+                                  onChange={(e) => handleFileChange(e, false, index)}
                                 />
                               </label>
                             </div>
-                            {formData.images.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => removeImage(index)}
-                                className="text-red-600 hover:text-red-800 p-1"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            )}
                           </div>
-                          {image && (
-                            <div className="relative">
-                              <img
-                                src={image}
-                                alt={`Additional image ${index + 1}`}
-                                className="w-24 h-24 object-cover rounded-lg border"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src = 'https://placehold.co/96x96/E0E0E0/000000?text=Preview+Error';
-                                }}
-                              />
-                            </div>
-                          )}
+                          
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="text-red-500 hover:text-red-700"
+                            disabled={formData.images.length <= 1}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       ))}
+                      
                       <button
                         type="button"
                         onClick={addImage}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        className="flex items-center text-sm text-blue-600 hover:text-blue-800"
                       >
-                        + Add Another Image
+                        <Plus className="w-4 h-4 mr-1" />
+                        Add Another Image
                       </button>
-                      <p className="text-xs text-gray-500">
-                        Supported formats: JPG, PNG. Max size: 2MB
-                      </p>
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Product Features
-                    </label>
-                    <div className="space-y-2">
+                  
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Features</label>
+                    <div className="space-y-3">
                       {formData.features.map((feature, index) => (
                         <div key={index} className="flex items-center space-x-2">
                           <input
                             type="text"
                             value={feature}
                             onChange={(e) => handleFeatureChange(index, e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Enter a product feature"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Product feature"
                           />
-                          {formData.features.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeFeature(index)}
-                              className="text-red-600 hover:text-red-800 p-1"
-                            >
-                              <X className="w-4 h-4" />
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeFeature(index)}
+                            className="text-red-500 hover:text-red-700"
+                            disabled={formData.features.length <= 1}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       ))}
+                      
                       <button
                         type="button"
                         onClick={addFeature}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                        className="flex items-center text-sm text-blue-600 hover:text-blue-800"
                       >
-                        + Add Another Feature
+                        <Plus className="w-4 h-4 mr-1" />
+                        Add Another Feature
                       </button>
                     </div>
                   </div>
-
-                  <div className="flex justify-end space-x-4 pt-6 border-t">
+                  
+                  <div className="flex justify-end space-x-4">
                     <button
                       type="button"
                       onClick={handleCloseModal}
-                      className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 flex items-center"
                     >
                       {isSubmitting ? (
                         <>
