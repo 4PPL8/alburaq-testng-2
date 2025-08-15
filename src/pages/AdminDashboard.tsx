@@ -1,646 +1,446 @@
 import React, { useState } from 'react';
-import { Plus, Edit3, Trash2, Eye, Upload, X, Check, AlertTriangle, Loader2, Undo2 } from 'lucide-react';
-import { useProducts, Product } from '../contexts/ProductContext'; // Import Product interface
+import { useProducts } from '../contexts/ProductContext';
 import { useAuth } from '../contexts/AuthContext';
-import { toast } from 'react-toastify'; // Import toast (ToastContainer is in App.tsx)
+import { Plus, Edit, Trash2, Undo2, Settings } from 'lucide-react';
+import GitHubDataService from '../services/GitHubDataService';
 
-// Custom Confirmation Modal component for Delete
-const ConfirmDeleteModal: React.FC<{ onConfirm: () => void, onCancel: () => void }> = ({ onConfirm, onCancel }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full text-center">
-      <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-gray-800 mb-4">Confirm Deletion</h3>
-      <p className="text-gray-600 mb-6">Are you sure you want to delete this product? This action cannot be undone.</p>
-      <div className="flex justify-center space-x-4">
-        <button
-          onClick={onCancel}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={onConfirm}
-          className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-);
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  image: string;
+  features: string[];
+  images?: string[];
+}
 
 const AdminDashboard: React.FC = () => {
-  const { 
-    products, 
-    categories, 
-    addProduct, 
-    updateProduct, 
-    deleteProduct, 
-    undoLastChange,
-    canUndo
-  } = useProducts();
-  const { adminInfo } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'manage'>('overview');
-  const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { products, addProduct, updateProduct, deleteProduct, undoLastChange, canUndo } = useProducts();
+  const { logoutAdmin } = useAuth();
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null);
   const [isUndoing, setIsUndoing] = useState(false);
+  const [showGitHubConfig, setShowGitHubConfig] = useState(false);
+  const [githubToken, setGitHubToken] = useState('');
+  const [gitHubService] = useState(() => GitHubDataService.getInstance());
 
-  const [formData, setFormData] = useState({
+  const categories = [
+    'Cosmetics & Personal Care',
+    'Razors',
+    'Toothbrush',
+    'Agarbatti (Incense Sticks)',
+    'Natural / Herbal Products',
+    'Adhesive Tape',
+    'PVC Tape',
+    'Stationery',
+    'Stationery Tapes',
+    'Baby Products (Soothers)',
+    'Cleaning Products',
+    'Pest Control',
+    'Craft Supplies'
+  ];
+
+  const [newProduct, setNewProduct] = useState({
     name: '',
     category: '',
     description: '',
-    image: '', // Main image URL (string for base64 or URL)
-    features: [''],
-    images: [''] // Array of additional image URLs
+    image: '',
+    features: ''
   });
 
-  const resetForm = () => {
-    setFormData({
-      name: '',
-      category: '',
-      description: '',
-      image: '',
-      features: [''],
-      images: ['']
-    });
-  };
-
-  const handleOpenModal = (mode: 'add' | 'edit', product?: Product) => {
-    setModalMode(mode);
-    if (mode === 'edit' && product) {
-      setSelectedProduct(product);
-      setFormData({
-        name: product.name,
-        category: product.category,
-        description: product.description,
-        image: product.image,
-        features: product.features.length > 0 ? product.features : [''],
-        images: product.images && product.images.length > 0 ? product.images : ['']
-      });
-    } else {
-      resetForm();
-    }
-    setShowModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-    setSelectedProduct(null);
-    resetForm();
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
-  };
-
-  const handleFeatureChange = (index: number, value: string) => {
-    const newFeatures = [...formData.features];
-    newFeatures[index] = value;
-    setFormData(prev => ({ ...prev, features: newFeatures }));
-  };
-
-  const addFeature = () => {
-    setFormData(prev => ({
-      ...prev,
-      features: [...prev.features, '']
-    }));
-  };
-
-  const removeFeature = (index: number) => {
-    const newFeatures = [...formData.features];
-    newFeatures.splice(index, 1);
-    setFormData(prev => ({ ...prev, features: newFeatures.length > 0 ? newFeatures : [''] }));
-  };
-
-  const handleImageChange = (index: number, value: string) => {
-    const newImages = [...formData.images];
-    newImages[index] = value;
-    setFormData(prev => ({ ...prev, images: newImages }));
-  };
-
-  const addImage = () => {
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, '']
-    }));
-  };
-
-  const removeImage = (index: number) => {
-    const newImages = [...formData.images];
-    newImages.splice(index, 1);
-    setFormData(prev => ({ ...prev, images: newImages.length > 0 ? newImages : [''] }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, isMainImage: boolean, index?: number) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        
-        if (isMainImage) {
-          setFormData(prev => ({ ...prev, image: base64String }));
-        } else if (index !== undefined) {
-          handleImageChange(index, base64String);
-        }
-      };
-      
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate form
-    if (!formData.name || !formData.category || !formData.description || !formData.image) {
-      toast.error('Please fill in all required fields');
+    if (!newProduct.name || !newProduct.category || !newProduct.description || !newProduct.image) {
+      alert('Please fill in all required fields');
       return;
     }
-    
-    setIsSubmitting(true);
-    
+
     try {
-      // Filter out empty features and images
-      const cleanedFormData = {
-        ...formData,
-        features: formData.features.filter(f => f.trim() !== ''),
-        images: formData.images.filter(img => img.trim() !== '')
-      };
-      
-      if (modalMode === 'add') {
-        await addProduct(cleanedFormData);
-        toast.success('Product added successfully');
-      } else if (selectedProduct) {
-        await updateProduct(selectedProduct.id, cleanedFormData);
-        toast.success('Product updated successfully');
-      }
-      
-      handleCloseModal();
+      await addProduct({
+        name: newProduct.name,
+        category: newProduct.category,
+        description: newProduct.description,
+        image: newProduct.image,
+        features: newProduct.features.split(',').map(f => f.trim()).filter(f => f)
+      });
+
+      setNewProduct({
+        name: '',
+        category: '',
+        description: '',
+        image: '',
+        features: ''
+      });
+      setIsAddingProduct(false);
     } catch (error) {
-      console.error('Error saving product:', error);
-      toast.error('Failed to save product');
-    } finally {
-      setIsSubmitting(false);
+      console.error('Error adding product:', error);
+      alert('Failed to add product');
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleUpdateProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingProduct) return;
+
     try {
-      await deleteProduct(id);
-      setDeleteConfirm(null);
-      toast.success('Product deleted successfully');
+      await updateProduct(editingProduct.id, {
+        name: editingProduct.name,
+        category: editingProduct.category,
+        description: editingProduct.description,
+        image: editingProduct.image,
+        features: editingProduct.features
+      });
+
+      setEditingProduct(null);
+    } catch (error) {
+      console.error('Error updating product:', error);
+      alert('Failed to update product');
+    }
+  };
+
+  const handleDeleteProduct = async () => {
+    if (!deletingProduct) return;
+
+    try {
+      await deleteProduct(deletingProduct.id);
+      setDeletingProduct(null);
     } catch (error) {
       console.error('Error deleting product:', error);
-      toast.error('Failed to delete product');
+      alert('Failed to delete product');
     }
   };
 
   const handleUndo = async () => {
     setIsUndoing(true);
     try {
-      await undoLastChange();
-      toast.success('Last change undone');
+      const result = await undoLastChange();
+      if (result.success) {
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
     } catch (error) {
-      console.error('Error undoing last change:', error);
-      toast.error('Failed to undo last change');
+      console.error('Error undoing change:', error);
+      alert('Failed to undo change');
     } finally {
       setIsUndoing(false);
     }
   };
 
+  const handleGitHubTokenSave = () => {
+    if (githubToken.trim()) {
+      gitHubService.setGitHubToken(githubToken.trim());
+      setShowGitHubConfig(false);
+      alert('GitHub token saved! Global sync is now enabled.');
+    } else {
+      alert('Please enter a valid GitHub token');
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Admin Dashboard</h1>
-        
-        {/* Undo Button */}
-        {canUndo && (
-          <button
-            onClick={handleUndo}
-            disabled={isUndoing}
-            className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium text-gray-700 transition-colors duration-200 disabled:opacity-50"
-          >
-            <Undo2 className="w-4 h-4 mr-1" />
-            Undo Last Change
-          </button>
-        )}
-      </div>
-      
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
-        <button
-          className={`px-4 py-2 font-medium text-sm ${activeTab === 'overview' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          Overview
-        </button>
-        <button
-          className={`px-4 py-2 font-medium text-sm ${activeTab === 'manage' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => setActiveTab('manage')}
-        >
-          Manage Products
-        </button>
-      </div>
-      
-      <div className="bg-white rounded-xl shadow-md p-6">
-        {activeTab === 'overview' ? (
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Dashboard Overview</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-blue-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-blue-800 mb-2">Total Products</h3>
-                <p className="text-3xl font-bold text-blue-600">{products.length}</p>
-              </div>
-              <div className="bg-green-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-green-800 mb-2">Categories</h3>
-                <p className="text-3xl font-bold text-green-600">{categories.length}</p>
-              </div>
-              <div className="bg-purple-50 p-6 rounded-lg">
-                <h3 className="text-lg font-medium text-purple-800 mb-2">Admin User</h3>
-                <p className="text-xl font-medium text-purple-600">{adminInfo?.email || 'Not logged in'}</p>
-              </div>
-            </div>
-            
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Recent Products</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {products.slice(0, 5).map(product => (
-                      <tr key={product.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10">
-                              <img className="h-10 w-10 rounded-full object-cover" src={product.image} alt={product.name} />
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-500">{product.category}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <button 
-                            onClick={() => handleOpenModal('edit', product)}
-                            className="text-indigo-600 hover:text-indigo-900 mr-3"
-                          >
-                            <Edit3 className="w-4 h-4" />
-                          </button>
-                          <button 
-                            onClick={() => setDeleteConfirm(product.id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Manage Products</h2>
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+            <div className="flex gap-2">
               <button
-                onClick={() => handleOpenModal('add')}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                onClick={() => setShowGitHubConfig(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Product
+                <Settings size={20} />
+                GitHub Config
+              </button>
+              <button
+                onClick={logoutAdmin}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Logout
               </button>
             </div>
-            
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {products.map(product => (
-                    <tr key={product.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
-                            <img className="h-10 w-10 rounded-full object-cover" src={product.image} alt={product.name} />
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{product.category}</div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-500 truncate max-w-xs">{product.description}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button 
-                          onClick={() => handleOpenModal('edit', product)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-3"
-                          title="Edit"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
-                        <button 
-                          onClick={() => setDeleteConfirm(product.id)}
-                          className="text-red-600 hover:text-red-900 mr-3"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                        <a 
-                          href={`/products/${product.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-gray-600 hover:text-gray-900"
-                          title="View"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
-        )}
-        
-        {/* Delete Confirmation Modal */}
-        {deleteConfirm && (
-          <ConfirmDeleteModal 
-            onConfirm={() => handleDelete(deleteConfirm)}
-            onCancel={() => setDeleteConfirm(null)}
-          />
-        )}
-        
-        {/* Add/Edit Product Modal */}
-        {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  {modalMode === 'add' ? 'Add New Product' : 'Edit Product'}
-                </h3>
-                <button 
-                  onClick={handleCloseModal}
-                  className="text-gray-500 hover:text-gray-700"
+          
+          {/* Actions */}
+          <div className="flex gap-4 mt-4">
+            <button
+              onClick={() => setIsAddingProduct(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Plus size={20} />
+              Add Product
+            </button>
+            <button
+              onClick={handleUndo}
+              disabled={!canUndo || isUndoing}
+              className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Undo2 size={20} />
+              {isUndoing ? 'Undoing...' : 'Undo Last Change'}
+            </button>
+          </div>
+        </div>
+
+        {/* GitHub Configuration Modal */}
+        {showGitHubConfig && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96">
+              <h2 className="text-xl font-bold mb-4">GitHub Configuration</h2>
+              <p className="text-gray-600 mb-4">
+                Enter your GitHub Personal Access Token to enable global data persistence.
+                This will allow admin changes to be visible to all users across devices.
+              </p>
+              <input
+                type="password"
+                placeholder="GitHub Personal Access Token"
+                value={githubToken}
+                onChange={(e) => setGitHubToken(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleGitHubTokenSave}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                 >
-                  <X className="w-5 h-5" />
+                  Save Token
+                </button>
+                <button
+                  onClick={() => setShowGitHubConfig(false)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                >
+                  Cancel
                 </button>
               </div>
-              
-              <div className="space-y-6">
-                <form onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                      <select
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                      >
-                        <option value="">Select a category</option>
-                        {categories.map(category => (
-                          <option key={category} value={category}>{category}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
-                    />
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Main Image</label>
-                    <div className="flex items-center space-x-4">
-                      {formData.image && (
-                        <div className="relative w-24 h-24 border rounded-md overflow-hidden">
-                          <img 
-                            src={formData.image} 
-                            alt="Main product image" 
-                            className="w-full h-full object-cover"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, image: '' }))}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors duration-200"
-                          >
-                            <X className="w-3 h-3" />
-                          </button>
-                        </div>
-                      )}
-                      
-                      <div className="flex-1">
-                        <div className="flex items-center justify-center w-full">
-                          <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                              <Upload className="w-8 h-8 text-gray-500 mb-2" />
-                              <p className="text-xs text-gray-500">Upload main image</p>
-                            </div>
-                            <input 
-                              type="file" 
-                              className="hidden" 
-                              accept="image/*"
-                              onChange={(e) => handleFileChange(e, true)}
-                            />
-                          </label>
-                        </div>
-                        <p className="mt-1 text-xs text-gray-500">Or enter image URL:</p>
-                        <input
-                          type="text"
-                          name="image"
-                          value={formData.image}
-                          onChange={handleInputChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 mt-1"
-                          placeholder="https://example.com/image.jpg"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Additional Images</label>
-                    <div className="space-y-4">
-                      {formData.images.map((image, index) => (
-                        <div key={index} className="flex items-center space-x-4">
-                          {image && (
-                            <div className="relative w-16 h-16 border rounded-md overflow-hidden">
-                              <img 
-                                src={image} 
-                                alt={`Additional image ${index + 1}`} 
-                                className="w-full h-full object-cover"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => handleImageChange(index, '')}
-                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors duration-200"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                          )}
-                          
-                          <div className="flex-1">
-                            <div className="flex items-center">
-                              <input
-                                type="text"
-                                value={image}
-                                onChange={(e) => handleImageChange(index, e.target.value)}
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Image URL or upload"
-                              />
-                              <label className="px-3 py-2 bg-gray-100 border border-l-0 border-gray-300 rounded-r-md hover:bg-gray-200 cursor-pointer">
-                                <Upload className="w-4 h-4 text-gray-600" />
-                                <input 
-                                  type="file" 
-                                  className="hidden" 
-                                  accept="image/*"
-                                  onChange={(e) => handleFileChange(e, false, index)}
-                                />
-                              </label>
-                            </div>
-                          </div>
-                          
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="text-red-500 hover:text-red-700"
-                            disabled={formData.images.length <= 1}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                      
-                      <button
-                        type="button"
-                        onClick={addImage}
-                        className="flex items-center text-sm text-blue-600 hover:text-blue-800"
-                      >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Add Another Image
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Features</label>
-                    <div className="space-y-3">
-                      {formData.features.map((feature, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                          <input
-                            type="text"
-                            value={feature}
-                            onChange={(e) => handleFeatureChange(index, e.target.value)}
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Product feature"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeFeature(index)}
-                            className="text-red-500 hover:text-red-700"
-                            disabled={formData.features.length <= 1}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ))}
-                      
-                      <button
-                        type="button"
-                        onClick={addFeature}
-                        className="flex items-center text-sm text-blue-600 hover:text-blue-800"
-                      >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Add Another Feature
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-end space-x-4">
-                    <button
-                      type="button"
-                      onClick={handleCloseModal}
-                      className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 flex items-center"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                          {modalMode === 'add' ? 'Adding...' : 'Updating...'}
-                        </>
-                      ) : (
-                        <>
-                          <Check className="w-4 h-4 mr-2" />
-                          {modalMode === 'add' ? 'Add Product' : 'Update Product'}
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </form>
+            </div>
+          </div>
+        )}
+
+        {/* Add Product Modal */}
+        {isAddingProduct && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-bold mb-4">Add New Product</h2>
+              <form onSubmit={handleAddProduct}>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                  <input
+                    type="text"
+                    value={newProduct.name}
+                    onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                  <select
+                    value={newProduct.category}
+                    onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    required
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                  <textarea
+                    value={newProduct.description}
+                    onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    rows={3}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Image URL *</label>
+                  <input
+                    type="url"
+                    value={newProduct.image}
+                    onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Features (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={newProduct.features}
+                    onChange={(e) => setNewProduct({ ...newProduct, features: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    placeholder="Feature 1, Feature 2, Feature 3"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                  >
+                    Add Product
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingProduct(false)}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Edit Product Modal */}
+        {editingProduct && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96 max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-bold mb-4">Edit Product</h2>
+              <form onSubmit={handleUpdateProduct}>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+                  <input
+                    type="text"
+                    value={editingProduct.name}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                  <select
+                    value={editingProduct.category}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    required
+                  >
+                    {categories.map(category => (
+                      <option key={category} value={category}>{category}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                  <textarea
+                    value={editingProduct.description}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    rows={3}
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Image URL *</label>
+                  <input
+                    type="url"
+                    value={editingProduct.image}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, image: e.target.value })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Features (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={editingProduct.features.join(', ')}
+                    onChange={(e) => setEditingProduct({ 
+                      ...editingProduct, 
+                      features: e.target.value.split(',').map(f => f.trim()).filter(f => f)
+                    })}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                    placeholder="Feature 1, Feature 2, Feature 3"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    Update Product
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditingProduct(null)}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deletingProduct && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-96">
+              <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+              <p className="text-gray-600 mb-4">
+                Are you sure you want to delete "{deletingProduct.name}"? This action cannot be undone.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleDeleteProduct}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => setDeletingProduct(null)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
         )}
+
+        {/* Products List */}
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">Products ({products.length})</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map(product => (
+              <div key={product.id} className="border border-gray-200 rounded-lg p-4">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-48 object-cover rounded-lg mb-4"
+                />
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
+                <p className="text-sm text-gray-600 mb-2">{product.category}</p>
+                <p className="text-gray-700 text-sm mb-4 line-clamp-3">{product.description}</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setEditingProduct(product)}
+                    className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                  >
+                    <Edit size={16} />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setDeletingProduct(product)}
+                    className="flex items-center gap-1 px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+                  >
+                    <Trash2 size={16} />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default AdminDashboard;

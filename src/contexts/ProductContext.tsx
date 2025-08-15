@@ -1,6 +1,6 @@
 // src/contexts/ProductContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import GlobalDataService from '../services/GlobalDataService';
+import GitHubDataService from '../services/GitHubDataService';
 
 export interface Product {
   id: string;
@@ -16,7 +16,7 @@ interface SyncStatus {
   syncing: boolean;
   lastSynced: Date | null;
   error: string | null;
-  isGlobalSyncEnabled: boolean;
+  isGitHubSyncEnabled: boolean;
 }
 
 interface ProductContextType {
@@ -51,24 +51,6 @@ const initialProducts: Product[] = [
     ],
     features: ['Long-lasting color', 'Natural ingredients', 'Easy application']
   },
-   {
-    id: '50',
-    name: 'Belo Color (Brown)',
-    category: 'Cosmetics & Personal Care',
-    description: 'High-quality brown hair color for vibrant, rich, and long-lasting results.',
-    image: '/belo-color-brown-0.png',
-    images: [
-      '/belo-color-brown-0.png',
-      '/balo-color-brown-1.png',
-      '/balo-color-brown-2.png',
-      '/balo-color-brown-3.png'
-    ],
-    features: [
-      'Rich brown tone',
-      'Long-lasting color',
-      'Natural ingredients'
-    ]
-  },
   {
     id: '2',
     name: 'Grace Color',
@@ -82,23 +64,6 @@ const initialProducts: Product[] = [
       '/grace-color-3.png'
     ],
     features: ['Premium quality', 'Excellent coverage', 'Hair-friendly formula']
-  },
-   {
-    id: '51',
-    name: 'Grace Color – Brown',
-    category: 'Cosmetics & Personal Care',
-    description: 'Premium brown hair coloring solution with excellent coverage and a natural finish.',
-    image: '/grace-color-brown-1.png',
-    images: [
-      '/grace-color-brown-1.png',
-      '/grace-color-brown-2.png',
-      '/grace-color-brown-3.png'
-    ],
-    features: [
-      'Rich brown shade',
-      'Excellent coverage',
-      'Natural finish'
-    ]
   },
   {
     id: '3',
@@ -115,24 +80,6 @@ const initialProducts: Product[] = [
       'Easy to apply',
       'Works in minutes',
       'Smooth skin after use'
-    ]
-  },
-  {
-    id: '53',
-    name: 'Neat Bleach',
-    category: 'Cosmetics & Personal Care',
-    description: 'Gentle bleach for lightening facial hair and brightening skin tone.',
-    image: '/neat-bleach-1.png',
-    images: [
-      '/neat-bleach-1.png',
-      '/neat-bleach-2.png',
-      '/neat-bleach-3.png',
-      '/neat-bleach-4.png'
-    ],
-    features: [
-      'Gentle on skin',
-      'Brightens complexion',
-      'Easy application'
     ]
   },
 
@@ -163,59 +110,6 @@ const initialProducts: Product[] = [
     ],
     features: ['Reliable quality', 'Everyday use', 'Affordable price']
   },
-  {
-    id: '52',
-    name: 'Turk Razor',
-    category: 'Razors',
-    description: 'High-quality razor for smooth and precise shaving experience.',
-    image: '/turk-razor-1.png',
-    images: [
-      '/turk-razor-1.png',
-      '/turk-razor-2.png',
-      '/turk-razor-3.png'
-    ],
-    features: [
-      'Sharp and durable blade',
-      'Comfortable grip',
-      'Suitable for all skin types'
-    ]
-  },
-    {
-    id: '54',
-    name: 'Sharp Hygiene Razor',
-    category: 'Razors',
-    description: 'Hygienic razor designed for safe and comfortable shaving.',
-    image: '/sharp-hygiene-razor-1.png',
-    images: [
-      '/sharp-hygiene-razor-1.png',
-      '/sharp-hygiene-razor-2.png',
-      '/sharp-hygiene-razor-3.png',
-      '/sharp-hygiene-razor-4.png'
-       
-    ],
-    features: [
-      'Hygienic design',
-      'Safe for sensitive skin',
-      'Comfortable grip'
-    ]
-  },
-  {
-    id: '55',
-    name: 'Sharp Paki Razor',
-    category: 'Razors',
-    description: 'Traditional Paki razor for precise and smooth shaving.',
-    image: '/sharp-paki-razor-1.png',
-    images: [
-      '/sharp-paki-razor-1.png',
-      '/sharp-paki-razor-2.png',
-      '/sharp-paki-razor-3.png'
-    ],
-    features: [
-      'Traditional style',
-      'Precise shaving',
-      'Durable blade'
-    ]
-  },
 
   // Toothbrush
   {
@@ -245,19 +139,6 @@ const initialProducts: Product[] = [
       '/mahfil-milan-2.png'
     ],
     features: ['Premium quality', 'Long-lasting fragrance', 'Natural ingredients']
-  },
-  {
-    id: '14',
-    name: 'Mahfil Milan (Extra)',
-    category: 'Agarbatti (Incense Sticks)',
-    description: 'Another batch of premium incense sticks with enchanting fragrance.',
-    image: '/mehfil-millan-extra-1.png',
-    images: [
-      '/mehfil-millan-extra-1.png',
-      '/mehfil-millan-extra-2.jpg',
-      '/mehfil-millan-extra-3.png'
-    ],
-    features: ['Same premium quality', 'Great for bulk purchase']
   },
   {
     id: '8',
@@ -298,22 +179,10 @@ const initialProducts: Product[] = [
     ],
     features: ['Traditional formula', 'Respiratory support', 'Natural ingredients']
   },
-  {
-    id: '11',
-    name: 'Natural Joshanda (Extra)',
-    category: 'Natural / Herbal Products',
-    description: 'Extra strength natural herbal remedy for respiratory wellness.',
-    image: '/jor-joshanda-extra-1.png',
-    images: [
-      '/jor-joshanda-extra-1.png',
-      '/jor-joshanda-extra-2.png'
-    ],
-    features: ['Extra strength formula', 'Enhanced respiratory support', 'Natural ingredients']
-  },
 
   // Adhesive Tape
   {
-    id: '12',
+    id: '11',
     name: 'Turk Tape',
     category: 'Adhesive Tape',
     description: 'High-quality adhesive tape for various applications.',
@@ -327,7 +196,7 @@ const initialProducts: Product[] = [
 
   // PVC Tape
   {
-    id: '13',
+    id: '12',
     name: 'Turk PVC Tape',
     category: 'PVC Tape',
     description: 'Durable PVC tape for electrical and general use.',
@@ -341,7 +210,7 @@ const initialProducts: Product[] = [
 
   // Stationery
   {
-    id: '15',
+    id: '13',
     name: 'Turk Pencil',
     category: 'Stationery',
     description: 'High-quality pencils for writing and drawing.',
@@ -353,7 +222,7 @@ const initialProducts: Product[] = [
     features: ['Smooth writing', 'Durable lead', 'Comfortable grip']
   },
   {
-    id: '16',
+    id: '14',
     name: 'Turk Pen',
     category: 'Stationery',
     description: 'Reliable pens for everyday writing needs.',
@@ -363,424 +232,6 @@ const initialProducts: Product[] = [
       '/turk-pen-2.png'
     ],
     features: ['Smooth ink flow', 'Comfortable writing', 'Long-lasting']
-  },
-  {
-    id: '17',
-    name: 'Turk Marker',
-    category: 'Stationery',
-    description: 'Vibrant markers for highlighting and drawing.',
-    image: '/turk-marker-1.png',
-    images: [
-      '/turk-marker-1.png',
-      '/turk-marker-2.png'
-    ],
-    features: ['Vibrant colors', 'Quick drying', 'Non-toxic ink']
-  },
-  {
-    id: '18',
-    name: 'Turk Highlighter',
-    category: 'Stationery',
-    description: 'Bright highlighters for marking important text.',
-    image: '/turk-highlighter-1.png',
-    images: [
-      '/turk-highlighter-1.png',
-      '/turk-highlighter-2.png'
-    ],
-    features: ['Bright colors', 'Non-bleeding', 'Long-lasting ink']
-  },
-
-  // Stationery Tapes
-  {
-    id: '19',
-    name: 'Turk Double Sided Tape',
-    category: 'Stationery Tapes',
-    description: 'Versatile double-sided tape for various applications.',
-    image: '/turk-double-sided-tape-1.png',
-    images: [
-      '/turk-double-sided-tape-1.png',
-      '/turk-double-sided-tape-2.png'
-    ],
-    features: ['Double-sided adhesion', 'Versatile use', 'Strong hold']
-  },
-  {
-    id: '20',
-    name: 'Turk Masking Tape',
-    category: 'Stationery Tapes',
-    description: 'Gentle masking tape for painting and crafting.',
-    image: '/turk-masking-tape-1.png',
-    images: [
-      '/turk-masking-tape-1.png',
-      '/turk-masking-tape-2.png'
-    ],
-    features: ['Gentle adhesion', 'Easy removal', 'Paint-safe']
-  },
-  {
-    id: '21',
-    name: 'Turk Packing Tape',
-    category: 'Stationery Tapes',
-    description: 'Strong packing tape for shipping and storage.',
-    image: '/turk-packing-tape-1.png',
-    images: [
-      '/turk-packing-tape-1.png',
-      '/turk-packing-tape-2.png'
-    ],
-    features: ['Strong adhesion', 'Weather resistant', 'Tear-resistant']
-  },
-
-  // Baby Products (Soothers)
-  {
-    id: '22',
-    name: 'Turk Soother',
-    category: 'Baby Products (Soothers)',
-    description: 'Safe and comfortable soother for babies.',
-    image: '/turk-soother-1.png',
-    images: [
-      '/turk-soother-1.png',
-      '/turk-soother-2.png'
-    ],
-    features: ['Safe materials', 'Comfortable design', 'Easy to clean']
-  },
-  {
-    id: '23',
-    name: 'Turk Soother (Extra)',
-    category: 'Baby Products (Soothers)',
-    description: 'Additional safe and comfortable soother for babies.',
-    image: '/turk-soother-extra-1.png',
-    images: [
-      '/turk-soother-extra-1.png',
-      '/turk-soother-extra-2.png'
-    ],
-    features: ['Safe materials', 'Comfortable design', 'Easy to clean']
-  },
-
-  // Cleaning Products
-  {
-    id: '24',
-    name: 'Turk Dish Soap',
-    category: 'Cleaning Products',
-    description: 'Effective dish soap for cleaning dishes and utensils.',
-    image: '/turk-dish-soap-1.png',
-    images: [
-      '/turk-dish-soap-1.png',
-      '/turk-dish-soap-2.png'
-    ],
-    features: ['Effective cleaning', 'Gentle on hands', 'Pleasant fragrance']
-  },
-  {
-    id: '25',
-    name: 'Turk Laundry Detergent',
-    category: 'Cleaning Products',
-    description: 'Powerful laundry detergent for clean and fresh clothes.',
-    image: '/turk-laundry-detergent-1.png',
-    images: [
-      '/turk-laundry-detergent-1.png',
-      '/turk-laundry-detergent-2.png'
-    ],
-    features: ['Powerful cleaning', 'Fresh fragrance', 'Color-safe formula']
-  },
-  {
-    id: '26',
-    name: 'Turk All-Purpose Cleaner',
-    category: 'Cleaning Products',
-    description: 'Versatile cleaner for various surfaces and applications.',
-    image: '/turk-all-purpose-cleaner-1.png',
-    images: [
-      '/turk-all-purpose-cleaner-1.png',
-      '/turk-all-purpose-cleaner-2.png'
-    ],
-    features: ['Versatile use', 'Effective cleaning', 'Safe for most surfaces']
-  },
-
-  // Pest Control
-  {
-    id: '27',
-    name: 'Turk Insect Repellent',
-    category: 'Pest Control',
-    description: 'Effective insect repellent for outdoor protection.',
-    image: '/turk-insect-repellent-1.png',
-    images: [
-      '/turk-insect-repellent-1.png',
-      '/turk-insect-repellent-2.png'
-    ],
-    features: ['Long-lasting protection', 'Safe formula', 'Pleasant scent']
-  },
-  {
-    id: '28',
-    name: 'Turk Ant Killer',
-    category: 'Pest Control',
-    description: 'Effective ant killer for eliminating ant infestations.',
-    image: '/turk-ant-killer-1.png',
-    images: [
-      '/turk-ant-killer-1.png',
-      '/turk-ant-killer-2.png'
-    ],
-    features: ['Fast-acting', 'Long-lasting effect', 'Safe for pets']
-  },
-  {
-    id: '29',
-    name: 'Turk Cockroach Killer',
-    category: 'Pest Control',
-    description: 'Powerful cockroach killer for pest elimination.',
-    image: '/turk-cockroach-killer-1.png',
-    images: [
-      '/turk-cockroach-killer-1.png',
-      '/turk-cockroach-killer-2.png'
-    ],
-    features: ['Powerful formula', 'Fast elimination', 'Long-lasting protection']
-  },
-
-  // Craft Supplies
-  {
-    id: '30',
-    name: 'Turk Glue Stick',
-    category: 'Craft Supplies',
-    description: 'Convenient glue stick for arts and crafts.',
-    image: '/turk-glue-stick-1.png',
-    images: [
-      '/turk-glue-stick-1.png',
-      '/turk-glue-stick-2.png'
-    ],
-    features: ['Easy application', 'Clean finish', 'Non-toxic formula']
-  },
-  {
-    id: '31',
-    name: 'Turk Scissors',
-    category: 'Craft Supplies',
-    description: 'Sharp scissors for precise cutting in crafts.',
-    image: '/turk-scissors-1.png',
-    images: [
-      '/turk-scissors-1.png',
-      '/turk-scissors-2.png'
-    ],
-    features: ['Sharp blades', 'Comfortable handles', 'Precise cutting']
-  },
-  {
-    id: '32',
-    name: 'Turk Paint Brush',
-    category: 'Craft Supplies',
-    description: 'Quality paint brushes for artistic projects.',
-    image: '/turk-paint-brush-1.png',
-    images: [
-      '/turk-paint-brush-1.png',
-      '/turk-paint-brush-2.png'
-    ],
-    features: ['Quality bristles', 'Various sizes', 'Smooth application']
-  },
-  {
-    id: '33',
-    name: 'Turk Colored Pencils',
-    category: 'Craft Supplies',
-    description: 'Vibrant colored pencils for drawing and coloring.',
-    image: '/turk-colored-pencils-1.png',
-    images: [
-      '/turk-colored-pencils-1.png',
-      '/turk-colored-pencils-2.png'
-    ],
-    features: ['Vibrant colors', 'Smooth application', 'Long-lasting']
-  },
-  {
-    id: '34',
-    name: 'Turk Watercolors',
-    category: 'Craft Supplies',
-    description: 'Beautiful watercolors for painting projects.',
-    image: '/turk-watercolors-1.png',
-    images: [
-      '/turk-watercolors-1.png',
-      '/turk-watercolors-2.png'
-    ],
-    features: ['Beautiful colors', 'Easy to blend', 'High quality']
-  },
-  {
-    id: '35',
-    name: 'Turk Construction Paper',
-    category: 'Craft Supplies',
-    description: 'Colorful construction paper for various crafts.',
-    image: '/turk-construction-paper-1.png',
-    images: [
-      '/turk-construction-paper-1.png',
-      '/turk-construction-paper-2.png'
-    ],
-    features: ['Various colors', 'Good quality', 'Easy to work with']
-  },
-  {
-    id: '36',
-    name: 'Turk Pipe Cleaners',
-    category: 'Craft Supplies',
-    description: 'Flexible pipe cleaners for creative crafts.',
-    image: '/turk-pipe-cleaners-1.png',
-    images: [
-      '/turk-pipe-cleaners-1.png',
-      '/turk-pipe-cleaners-2.png'
-    ],
-    features: ['Flexible material', 'Various colors', 'Easy to shape']
-  },
-  {
-    id: '37',
-    name: 'Turk Googly Eyes',
-    category: 'Craft Supplies',
-    description: 'Fun googly eyes for craft projects.',
-    image: '/turk-googly-eyes-1.png',
-    images: [
-      '/turk-googly-eyes-1.png',
-      '/turk-googly-eyes-2.png'
-    ],
-    features: ['Fun design', 'Various sizes', 'Easy to apply']
-  },
-  {
-    id: '38',
-    name: 'Turk Craft Foam',
-    category: 'Craft Supplies',
-    description: 'Versatile craft foam for 3D projects.',
-    image: '/turk-craft-foam-1.png',
-    images: [
-      '/turk-craft-foam-1.png',
-      '/turk-craft-foam-2.png'
-    ],
-    features: ['Easy to cut', 'Lightweight', 'Various colors']
-  },
-  {
-    id: '39',
-    name: 'Turk Yarn',
-    category: 'Craft Supplies',
-    description: 'Soft yarn for knitting and crocheting.',
-    image: '/turk-yarn-1.png',
-    images: [
-      '/turk-yarn-1.png',
-      '/turk-yarn-2.png'
-    ],
-    features: ['Soft texture', 'Various colors', 'Good quality']
-  },
-  {
-    id: '40',
-    name: 'Turk Beads',
-    category: 'Craft Supplies',
-    description: 'Beautiful beads for jewelry making.',
-    image: '/turk-beads-1.png',
-    images: [
-      '/turk-beads-1.png',
-      '/turk-beads-2.png'
-    ],
-    features: ['Beautiful design', 'Various sizes', 'High quality']
-  },
-  {
-    id: '41',
-    name: 'Turk Buttons',
-    category: 'Craft Supplies',
-    description: 'Decorative buttons for various projects.',
-    image: '/turk-buttons-1.png',
-    images: [
-      '/turk-buttons-1.png',
-      '/turk-buttons-2.png'
-    ],
-    features: ['Decorative design', 'Various sizes', 'Easy to sew']
-  },
-  {
-    id: '42',
-    name: 'Turk Ribbon',
-    category: 'Craft Supplies',
-    description: 'Colorful ribbon for gift wrapping and crafts.',
-    image: '/turk-ribbon-1.png',
-    images: [
-      '/turk-ribbon-1.png',
-      '/turk-ribbon-2.png'
-    ],
-    features: ['Colorful design', 'Various widths', 'Good quality']
-  },
-  {
-    id: '43',
-    name: 'Turk Stickers',
-    category: 'Craft Supplies',
-    description: 'Fun stickers for decorating projects.',
-    image: '/turk-stickers-1.png',
-    images: [
-      '/turk-stickers-1.png',
-      '/turk-stickers-2.png'
-    ],
-    features: ['Fun designs', 'Easy to apply', 'Various themes']
-  },
-  {
-    id: '44',
-    name: 'Turk Glitter',
-    category: 'Craft Supplies',
-    description: 'Sparkly glitter for adding shine to projects.',
-    image: '/turk-glitter-1.png',
-    images: [
-      '/turk-glitter-1.png',
-      '/turk-glitter-2.png'
-    ],
-    features: ['Sparkly effect', 'Various colors', 'Easy to apply']
-  },
-  {
-    id: '45',
-    name: 'Turk Mod Podge',
-    category: 'Craft Supplies',
-    description: 'Versatile decoupage medium for various crafts.',
-    image: '/turk-mod-podge-1.png',
-    images: [
-      '/turk-mod-podge-1.png',
-      '/turk-mod-podge-2.png'
-    ],
-    features: ['Versatile use', 'Easy application', 'Good adhesion']
-  },
-  {
-    id: '46',
-    name: 'Turk Hot Glue Gun',
-    category: 'Craft Supplies',
-    description: 'Hot glue gun for strong adhesive bonding.',
-    image: '/turk-hot-glue-gun-1.png',
-    images: [
-      '/turk-hot-glue-gun-1.png',
-      '/turk-hot-glue-gun-2.png'
-    ],
-    features: ['Strong bonding', 'Quick setting', 'Easy to use']
-  },
-  {
-    id: '47',
-    name: 'Turk Elfi',
-    category: 'Craft Supplies',
-    description: 'Premium quality elfi adhesive used for crafts, nails, or multipurpose cosmetic use.',
-    image: '/turk-elfi-1.png',
-    images: [
-      '/turk-elfi-1.png',
-      '/turk-elfi-2.png'
-    ],
-    features: [
-      'Strong hold',
-      'Quick drying',
-      'Multipurpose use'
-    ]
-  },
-  {
-    id: '48',
-    name: 'Turk Glue 20 Gram',
-    category: 'Craft Supplies',
-    description: 'Compact 20g Turk glue suitable for precise application in arts, crafts, or beauty.',
-    image: '/turk-glue-20g-1.jpg',
-    images: [
-      '/turk-glue-20g-1.jpg',
-      '/turk-glue-20g-2.png'
-    ],
-    features: [
-      '20g tube',
-      'Easy to apply',
-      'Strong and fast bonding'
-    ]
-  },
-  {
-    id: '49',
-    name: 'Turk Glue 50 Gram',
-    category: 'Craft Supplies',
-    description: 'Larger 50g Turk glue ideal for extended use in crafting and professional projects.',
-    image: '/turk-glue-50g-1.png',
-    images: [
-      '/turk-glue-50g-1.png',
-      '/turk-glue-50g-2.png'
-    ],
-    features: [
-      '50g capacity',
-      'Ideal for large projects',
-      'Durable, strong hold'
-    ]
   }
 ];
 
@@ -790,7 +241,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [canUndo, setCanUndo] = useState<boolean>(false);
   
   // Initialize DataPersistenceService
-  const dataService = React.useMemo(() => GlobalDataService.getInstance(), []);
+  const dataService = React.useMemo(() => GitHubDataService.getInstance(), []);
 
   useEffect(() => {
     // Load products from persistent storage or use initial products
@@ -817,18 +268,18 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setProducts(event.detail.products);
     };
 
-    const handleGlobalProductsSynced = (event: CustomEvent) => {
+    const handleGitHubProductsSynced = (event: CustomEvent) => {
       setProducts(event.detail.products);
     };
 
     window.addEventListener('products_synced', handleProductsSynced as EventListener);
     window.addEventListener('force_sync', handleForceSync as EventListener);
-    window.addEventListener('global_products_synced', handleGlobalProductsSynced as EventListener);
+    window.addEventListener('github_products_synced', handleGitHubProductsSynced as EventListener);
 
     return () => {
       window.removeEventListener('products_synced', handleProductsSynced as EventListener);
       window.removeEventListener('force_sync', handleForceSync as EventListener);
-      window.removeEventListener('global_products_synced', handleGlobalProductsSynced as EventListener);
+      window.removeEventListener('github_products_synced', handleGitHubProductsSynced as EventListener);
     };
   }, [dataService]);
 
@@ -986,7 +437,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         syncing: false,
         lastSynced: dataService.getLastSyncTimestamp() ? new Date(dataService.getLastSyncTimestamp()!) : null,
         error: null,
-        isGlobalSyncEnabled: dataService.isGlobalSyncEnabled()
+        isGitHubSyncEnabled: dataService.isGitHubSyncEnabled()
       }
     }}>
       {children}
