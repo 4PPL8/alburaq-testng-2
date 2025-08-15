@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
-import { Plus, Edit3, Trash2, Eye, Upload, X, Check, AlertTriangle, Loader2, Github, RefreshCw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Plus, Edit3, Trash2, Eye, Upload, X, Check, AlertTriangle, Loader2, Undo2 } from 'lucide-react';
 import { useProducts, Product } from '../contexts/ProductContext'; // Import Product interface
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-toastify'; // Import toast (ToastContainer is in App.tsx)
 
 // Custom Confirmation Modal component for Delete
-const ConfirmDeleteModal: React.FC<{ productId: string, onConfirm: () => void, onCancel: () => void }> = ({ productId, onConfirm, onCancel }) => (
+const ConfirmDeleteModal: React.FC<{ onConfirm: () => void, onCancel: () => void }> = ({ onConfirm, onCancel }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
     <div className="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full text-center">
       <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
@@ -29,7 +29,6 @@ const ConfirmDeleteModal: React.FC<{ productId: string, onConfirm: () => void, o
   </div>
 );
 
-
 const AdminDashboard: React.FC = () => {
   const { 
     products, 
@@ -37,8 +36,8 @@ const AdminDashboard: React.FC = () => {
     addProduct, 
     updateProduct, 
     deleteProduct, 
-    isLoading: productsLoading,
-    syncStatus 
+    undoLastChange,
+    canUndo
   } = useProducts();
   const { adminInfo } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'manage'>('overview');
@@ -47,6 +46,7 @@ const AdminDashboard: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUndoing, setIsUndoing] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -203,22 +203,16 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleSyncWithGitHub = async () => {
-    if (!syncStatus.isGitHubEnabled) {
-      toast.error('GitHub integration is not configured');
-      return;
-    }
-    
+  const handleUndo = async () => {
+    setIsUndoing(true);
     try {
-      // This will trigger the sync in ProductContext
-      await updateProduct(products[0].id, {
-        ...products[0],
-        name: products[0].name // Just updating with the same data to trigger sync
-      });
-      toast.success('Successfully synced with GitHub');
+      await undoLastChange();
+      toast.success('Last change undone');
     } catch (error) {
-      console.error('Error syncing with GitHub:', error);
-      toast.error('Failed to sync with GitHub');
+      console.error('Error undoing last change:', error);
+      toast.error('Failed to undo last change');
+    } finally {
+      setIsUndoing(false);
     }
   };
 
@@ -227,33 +221,16 @@ const AdminDashboard: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">Admin Dashboard</h1>
         
-        {/* GitHub Sync Status */}
-        {syncStatus.isGitHubEnabled && (
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <Github className="w-5 h-5 text-gray-700" />
-              <span className="text-sm text-gray-600">
-                {syncStatus.syncing ? (
-                  <span className="flex items-center">
-                    <Loader2 className="w-4 h-4 animate-spin mr-1" />
-                    Syncing...
-                  </span>
-                ) : syncStatus.lastSynced ? (
-                  <span>Last synced: {new Date(syncStatus.lastSynced).toLocaleString()}</span>
-                ) : (
-                  <span>Not synced yet</span>
-                )}
-              </span>
-            </div>
-            <button 
-              onClick={handleSyncWithGitHub}
-              disabled={syncStatus.syncing}
-              className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium text-gray-700 transition-colors duration-200 disabled:opacity-50"
-            >
-              <RefreshCw className="w-4 h-4 mr-1" />
-              Sync
-            </button>
-          </div>
+        {/* Undo Button */}
+        {canUndo && (
+          <button
+            onClick={handleUndo}
+            disabled={isUndoing}
+            className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium text-gray-700 transition-colors duration-200 disabled:opacity-50"
+          >
+            <Undo2 className="w-4 h-4 mr-1" />
+            Undo Last Change
+          </button>
         )}
       </div>
       
@@ -418,7 +395,6 @@ const AdminDashboard: React.FC = () => {
         {/* Delete Confirmation Modal */}
         {deleteConfirm && (
           <ConfirmDeleteModal 
-            productId={deleteConfirm}
             onConfirm={() => handleDelete(deleteConfirm)}
             onCancel={() => setDeleteConfirm(null)}
           />

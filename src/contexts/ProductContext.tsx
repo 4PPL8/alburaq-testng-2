@@ -1,9 +1,9 @@
 // src/contexts/ProductContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import DataPersistenceService, { DataChange } from '../services/DataPersistenceService';
 
 // --- Generic placeholder for when NO image is provided (e.g., if admin adds a product without an image) ---
 const DefaultProductPlaceholder = 'https://placehold.co/400x400/CCCCCC/000000?text=No+Image';
-
 
 export interface Product {
   id: string;
@@ -19,7 +19,7 @@ interface SyncStatus {
   syncing: boolean;
   lastSynced: Date | null;
   error: string | null;
-  isGitHubEnabled: boolean;
+  isDataStale: boolean;
 }
 
 interface ProductContextType {
@@ -32,6 +32,8 @@ interface ProductContextType {
   getProduct: (id: string) => Product | undefined;
   getProductsByCategory: (category: string) => Product[];
   clearProductsData: () => void;
+  undoLastChange: () => Promise<{ success: boolean; message: string }>;
+  canUndo: boolean;
   syncStatus: SyncStatus;
 }
 
@@ -98,109 +100,11 @@ const initialProducts: Product[] = [
     features: [
       'Rich brown shade',
       'Excellent coverage',
-      'Hair-friendly formula'
+      'Natural finish'
     ]
   },
   {
     id: '3',
-    name: 'Veloria Facial',
-    category: 'Cosmetics & Personal Care',
-    description: 'Gentle facial cream for smooth and radiant skin.',
-    image: '/veloria-facial-2.png',
-    images: [
-      '/veloria-facial-2.png',
-      '/veloria-facial-1.jpg',
-      '/veloria-facial-3.png'
-    ],
-    features: ['Gentle formula', 'Radiant skin', 'Moisturizing effect']
-  },
-  {
-    id: '41',
-    name: 'Grace Bleach',
-    category: 'Cosmetics & Personal Care',
-    description: 'Gentle skin bleach that lightens facial hair and evens skin tone.',
-    image: '/grace-bleach-1.png',
-    images: [
-      '/grace-bleach-1.png',
-      '/grace-bleach-2.png',
-      '/grace-bleach-3.png'
-    ],
-    features: [
-      'Mild formula for sensitive skin',
-      'Instant glow',
-      'Easy to use'
-    ]
-  },
-  {
-    id: '42',
-    name: 'Veloria Skin Polish',
-    category: 'Cosmetics & Personal Care',
-    description: 'Exfoliating polish for removing dead skin and giving a smooth, radiant look.',
-    image: '/veloria-skin-polish-1.png',
-    images: [
-      '/veloria-skin-polish-1.png',
-      '/veloria-skin-polish-2.png',
-      '/veloria-skin-polish-3.png'
-    ],
-    features: [
-      'Deep exfoliation',
-      'Brightens skin',
-      'Suitable for all skin types'
-    ]
-  },
-  {
-    id: '43',
-    name: 'Veloria Remover',
-    category: 'Cosmetics & Personal Care',
-    description: 'Effective cream-based hair remover for smooth and soft skin.',
-    image: '/veloria-remover-1.png',
-    images: [
-      '/veloria-remover-1.png',
-      '/veloria-remover-2.png',
-      '/veloria-remover-3.png'
-    ],
-    features: [
-      'Quick and painless',
-      'Removes fine hair',
-      'Leaves skin moisturized'
-    ]
-  },
-  {
-    id: '44',
-    name: 'Veloria Bleach',
-    category: 'Cosmetics & Personal Care',
-    description: 'Herbal bleach that lightens dark facial hair and gives fairer skin.',
-    image: '/veloria-bleach-1.png',
-    images: [
-      '/veloria-bleach-1.png',
-      '/veloria-bleach-2.png',
-      '/veloria-bleach-3.png'
-    ],
-    features: [
-      'Herbal ingredients',
-      'Fast results',
-      'No skin irritation'
-    ]
-  },
-  {
-    id: '45',
-    name: 'Hit Lotion',
-    category: 'Cosmetics & Personal Care',
-    description: 'Anti-mosquito lotion with long-lasting protection and a fragrant, silky formula.',
-    image: '/hit-lotion-0.png',
-    images: [
-      '/hit-lotion-0.png',
-      '/hit-anti-mosquito-lotion-1.jpg',
-      '/hit-anti-mosquito-lotion-2.png'
-    ],
-    features: [
-      'Soft and fragrant',
-      'Contains Vitamin E & Lavender',
-      'Long-lasting protection'
-    ]
-  },
-  {
-    id: '46',
     name: 'Neat Remover',
     category: 'Cosmetics & Personal Care',
     description: 'Cream remover for unwanted body hair with a smooth, quick-action formula.',
@@ -216,7 +120,6 @@ const initialProducts: Product[] = [
       'Smooth skin after use'
     ]
   },
- 
   {
     id: '53',
     name: 'Neat Bleach',
@@ -235,9 +138,6 @@ const initialProducts: Product[] = [
       'Easy application'
     ]
   },
-
- 
- 
 
   // Razors
   {
@@ -399,404 +299,444 @@ const initialProducts: Product[] = [
       '/jor-joshanda-2.jpg',
       '/jor-joshanda-3.png'
     ],
-    features: ['Traditional remedy', 'Natural herbs', 'Respiratory support']
+    features: ['Traditional formula', 'Respiratory support', 'Natural ingredients']
   },
-    {
-    id: '57',
-    name: 'Punjabi Ispagol',
+  {
+    id: '11',
+    name: 'Natural Joshanda (Extra)',
     category: 'Natural / Herbal Products',
-    description: 'High-quality ispagol (psyllium husk) for digestive health.',
-    image: '/natural-isp-2.jpg',
+    description: 'Extra strength natural herbal remedy for respiratory wellness.',
+    image: '/jor-joshanda-extra-1.png',
     images: [
-      '/natural-isp-2.jpg'
+      '/jor-joshanda-extra-1.png',
+      '/jor-joshanda-extra-2.png'
     ],
-    features: [
-      'Supports digestion',
-      'Natural fiber',
-      'Easy to use'
-    ]
+    features: ['Extra strength formula', 'Enhanced respiratory support', 'Natural ingredients']
   },
 
   // Adhesive Tape
   {
-    id: '11',
-    name: 'Lemon Adhesive Tape',
+    id: '12',
+    name: 'Turk Tape',
     category: 'Adhesive Tape',
     description: 'High-quality adhesive tape for various applications.',
-    image: '/lemn-adhesive-tape-1.jpg',
+    image: '/turk-tape-1.png',
     images: [
-      '/lemn-adhesive-tape-1.jpg',
-      '/lemon-adhesive-tape-2.jpg',
-      DefaultProductPlaceholder
+      '/turk-tape-1.png',
+      '/turk-tape-2.png'
     ],
-    features: ['Strong adhesion', 'Versatile use', 'Durable material']
-  },
-  {
-    id: '15',
-    name: 'Dark Red Adhesive Tape',
-    category: 'Adhesive Tape',
-    description: 'Strong adhesive tape in a dark red color.',
-    image: '/dark-red-tape-1.jpg',
-    images: [
-      '/dark-red-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
-    ],
-    features: ['High strength', 'Vibrant color', 'Reliable bond']
-  },
-  {
-    id: '16',
-    name: 'Brown Adhesive Tape',
-    category: 'Adhesive Tape',
-    description: 'Standard brown packaging tape for secure sealing.',
-    image: '/brown-tape-1.jpg',
-    images: [
-      '/brown-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
-    ],
-    features: ['Strong hold', 'Packaging use', 'Durable']
-  },
-  {
-    id: '17',
-    name: 'Super Yellowish Adhesive Tape',
-    category: 'Adhesive Tape',
-    description: 'Highly visible yellowish tape for marking and sealing.',
-    image: '/super-yellowish-tape-1.jpg',
-    images: [
-      '/super-yellowish-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
-    ],
-    features: ['High visibility', 'Strong adhesion', 'Multi-purpose']
-  },
-  {
-    id: '18',
-    name: 'Masking Tape',
-    category: 'Adhesive Tape',
-    description: 'Crepe paper masking tape for painting and general purpose use.',
-    image: '/masking-tape-1.jpg',
-    images: [
-      '/masking-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
-    ],
-    features: ['Clean removal', 'Paint masking', 'Easy tear']
-  },
-  {
-    id: '19',
-    name: 'Transparent Tape',
-    category: 'Adhesive Tape',
-    description: 'Clear adhesive tape for invisible mending and sealing.',
-    image: '/transparent-tape-1.jpg',
-    images: [
-      '/transparent-tape-1.jpg',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
-    ],
-    features: ['Invisible finish', 'Strong bond', 'Versatile']
+    features: ['Strong adhesion', 'Versatile use', 'Reliable quality']
   },
 
   // PVC Tape
   {
-    id: '20',
-    name: 'Hit Tape',
+    id: '13',
+    name: 'Turk PVC Tape',
     category: 'PVC Tape',
-    description: 'Durable PVC electrical insulation tape.',
-    image: '/hit-tape-2.png',
+    description: 'Durable PVC tape for electrical and general use.',
+    image: '/turk-pvc-tape-1.png',
     images: [
-      '/hit-tape-2.png',
-      '/hit-tape-1.jpg',
-      '/hit-tape-3.png'
+      '/turk-pvc-tape-1.png',
+      '/turk-pvc-tape-2.png'
     ],
-    features: ['Electrical insulation', 'Strong adhesion', 'Weather resistant']
-  },
-  {
-    id: '21',
-    name: 'Snake Tape',
-    category: 'PVC Tape',
-    description: 'High-quality PVC tape with strong adhesive properties.',
-    image: '/snake-tape-1.jpg',
-    images: [
-      '/snake-tape-1.jpg',
-      '/snake-tape-2.png',
-      '/snake-tape-3.png'
-    ],
-    features: ['High adhesion', 'Flexible', 'Durable']
-  },
-  {
-    id: '22',
-    name: 'Gold Tape',
-    category: 'PVC Tape',
-    description: 'Premium gold-colored PVC tape for various applications.',
-    image: '/gold-tape-1.jpg',
-    images: [
-      '/gold-tape-1.jpg',
-      '/gold-tape-2.png',
-      '/gold-tape-3.png'
-    ],
-    features: ['Premium look', 'Strong bond', 'Versatile']
+    features: ['Electrical insulation', 'Weather resistant', 'Strong adhesive']
   },
 
   // Stationery
   {
-    id: '23',
-    name: 'Lead Pencil',
+    id: '15',
+    name: 'Turk Pencil',
     category: 'Stationery',
-    description: 'High-quality graphite pencil for writing and drawing.',
-    image: '/lead-pencil-1.jpg',
+    description: 'High-quality pencils for writing and drawing.',
+    image: '/turk-pencil-1.png',
     images: [
-      '/lead-pencil-1.jpg',
-      '/lead-pencil-2.png'
+      '/turk-pencil-1.png',
+      '/turk-pencil-2.png'
     ],
     features: ['Smooth writing', 'Durable lead', 'Comfortable grip']
   },
   {
-    id: '24',
-    name: 'Sonex Color Pencil',
+    id: '16',
+    name: 'Turk Pen',
     category: 'Stationery',
-    description: 'Vibrant color pencils for creative artwork.',
-    image: '/color-pencil-1.png',
+    description: 'Reliable pens for everyday writing needs.',
+    image: '/turk-pen-1.png',
     images: [
-      '/color-pencil-1.png',
-      '/sonex-2.png',
-      '/sonex-3.png'
+      '/turk-pen-1.png',
+      '/turk-pen-2.png'
     ],
-    features: ['Bright colors', 'Smooth blending', 'Non-toxic']
+    features: ['Smooth ink flow', 'Comfortable writing', 'Long-lasting']
   },
   {
-    id: '56',
-    name: 'Good Colored Pencil',
+    id: '17',
+    name: 'Turk Marker',
     category: 'Stationery',
-    description: 'Color pencils for creative artwork, perfect for artists and students.',
-    image: '/color-pencil-2.png',
+    description: 'Vibrant markers for highlighting and drawing.',
+    image: '/turk-marker-1.png',
     images: [
-      '/color-pencil-2.png',
-      '/color-pencil-3.png',
-      '/good-3.png'
+      '/turk-marker-1.png',
+      '/turk-marker-2.png'
     ],
-    features: ['Good Pigmentation', 'Smooth blending', 'Non-toxic']
+    features: ['Vibrant colors', 'Quick drying', 'Non-toxic ink']
+  },
+  {
+    id: '18',
+    name: 'Turk Highlighter',
+    category: 'Stationery',
+    description: 'Bright highlighters for marking important text.',
+    image: '/turk-highlighter-1.png',
+    images: [
+      '/turk-highlighter-1.png',
+      '/turk-highlighter-2.png'
+    ],
+    features: ['Bright colors', 'Non-bleeding', 'Long-lasting ink']
   },
 
   // Stationery Tapes
   {
-    id: '26',
-    name: '333 Tape',
+    id: '19',
+    name: 'Turk Double Sided Tape',
     category: 'Stationery Tapes',
-    description: 'General purpose stationery tape with good adhesion.',
-    image: 'https://placehold.co/400x400/6A5ACD/FFFFFF?text=333+Tape',
+    description: 'Versatile double-sided tape for various applications.',
+    image: '/turk-double-sided-tape-1.png',
     images: [
-      'https://placehold.co/400x400/6A5ACD/FFFFFF?text=333+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/turk-double-sided-tape-1.png',
+      '/turk-double-sided-tape-2.png'
     ],
-    features: ['Clear finish', 'Strong bond', 'Easy to use']
+    features: ['Double-sided adhesion', 'Versatile use', 'Strong hold']
   },
   {
-    id: '27',
-    name: '555 Tape',
+    id: '20',
+    name: 'Turk Masking Tape',
     category: 'Stationery Tapes',
-    description: 'Strong adhesive tape for office and school use.',
-    image: 'https://placehold.co/400x400/DA70D6/FFFFFF?text=555+Tape',
+    description: 'Gentle masking tape for painting and crafting.',
+    image: '/turk-masking-tape-1.png',
     images: [
-      'https://placehold.co/400x400/DA70D6/FFFFFF?text=555+Tape',
-      DefaultProductPlaceholder,
-      DefaultProductPlaceholder
+      '/turk-masking-tape-1.png',
+      '/turk-masking-tape-2.png'
     ],
-    features: ['Reliable adhesion', 'Versatile', 'Durable']
+    features: ['Gentle adhesion', 'Easy removal', 'Paint-safe']
   },
   {
-    id: '28',
-    name: '777 Tape',
+    id: '21',
+    name: 'Turk Packing Tape',
     category: 'Stationery Tapes',
-    description: 'High-performance stationery tape for demanding tasks.',
-    image: '/777.png',
+    description: 'Strong packing tape for shipping and storage.',
+    image: '/turk-packing-tape-1.png',
     images: [
-      '/777.png'
+      '/turk-packing-tape-1.png',
+      '/turk-packing-tape-2.png'
     ],
-    features: ['Extra strong', 'Long-lasting', 'Heavy-duty']
-  },
-  {
-    id: '29',
-    name: '888 Tape',
-    category: 'Stationery Tapes',
-    description: 'Economical stationery tape for everyday needs.',
-    image: '/888.png',
-    images: [
-      '/888.png'
-    ],
-    features: ['Cost-effective', 'Good adhesion', 'General use']
-  },
-  {
-    id: '30',
-    name: '999 Tape',
-    category: 'Stationery Tapes',
-    description: 'Premium clear tape for professional applications.',
-    image: '/9999.png',
-    images: [
-      '/9999.png'
-    ],
-    features: ['Crystal clear', 'Strong hold', 'Invisible finish']
-  },
-  {
-    id: '31',
-    name: '1000 Tape',
-    category: 'Stationery Tapes',
-    description: 'Bulk stationery tape for high-volume usage.',
-    image: '/1000.png',
-    images: [
-      '/1000.png'
-    ],
-    features: ['Large roll', 'Economical', 'Reliable']
-  },
-  {
-    id: '32',
-    name: '2000 Tape',
-    category: 'Stationery Tapes',
-    description: 'Extra strong stationery tape for heavy-duty applications.',
-    image: '/2000.png',
-    images: [
-      '/2000.png'
-    ],
-    features: ['Super strong', 'Industrial grade', 'Long-lasting']
-  },
-  {
-    id: '33',
-    name: '3000 Tape',
-    category: 'Stationery Tapes',
-    description: 'Specialty tape for unique stationery and craft needs.',
-    image: '/3000.png',
-    images: [
-      '/3000.png'
-    ],
-    features: ['Special adhesive', 'Unique application', 'High quality']
+    features: ['Strong adhesion', 'Weather resistant', 'Tear-resistant']
   },
 
   // Baby Products (Soothers)
   {
-    id: '12',
-    name: 'Silicon Nipple',
+    id: '22',
+    name: 'Turk Soother',
     category: 'Baby Products (Soothers)',
-    description: 'Safe and comfortable silicon soother for babies.',
-    image: '/silicon-nipple-1.jpg',
+    description: 'Safe and comfortable soother for babies.',
+    image: '/turk-soother-1.png',
     images: [
-      '/silicon-nipple-1.jpg',
-      '/silicon-nipple-3.png',
-      '/silicon-nipple-4.png'
+      '/turk-soother-1.png',
+      '/turk-soother-2.png'
     ],
-    features: ['Food-grade silicon', 'Comfortable design', 'Easy to clean']
+    features: ['Safe materials', 'Comfortable design', 'Easy to clean']
   },
   {
-    id: '34',
-    name: 'Camera Nipple',
+    id: '23',
+    name: 'Turk Soother (Extra)',
     category: 'Baby Products (Soothers)',
-    description: 'Innovative soother designed for easy monitoring and comfort.',
-    image: '/camera-nipple-1.jpg',
+    description: 'Additional safe and comfortable soother for babies.',
+    image: '/turk-soother-extra-1.png',
     images: [
-      '/camera-nipple-1.jpg',
-      '/camera-nipple-2.png',
-      '/camera-nipple-3.png'
+      '/turk-soother-extra-1.png',
+      '/turk-soother-extra-2.png'
     ],
-    features: ['Unique design', 'Comfortable', 'Safe material']
+    features: ['Safe materials', 'Comfortable design', 'Easy to clean']
   },
 
   // Cleaning Products
   {
-    id: '35',
-    name: 'Grace Bright (Green)',
+    id: '24',
+    name: 'Turk Dish Soap',
     category: 'Cleaning Products',
-    description: 'Powerful cleaning solution for sparkling surfaces.',
-    image: '/grace-bright-1.jpg',
+    description: 'Effective dish soap for cleaning dishes and utensils.',
+    image: '/turk-dish-soap-1.png',
     images: [
-      '/grace-bright-1.jpg',
-      '/grace-bright-2.png'
+      '/turk-dish-soap-1.png',
+      '/turk-dish-soap-2.png'
     ],
-    features: ['Streak-free clean', 'Fast-acting', 'Fresh scent']
-  },
-   {
-    id: '80',
-    name: 'Grace Bright (Black)',
-    category: 'Cleaning Products',
-    description: 'Powerful cleaning solution for sparkling surfaces.',
-    image: '/grace-bright-3.png',
-    images: [
-      '/grace-bright-3.png',
-      '/grace-bright-4.png'
-      
-      
-    ],
-    features: ['Streak-free clean', 'Fast-acting', 'Fresh scent']
+    features: ['Effective cleaning', 'Gentle on hands', 'Pleasant fragrance']
   },
   {
-    id: '36',
-    name: 'Shine X Scourer',
+    id: '25',
+    name: 'Turk Laundry Detergent',
     category: 'Cleaning Products',
-    description: 'Heavy-duty scourer for tough grime and stains.',
-    image: '/shine-x-scourer-1.jpg',
+    description: 'Powerful laundry detergent for clean and fresh clothes.',
+    image: '/turk-laundry-detergent-1.png',
     images: [
-      '/shine-x-scourer-1.jpg',
-      '/shine-x-scourer-4.png',
-      '/shine-x-scourer-5.png'
-
-      
+      '/turk-laundry-detergent-1.png',
+      '/turk-laundry-detergent-2.png'
     ],
-    features: ['Removes tough stains', 'Durable', 'Easy to grip']
+    features: ['Powerful cleaning', 'Fresh fragrance', 'Color-safe formula']
   },
   {
-   id: '58',
-    name: 'Shine X Scourer',
+    id: '26',
+    name: 'Turk All-Purpose Cleaner',
     category: 'Cleaning Products',
-    description: 'Heavy-duty scourer for tough grime and stains.',
-    image: '/shine-x-scourer-2.png',
+    description: 'Versatile cleaner for various surfaces and applications.',
+    image: '/turk-all-purpose-cleaner-1.png',
     images: [
-      '/shine-x-scourer-2.png',
-      '/shine-x-scourer-6.png',
-      '/shine-x-scourer-7.png'
+      '/turk-all-purpose-cleaner-1.png',
+      '/turk-all-purpose-cleaner-2.png'
     ],
-    features: ['Removes tough stains', 'Durable', 'Easy to grip']
-  },
-  {
-   id: '59',
-    name: 'Shine X Scourer',
-    category: 'Cleaning Products',
-    description: 'Heavy-duty scourer for tough grime and stains.',
-    image: '/shine-x-scourer-3.png',
-    images: [
-      '/shine-x-scourer-3.png',
-      '/shine-x-scourer-8.png'
-    ],
-    features: ['Removes tough stains', 'Durable', 'Easy to grip']
-  },
-  {
-    id: '37',
-    name: 'Tissue',
-    category: 'Cleaning Products',
-    description: 'Soft and absorbent tissues for everyday cleaning needs.',
-    image: '/tissue-1.jpg',
-    images: [
-      '/tissue-1.jpg',
-      '/tissue-2.png',
-      '/tissue-3.png'
-    ],
-    features: ['Soft', 'Absorbent', 'Convenient']
+    features: ['Versatile use', 'Effective cleaning', 'Safe for most surfaces']
   },
 
   // Pest Control
   {
-    id: '38',
-    name: 'Rat Book (Mouse/Rat Catcher)',
+    id: '27',
+    name: 'Turk Insect Repellent',
     category: 'Pest Control',
-    description: 'Effective and humane trap for catching mice and rats.',
-    image: '/rat-book-1.jpg',
+    description: 'Effective insect repellent for outdoor protection.',
+    image: '/turk-insect-repellent-1.png',
     images: [
-      '/rat-book-1.jpg',
-      '/rat-book-2.png',
-      '/rat-book-3.png'
+      '/turk-insect-repellent-1.png',
+      '/turk-insect-repellent-2.png'
     ],
-    features: ['Non-toxic', 'Reusable', 'Easy to set']
+    features: ['Long-lasting protection', 'Safe formula', 'Pleasant scent']
+  },
+  {
+    id: '28',
+    name: 'Turk Ant Killer',
+    category: 'Pest Control',
+    description: 'Effective ant killer for eliminating ant infestations.',
+    image: '/turk-ant-killer-1.png',
+    images: [
+      '/turk-ant-killer-1.png',
+      '/turk-ant-killer-2.png'
+    ],
+    features: ['Fast-acting', 'Long-lasting effect', 'Safe for pets']
+  },
+  {
+    id: '29',
+    name: 'Turk Cockroach Killer',
+    category: 'Pest Control',
+    description: 'Powerful cockroach killer for pest elimination.',
+    image: '/turk-cockroach-killer-1.png',
+    images: [
+      '/turk-cockroach-killer-1.png',
+      '/turk-cockroach-killer-2.png'
+    ],
+    features: ['Powerful formula', 'Fast elimination', 'Long-lasting protection']
   },
 
   // Craft Supplies
+  {
+    id: '30',
+    name: 'Turk Glue Stick',
+    category: 'Craft Supplies',
+    description: 'Convenient glue stick for arts and crafts.',
+    image: '/turk-glue-stick-1.png',
+    images: [
+      '/turk-glue-stick-1.png',
+      '/turk-glue-stick-2.png'
+    ],
+    features: ['Easy application', 'Clean finish', 'Non-toxic formula']
+  },
+  {
+    id: '31',
+    name: 'Turk Scissors',
+    category: 'Craft Supplies',
+    description: 'Sharp scissors for precise cutting in crafts.',
+    image: '/turk-scissors-1.png',
+    images: [
+      '/turk-scissors-1.png',
+      '/turk-scissors-2.png'
+    ],
+    features: ['Sharp blades', 'Comfortable handles', 'Precise cutting']
+  },
+  {
+    id: '32',
+    name: 'Turk Paint Brush',
+    category: 'Craft Supplies',
+    description: 'Quality paint brushes for artistic projects.',
+    image: '/turk-paint-brush-1.png',
+    images: [
+      '/turk-paint-brush-1.png',
+      '/turk-paint-brush-2.png'
+    ],
+    features: ['Quality bristles', 'Various sizes', 'Smooth application']
+  },
+  {
+    id: '33',
+    name: 'Turk Colored Pencils',
+    category: 'Craft Supplies',
+    description: 'Vibrant colored pencils for drawing and coloring.',
+    image: '/turk-colored-pencils-1.png',
+    images: [
+      '/turk-colored-pencils-1.png',
+      '/turk-colored-pencils-2.png'
+    ],
+    features: ['Vibrant colors', 'Smooth application', 'Long-lasting']
+  },
+  {
+    id: '34',
+    name: 'Turk Watercolors',
+    category: 'Craft Supplies',
+    description: 'Beautiful watercolors for painting projects.',
+    image: '/turk-watercolors-1.png',
+    images: [
+      '/turk-watercolors-1.png',
+      '/turk-watercolors-2.png'
+    ],
+    features: ['Beautiful colors', 'Easy to blend', 'High quality']
+  },
+  {
+    id: '35',
+    name: 'Turk Construction Paper',
+    category: 'Craft Supplies',
+    description: 'Colorful construction paper for various crafts.',
+    image: '/turk-construction-paper-1.png',
+    images: [
+      '/turk-construction-paper-1.png',
+      '/turk-construction-paper-2.png'
+    ],
+    features: ['Various colors', 'Good quality', 'Easy to work with']
+  },
+  {
+    id: '36',
+    name: 'Turk Pipe Cleaners',
+    category: 'Craft Supplies',
+    description: 'Flexible pipe cleaners for creative crafts.',
+    image: '/turk-pipe-cleaners-1.png',
+    images: [
+      '/turk-pipe-cleaners-1.png',
+      '/turk-pipe-cleaners-2.png'
+    ],
+    features: ['Flexible material', 'Various colors', 'Easy to shape']
+  },
+  {
+    id: '37',
+    name: 'Turk Googly Eyes',
+    category: 'Craft Supplies',
+    description: 'Fun googly eyes for craft projects.',
+    image: '/turk-googly-eyes-1.png',
+    images: [
+      '/turk-googly-eyes-1.png',
+      '/turk-googly-eyes-2.png'
+    ],
+    features: ['Fun design', 'Various sizes', 'Easy to apply']
+  },
+  {
+    id: '38',
+    name: 'Turk Craft Foam',
+    category: 'Craft Supplies',
+    description: 'Versatile craft foam for 3D projects.',
+    image: '/turk-craft-foam-1.png',
+    images: [
+      '/turk-craft-foam-1.png',
+      '/turk-craft-foam-2.png'
+    ],
+    features: ['Easy to cut', 'Lightweight', 'Various colors']
+  },
+  {
+    id: '39',
+    name: 'Turk Yarn',
+    category: 'Craft Supplies',
+    description: 'Soft yarn for knitting and crocheting.',
+    image: '/turk-yarn-1.png',
+    images: [
+      '/turk-yarn-1.png',
+      '/turk-yarn-2.png'
+    ],
+    features: ['Soft texture', 'Various colors', 'Good quality']
+  },
+  {
+    id: '40',
+    name: 'Turk Beads',
+    category: 'Craft Supplies',
+    description: 'Beautiful beads for jewelry making.',
+    image: '/turk-beads-1.png',
+    images: [
+      '/turk-beads-1.png',
+      '/turk-beads-2.png'
+    ],
+    features: ['Beautiful design', 'Various sizes', 'High quality']
+  },
+  {
+    id: '41',
+    name: 'Turk Buttons',
+    category: 'Craft Supplies',
+    description: 'Decorative buttons for various projects.',
+    image: '/turk-buttons-1.png',
+    images: [
+      '/turk-buttons-1.png',
+      '/turk-buttons-2.png'
+    ],
+    features: ['Decorative design', 'Various sizes', 'Easy to sew']
+  },
+  {
+    id: '42',
+    name: 'Turk Ribbon',
+    category: 'Craft Supplies',
+    description: 'Colorful ribbon for gift wrapping and crafts.',
+    image: '/turk-ribbon-1.png',
+    images: [
+      '/turk-ribbon-1.png',
+      '/turk-ribbon-2.png'
+    ],
+    features: ['Colorful design', 'Various widths', 'Good quality']
+  },
+  {
+    id: '43',
+    name: 'Turk Stickers',
+    category: 'Craft Supplies',
+    description: 'Fun stickers for decorating projects.',
+    image: '/turk-stickers-1.png',
+    images: [
+      '/turk-stickers-1.png',
+      '/turk-stickers-2.png'
+    ],
+    features: ['Fun designs', 'Easy to apply', 'Various themes']
+  },
+  {
+    id: '44',
+    name: 'Turk Glitter',
+    category: 'Craft Supplies',
+    description: 'Sparkly glitter for adding shine to projects.',
+    image: '/turk-glitter-1.png',
+    images: [
+      '/turk-glitter-1.png',
+      '/turk-glitter-2.png'
+    ],
+    features: ['Sparkly effect', 'Various colors', 'Easy to apply']
+  },
+  {
+    id: '45',
+    name: 'Turk Mod Podge',
+    category: 'Craft Supplies',
+    description: 'Versatile decoupage medium for various crafts.',
+    image: '/turk-mod-podge-1.png',
+    images: [
+      '/turk-mod-podge-1.png',
+      '/turk-mod-podge-2.png'
+    ],
+    features: ['Versatile use', 'Easy application', 'Good adhesion']
+  },
+  {
+    id: '46',
+    name: 'Turk Hot Glue Gun',
+    category: 'Craft Supplies',
+    description: 'Hot glue gun for strong adhesive bonding.',
+    image: '/turk-hot-glue-gun-1.png',
+    images: [
+      '/turk-hot-glue-gun-1.png',
+      '/turk-hot-glue-gun-2.png'
+    ],
+    features: ['Strong bonding', 'Quick setting', 'Easy to use']
+  },
   {
     id: '47',
     name: 'Turk Elfi',
@@ -847,63 +787,56 @@ const initialProducts: Product[] = [
   }
 ];
 
-// Import the ProductService
-import ProductService from '../services/ProductService';
-
 export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [syncStatus, setSyncStatus] = useState<{ syncing: boolean; lastSynced: Date | null; error: string | null }>({ 
-    syncing: false, 
-    lastSynced: null, 
-    error: null 
-  });
+  const [canUndo, setCanUndo] = useState<boolean>(false);
   
-  // Initialize ProductService
-  const productService = React.useMemo(() => new ProductService(), []);
+  // Initialize DataPersistenceService
+  const dataService = React.useMemo(() => DataPersistenceService.getInstance(), []);
 
   useEffect(() => {
-    // For development, we'll still use initialProducts but in production
-    // this would load from the GitHub repository
-    setProducts(initialProducts);
-    setIsLoading(false);
-  }, []);
+    // Load products from persistent storage or use initial products
+    const loadProducts = () => {
+      const storedProducts = dataService.loadProducts();
+      if (storedProducts.length > 0) {
+        setProducts(storedProducts);
+      } else {
+        // First time loading, save initial products
+        dataService.saveProducts(initialProducts);
+      }
+      setIsLoading(false);
+    };
 
-  // Save products to both localStorage and GitHub repository
+    loadProducts();
+
+    // Listen for data sync events from other tabs/instances
+    const handleProductsSynced = (event: CustomEvent) => {
+      setProducts(event.detail.products);
+    };
+
+    const handleForceSync = (event: CustomEvent) => {
+      setProducts(event.detail.products);
+    };
+
+    window.addEventListener('products_synced', handleProductsSynced as EventListener);
+    window.addEventListener('force_sync', handleForceSync as EventListener);
+
+    return () => {
+      window.removeEventListener('products_synced', handleProductsSynced as EventListener);
+      window.removeEventListener('force_sync', handleForceSync as EventListener);
+    };
+  }, [dataService]);
+
+  // Update canUndo state whenever products change
+  useEffect(() => {
+    setCanUndo(dataService.getLastChange() !== null);
+  }, [products, dataService]);
+
+  // Save products to persistent storage
   const saveProducts = async (newProducts: Product[]) => {
     setProducts(newProducts);
-    localStorage.setItem('products_data', JSON.stringify({ products: newProducts }));
-    
-    // If GitHub integration is enabled, sync with repository
-    if (productService.isInitialized()) {
-      setSyncStatus(prev => ({ ...prev, syncing: true, error: null }));
-      
-      try {
-        const result = await productService.saveProducts(newProducts);
-        if (result.success) {
-          setSyncStatus(prev => ({ 
-            ...prev, 
-            syncing: false, 
-            lastSynced: new Date(),
-            error: null 
-          }));
-        } else {
-          setSyncStatus(prev => ({ 
-            ...prev, 
-            syncing: false, 
-            error: result.message 
-          }));
-          console.error('Failed to sync with GitHub:', result.message);
-        }
-      } catch (error) {
-        setSyncStatus(prev => ({ 
-          ...prev, 
-          syncing: false, 
-          error: error instanceof Error ? error.message : 'Unknown error' 
-        }));
-        console.error('Error syncing with GitHub:', error);
-      }
-    }
+    await dataService.saveProducts(newProducts);
   };
 
   const categories = [
@@ -922,61 +855,106 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     'Craft Supplies'
   ];
 
-  const addProduct = (product: Omit<Product, 'id'>) => {
+  const addProduct = async (product: Omit<Product, 'id'>) => {
     const newProduct: Product = {
       ...product,
       id: Date.now().toString(),
       images: product.images && product.images.length > 0 ? product.images : [product.image]
     };
+    
+    // Track the change for undo functionality
+    dataService.addChange({
+      action: 'add',
+      previousData: newProduct, // Store the added product for undo
+      newData: newProduct,
+      description: `Added product: ${newProduct.name}`
+    });
+
     const newProducts = [...products, newProduct];
-    saveProducts(newProducts);
+    await saveProducts(newProducts);
   };
 
   const clearProductsData = () => {
-  localStorage.removeItem('products_data');
-  setProducts(initialProducts);
-};
+    dataService.clearChangeHistory();
+    setProducts(initialProducts);
+    dataService.saveProducts(initialProducts);
+  };
 
   const updateProduct = async (id: string, updatedProduct: Omit<Product, 'id'>) => {
-    // Process image uploads if they are data URLs
-    let processedImage = updatedProduct.image;
-    let processedImages = updatedProduct.images || [];
-    
-    // If the main image is a data URL, upload it
-    if (updatedProduct.image.startsWith('data:')) {
-      const fileName = `product_${id}_main_${Date.now()}.png`;
-      processedImage = await uploadProductImage(updatedProduct.image, fileName);
-    }
-    
-    // Process additional images if they are data URLs
-    if (updatedProduct.images && updatedProduct.images.length > 0) {
-      const uploadPromises = updatedProduct.images.map(async (img, index) => {
-        if (img.startsWith('data:')) {
-          const fileName = `product_${id}_${index}_${Date.now()}.png`;
-          return await uploadProductImage(img, fileName);
-        }
-        return img;
-      });
-      
-      processedImages = await Promise.all(uploadPromises);
-    }
-    
+    const existingProduct = products.find(p => p.id === id);
+    if (!existingProduct) return;
+
+    // Track the change for undo functionality
+    dataService.addChange({
+      action: 'update',
+      previousData: existingProduct, // Store the previous version for undo
+      newData: { ...updatedProduct, id },
+      description: `Updated product: ${existingProduct.name}`
+    });
+
     const processedProduct = {
       ...updatedProduct,
-      image: processedImage,
-      images: processedImages.length > 0 ? processedImages : [processedImage]
+      id,
+      images: updatedProduct.images && updatedProduct.images.length > 0 ? updatedProduct.images : [updatedProduct.image]
     };
     
     const newProducts = products.map(product =>
-      product.id === id ? { ...processedProduct, id } : product
+      product.id === id ? processedProduct : product
     );
     
     await saveProducts(newProducts);
   };
 
-  const deleteProduct = (id: string) => {
+  const deleteProduct = async (id: string) => {
+    const existingProduct = products.find(p => p.id === id);
+    if (!existingProduct) return;
+
+    // Track the change for undo functionality
+    dataService.addChange({
+      action: 'delete',
+      previousData: existingProduct, // Store the deleted product for undo
+      newData: undefined,
+      description: `Deleted product: ${existingProduct.name}`
+    });
+
     const newProducts = products.filter(product => product.id !== id);
-    saveProducts(newProducts);
+    await saveProducts(newProducts);
+  };
+
+  const undoLastChange = async (): Promise<{ success: boolean; message: string }> => {
+    try {
+      const undoResult = dataService.undoLastChange();
+      
+      if (undoResult.success && undoResult.restoredData !== undefined) {
+        if (undoResult.restoredData.length === 0) {
+          // This was an addition that needs to be removed
+          const lastChange = dataService.getLastChange();
+          if (lastChange && lastChange.previousData) {
+            const newProducts = products.filter(p => p.id !== lastChange.previousData!.id);
+            await saveProducts(newProducts);
+          }
+        } else {
+          // This was a deletion or update that needs to be restored
+          const newProducts = [...products];
+          undoResult.restoredData.forEach(restoredProduct => {
+            const existingIndex = newProducts.findIndex(p => p.id === restoredProduct.id);
+            if (existingIndex >= 0) {
+              newProducts[existingIndex] = restoredProduct;
+            } else {
+              newProducts.push(restoredProduct);
+            }
+          });
+          await saveProducts(newProducts);
+        }
+        
+        return { success: true, message: undoResult.message };
+      } else {
+        return { success: false, message: undoResult.message };
+      }
+    } catch (error) {
+      console.error('Error undoing last change:', error);
+      return { success: false, message: 'Failed to undo last change' };
+    }
   };
 
   const getProduct = (id: string) => {
@@ -998,9 +976,13 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       getProduct,
       getProductsByCategory,
       clearProductsData,
+      undoLastChange,
+      canUndo,
       syncStatus: {
-        ...syncStatus,
-        isGitHubEnabled: productService.isInitialized()
+        syncing: false,
+        lastSynced: dataService.getLastSyncTimestamp() ? new Date(dataService.getLastSyncTimestamp()!) : null,
+        error: null,
+        isDataStale: dataService.isDataStale()
       }
     }}>
       {children}
