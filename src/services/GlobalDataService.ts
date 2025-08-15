@@ -338,14 +338,14 @@ class GlobalDataService {
    * Setup periodic sync to keep data fresh
    */
   private setupPeriodicSync(): void {
-    // Sync every 30 seconds to keep data fresh
+    // Sync every 10 seconds to keep data fresh across sessions
     this.syncInterval = setInterval(async () => {
       try {
         await this.forceGlobalSync();
       } catch (error) {
         console.error('Periodic sync failed:', error);
       }
-    }, 30000);
+    }, 10000);
   }
 
   /**
