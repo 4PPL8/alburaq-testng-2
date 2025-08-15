@@ -1,5 +1,187 @@
 {
-  "products": [],
-  "lastUpdated": "2024-01-01T00:00:00.000Z",
+  "products": [
+    {
+      "id": "4",
+      "name": "Sharp Ultra Razor",
+      "category": "Razors",
+      "description": "Professional-grade razor for precise and comfortable shaving.",
+      "image": "/sharp-razor-1.jpg",
+      "images": [
+        "/sharp-razor-1.jpg",
+        "/sharp-razor-2.png",
+        "/sharp-razor-3.png"
+      ],
+      "features": [
+        "Sharp blade",
+        "Comfortable grip",
+        "Precise cutting"
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Ujala Razor",
+      "category": "Razors",
+      "description": "Reliable razor for everyday grooming needs.",
+      "image": "/ujala-razor-1.jpg",
+      "images": [
+        "/ujala-razor-1.jpg",
+        "/ujala-razor-2.jpg",
+        "/ujala-razor-3.png"
+      ],
+      "features": [
+        "Reliable quality",
+        "Everyday use",
+        "Affordable price"
+      ]
+    },
+    {
+      "id": "6",
+      "name": "Mr Clean Toothbrush",
+      "category": "Toothbrush",
+      "description": "High-quality toothbrush for optimal oral hygiene.",
+      "image": "/mister-clean-toothbrush-1.jpg",
+      "images": [
+        "/mister-clean-toothbrush-1.jpg",
+        "/mister-clean-toothbrush-2.jpg",
+        "/mister-clean-toothbrush-3.png"
+      ],
+      "features": [
+        "Soft bristles",
+        "Ergonomic handle",
+        "Effective cleaning"
+      ]
+    },
+    {
+      "id": "7",
+      "name": "Mahfil Milan",
+      "category": "Agarbatti (Incense Sticks)",
+      "description": "Premium incense sticks with enchanting fragrance.",
+      "image": "/mahfil-milan-1.jpg",
+      "images": [
+        "/mahfil-milan-1.jpg",
+        "/mahfil-milan-1.jpg",
+        "/mahfil-milan-2.png"
+      ],
+      "features": [
+        "Premium quality",
+        "Long-lasting fragrance",
+        "Natural ingredients"
+      ]
+    },
+    {
+      "id": "8",
+      "name": "Golden Milan",
+      "category": "Agarbatti (Incense Sticks)",
+      "description": "Luxurious incense sticks for a calming atmosphere.",
+      "image": "/golden-milan-2.png",
+      "images": [
+        "/golden-milan-2.png",
+        "/golden-milan-1.jpg",
+        "/golden-milan-3.png"
+      ],
+      "features": [
+        "Luxurious fragrance",
+        "Calming effect",
+        "High-quality materials"
+      ]
+    },
+    {
+      "id": "9",
+      "name": "Natural ISP",
+      "category": "Natural / Herbal Products",
+      "description": "Natural herbal supplement for health and wellness.",
+      "image": "/natural-isp-1.jpg",
+      "images": [
+        "/natural-isp-1.jpg"
+      ],
+      "features": [
+        "Natural ingredients",
+        "Health benefits",
+        "Traditional formula"
+      ]
+    },
+    {
+      "id": "10",
+      "name": "Natural Joshanda",
+      "category": "Natural / Herbal Products",
+      "description": "Traditional herbal remedy for respiratory wellness.",
+      "image": "/jor-joshanda-1.jpg",
+      "images": [
+        "/jor-joshanda-1.jpg",
+        "/jor-joshanda-2.jpg",
+        "/jor-joshanda-3.png"
+      ],
+      "features": [
+        "Traditional formula",
+        "Respiratory support",
+        "Natural ingredients"
+      ]
+    },
+    {
+      "id": "11",
+      "name": "Turk Tape",
+      "category": "Adhesive Tape",
+      "description": "High-quality adhesive tape for various applications.",
+      "image": "/turk-tape-1.png",
+      "images": [
+        "/turk-tape-1.png",
+        "/turk-tape-2.png"
+      ],
+      "features": [
+        "Strong adhesion",
+        "Versatile use",
+        "Reliable quality"
+      ]
+    },
+    {
+      "id": "12",
+      "name": "Turk PVC Tape",
+      "category": "PVC Tape",
+      "description": "Durable PVC tape for electrical and general use.",
+      "image": "/turk-pvc-tape-1.png",
+      "images": [
+        "/turk-pvc-tape-1.png",
+        "/turk-pvc-tape-2.png"
+      ],
+      "features": [
+        "Electrical insulation",
+        "Weather resistant",
+        "Strong adhesive"
+      ]
+    },
+    {
+      "id": "13",
+      "name": "Turk Pencil",
+      "category": "Stationery",
+      "description": "High-quality pencils for writing and drawing.",
+      "image": "/turk-pencil-1.png",
+      "images": [
+        "/turk-pencil-1.png",
+        "/turk-pencil-2.png"
+      ],
+      "features": [
+        "Smooth writing",
+        "Durable lead",
+        "Comfortable grip"
+      ]
+    },
+    {
+      "id": "14",
+      "name": "Turk Pen",
+      "category": "Stationery",
+      "description": "Reliable pens for everyday writing needs.",
+      "image": "/turk-pen-1.png",
+      "images": [
+        "/turk-pen-1.png",
+        "/turk-pen-2.png"
+      ],
+      "features": [
+        "Smooth ink flow",
+        "Comfortable writing",
+        "Long-lasting"
+      ]
+    }
+  ],
+  "lastUpdated": "2025-08-15T13:53:31.196Z",
   "version": "1.0"
-} 
+}
