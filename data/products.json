@@ -914,8 +914,25 @@
         "Ideal for large projects",
         "Durable, strong hold"
       ]
+    },
+    {
+      "id": "1",
+      "name": "Belo Color",
+      "category": "Cosmetics & Personal Care",
+      "description": "High-quality hair color for vibrant and long-lasting results.",
+      "image": "/balo-color-1.jpg",
+      "images": [
+        "/balo-color-1.jpg",
+        "/balo-color-3.png",
+        "/balo-color-2.png"
+      ],
+      "features": [
+        "Long-lasting color",
+        "Natural ingredients",
+        "Easy application"
+      ]
     }
   ],
-  "lastUpdated": "2025-08-15T16:54:01.292Z",
+  "lastUpdated": "2025-08-15T17:02:18.069Z",
   "version": "1.0"
 }
