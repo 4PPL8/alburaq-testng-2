@@ -1,9 +1,6 @@
 // src/contexts/ProductContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import DataPersistenceService, { DataChange } from '../services/DataPersistenceService';
-
-// --- Generic placeholder for when NO image is provided (e.g., if admin adds a product without an image) ---
-const DefaultProductPlaceholder = 'https://placehold.co/400x400/CCCCCC/000000?text=No+Image';
+import GlobalDataService from '../services/GlobalDataService';
 
 export interface Product {
   id: string;
@@ -19,7 +16,7 @@ interface SyncStatus {
   syncing: boolean;
   lastSynced: Date | null;
   error: string | null;
-  isDataStale: boolean;
+  isGlobalSyncEnabled: boolean;
 }
 
 interface ProductContextType {
@@ -793,17 +790,18 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [canUndo, setCanUndo] = useState<boolean>(false);
   
   // Initialize DataPersistenceService
-  const dataService = React.useMemo(() => DataPersistenceService.getInstance(), []);
+  const dataService = React.useMemo(() => GlobalDataService.getInstance(), []);
 
   useEffect(() => {
     // Load products from persistent storage or use initial products
-    const loadProducts = () => {
-      const storedProducts = dataService.loadProducts();
+    const loadProducts = async () => {
+      await dataService.initialize();
+      const storedProducts = await dataService.loadProducts();
       if (storedProducts.length > 0) {
         setProducts(storedProducts);
       } else {
         // First time loading, save initial products
-        dataService.saveProducts(initialProducts);
+        await dataService.saveProducts(initialProducts);
       }
       setIsLoading(false);
     };
@@ -819,12 +817,18 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setProducts(event.detail.products);
     };
 
+    const handleGlobalProductsSynced = (event: CustomEvent) => {
+      setProducts(event.detail.products);
+    };
+
     window.addEventListener('products_synced', handleProductsSynced as EventListener);
     window.addEventListener('force_sync', handleForceSync as EventListener);
+    window.addEventListener('global_products_synced', handleGlobalProductsSynced as EventListener);
 
     return () => {
       window.removeEventListener('products_synced', handleProductsSynced as EventListener);
       window.removeEventListener('force_sync', handleForceSync as EventListener);
+      window.removeEventListener('global_products_synced', handleGlobalProductsSynced as EventListener);
     };
   }, [dataService]);
 
@@ -982,7 +986,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         syncing: false,
         lastSynced: dataService.getLastSyncTimestamp() ? new Date(dataService.getLastSyncTimestamp()!) : null,
         error: null,
-        isDataStale: dataService.isDataStale()
+        isGlobalSyncEnabled: dataService.isGlobalSyncEnabled()
       }
     }}>
       {children}
