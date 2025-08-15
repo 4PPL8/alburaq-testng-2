@@ -1,19 +1,6 @@
 {
   "products": [
     {
-      "id": "1",
-      "name": "Belo Color",
-      "category": "Cosmetics & Personal Care",
-      "description": "High-quality hair color for vibrant and long-lasting results.",
-      "image": "/balo-color-1.jpg",
-      "images": [
-        "/balo-color-1.jpg",
-        "/balo-color-3.png",
-        "/balo-color-2.png"
-      ],
-      "features": ["Long-lasting color", "Natural ingredients", "Easy application"]
-    },
-    {
       "id": "50",
       "name": "Belo Color (Brown)",
       "category": "Cosmetics & Personal Care",
@@ -43,7 +30,11 @@
         "/grace-color-1.jpg",
         "/grace-color-3.png"
       ],
-      "features": ["Premium quality", "Excellent coverage", "Hair-friendly formula"]
+      "features": [
+        "Premium quality",
+        "Excellent coverage",
+        "Hair-friendly formula"
+      ]
     },
     {
       "id": "51",
@@ -73,7 +64,11 @@
         "/veloria-facial-1.jpg",
         "/veloria-facial-3.png"
       ],
-      "features": ["Gentle formula", "Radiant skin", "Moisturizing effect"]
+      "features": [
+        "Gentle formula",
+        "Radiant skin",
+        "Moisturizing effect"
+      ]
     },
     {
       "id": "41",
@@ -206,7 +201,11 @@
         "/sharp-razor-2.png",
         "/sharp-razor-3.png"
       ],
-      "features": ["Sharp blade", "Comfortable grip", "Precise cutting"]
+      "features": [
+        "Sharp blade",
+        "Comfortable grip",
+        "Precise cutting"
+      ]
     },
     {
       "id": "5",
@@ -219,7 +218,11 @@
         "/ujala-razor-2.jpg",
         "/ujala-razor-3.png"
       ],
-      "features": ["Reliable quality", "Everyday use", "Affordable price"]
+      "features": [
+        "Reliable quality",
+        "Everyday use",
+        "Affordable price"
+      ]
     },
     {
       "id": "52",
@@ -284,7 +287,11 @@
         "/mister-clean-toothbrush-2.jpg",
         "/mister-clean-toothbrush-3.png"
       ],
-      "features": ["Soft bristles", "Ergonomic handle", "Effective cleaning"]
+      "features": [
+        "Soft bristles",
+        "Ergonomic handle",
+        "Effective cleaning"
+      ]
     },
     {
       "id": "7",
@@ -297,7 +304,11 @@
         "/mahfil-milan-1.jpg",
         "/mahfil-milan-2.png"
       ],
-      "features": ["Premium quality", "Long-lasting fragrance", "Natural ingredients"]
+      "features": [
+        "Premium quality",
+        "Long-lasting fragrance",
+        "Natural ingredients"
+      ]
     },
     {
       "id": "14",
@@ -310,7 +321,10 @@
         "/mehfil-millan-extra-2.jpg",
         "/mehfil-millan-extra-3.png"
       ],
-      "features": ["Same premium quality", "Great for bulk purchase"]
+      "features": [
+        "Same premium quality",
+        "Great for bulk purchase"
+      ]
     },
     {
       "id": "8",
@@ -323,7 +337,11 @@
         "/golden-milan-1.jpg",
         "/golden-milan-3.png"
       ],
-      "features": ["Luxurious fragrance", "Calming effect", "High-quality materials"]
+      "features": [
+        "Luxurious fragrance",
+        "Calming effect",
+        "High-quality materials"
+      ]
     },
     {
       "id": "9",
@@ -334,7 +352,11 @@
       "images": [
         "/natural-isp-1.jpg"
       ],
-      "features": ["Natural ingredients", "Health benefits", "Traditional formula"]
+      "features": [
+        "Natural ingredients",
+        "Health benefits",
+        "Traditional formula"
+      ]
     },
     {
       "id": "10",
@@ -347,7 +369,11 @@
         "/jor-joshanda-2.jpg",
         "/jor-joshanda-3.png"
       ],
-      "features": ["Traditional remedy", "Natural herbs", "Respiratory support"]
+      "features": [
+        "Traditional remedy",
+        "Natural herbs",
+        "Respiratory support"
+      ]
     },
     {
       "id": "57",
@@ -375,7 +401,11 @@
         "/lemon-adhesive-tape-2.jpg",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["Strong adhesion", "Versatile use", "Durable material"]
+      "features": [
+        "Strong adhesion",
+        "Versatile use",
+        "Durable material"
+      ]
     },
     {
       "id": "15",
@@ -388,7 +418,11 @@
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["High strength", "Vibrant color", "Reliable bond"]
+      "features": [
+        "High strength",
+        "Vibrant color",
+        "Reliable bond"
+      ]
     },
     {
       "id": "16",
@@ -401,7 +435,11 @@
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["Strong hold", "Packaging use", "Durable"]
+      "features": [
+        "Strong hold",
+        "Packaging use",
+        "Durable"
+      ]
     },
     {
       "id": "17",
@@ -414,7 +452,11 @@
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["High visibility", "Strong adhesion", "Multi-purpose"]
+      "features": [
+        "High visibility",
+        "Strong adhesion",
+        "Multi-purpose"
+      ]
     },
     {
       "id": "18",
@@ -427,7 +469,11 @@
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["Clean removal", "Paint masking", "Easy tear"]
+      "features": [
+        "Clean removal",
+        "Paint masking",
+        "Easy tear"
+      ]
     },
     {
       "id": "19",
@@ -440,7 +486,11 @@
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["Invisible finish", "Strong bond", "Versatile"]
+      "features": [
+        "Invisible finish",
+        "Strong bond",
+        "Versatile"
+      ]
     },
     {
       "id": "20",
@@ -453,7 +503,11 @@
         "/hit-tape-1.jpg",
         "/hit-tape-3.png"
       ],
-      "features": ["Electrical insulation", "Strong adhesion", "Weather resistant"]
+      "features": [
+        "Electrical insulation",
+        "Strong adhesion",
+        "Weather resistant"
+      ]
     },
     {
       "id": "21",
@@ -466,7 +520,11 @@
         "/snake-tape-2.png",
         "/snake-tape-3.png"
       ],
-      "features": ["High adhesion", "Flexible", "Durable"]
+      "features": [
+        "High adhesion",
+        "Flexible",
+        "Durable"
+      ]
     },
     {
       "id": "22",
@@ -479,7 +537,11 @@
         "/gold-tape-2.png",
         "/gold-tape-3.png"
       ],
-      "features": ["Premium look", "Strong bond", "Versatile"]
+      "features": [
+        "Premium look",
+        "Strong bond",
+        "Versatile"
+      ]
     },
     {
       "id": "23",
@@ -491,7 +553,11 @@
         "/lead-pencil-1.jpg",
         "/lead-pencil-2.png"
       ],
-      "features": ["Smooth writing", "Durable lead", "Comfortable grip"]
+      "features": [
+        "Smooth writing",
+        "Durable lead",
+        "Comfortable grip"
+      ]
     },
     {
       "id": "24",
@@ -504,7 +570,11 @@
         "/sonex-2.png",
         "/sonex-3.png"
       ],
-      "features": ["Bright colors", "Smooth blending", "Non-toxic"]
+      "features": [
+        "Bright colors",
+        "Smooth blending",
+        "Non-toxic"
+      ]
     },
     {
       "id": "56",
@@ -517,7 +587,11 @@
         "/color-pencil-3.png",
         "/good-3.png"
       ],
-      "features": ["Good Pigmentation", "Smooth blending", "Non-toxic"]
+      "features": [
+        "Good Pigmentation",
+        "Smooth blending",
+        "Non-toxic"
+      ]
     },
     {
       "id": "26",
@@ -530,7 +604,11 @@
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["Clear finish", "Strong bond", "Easy to use"]
+      "features": [
+        "Clear finish",
+        "Strong bond",
+        "Easy to use"
+      ]
     },
     {
       "id": "27",
@@ -543,7 +621,11 @@
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image",
         "https://placehold.co/400x400/CCCCCC/000000?text=No+Image"
       ],
-      "features": ["Reliable adhesion", "Versatile", "Durable"]
+      "features": [
+        "Reliable adhesion",
+        "Versatile",
+        "Durable"
+      ]
     },
     {
       "id": "28",
@@ -554,7 +636,11 @@
       "images": [
         "/777.png"
       ],
-      "features": ["Extra strong", "Long-lasting", "Heavy-duty"]
+      "features": [
+        "Extra strong",
+        "Long-lasting",
+        "Heavy-duty"
+      ]
     },
     {
       "id": "29",
@@ -565,7 +651,11 @@
       "images": [
         "/888.png"
       ],
-      "features": ["Cost-effective", "Good adhesion", "General use"]
+      "features": [
+        "Cost-effective",
+        "Good adhesion",
+        "General use"
+      ]
     },
     {
       "id": "30",
@@ -576,7 +666,11 @@
       "images": [
         "/9999.png"
       ],
-      "features": ["Crystal clear", "Strong hold", "Invisible finish"]
+      "features": [
+        "Crystal clear",
+        "Strong hold",
+        "Invisible finish"
+      ]
     },
     {
       "id": "31",
@@ -587,7 +681,11 @@
       "images": [
         "/1000.png"
       ],
-      "features": ["Large roll", "Economical", "Reliable"]
+      "features": [
+        "Large roll",
+        "Economical",
+        "Reliable"
+      ]
     },
     {
       "id": "32",
@@ -598,7 +696,11 @@
       "images": [
         "/2000.png"
       ],
-      "features": ["Super strong", "Industrial grade", "Long-lasting"]
+      "features": [
+        "Super strong",
+        "Industrial grade",
+        "Long-lasting"
+      ]
     },
     {
       "id": "33",
@@ -609,7 +711,11 @@
       "images": [
         "/3000.png"
       ],
-      "features": ["Special adhesive", "Unique application", "High quality"]
+      "features": [
+        "Special adhesive",
+        "Unique application",
+        "High quality"
+      ]
     },
     {
       "id": "12",
@@ -622,7 +728,11 @@
         "/silicon-nipple-3.png",
         "/silicon-nipple-4.png"
       ],
-      "features": ["Food-grade silicon", "Comfortable design", "Easy to clean"]
+      "features": [
+        "Food-grade silicon",
+        "Comfortable design",
+        "Easy to clean"
+      ]
     },
     {
       "id": "34",
@@ -635,7 +745,11 @@
         "/camera-nipple-2.png",
         "/camera-nipple-3.png"
       ],
-      "features": ["Unique design", "Comfortable", "Safe material"]
+      "features": [
+        "Unique design",
+        "Comfortable",
+        "Safe material"
+      ]
     },
     {
       "id": "35",
@@ -647,7 +761,11 @@
         "/grace-bright-1.jpg",
         "/grace-bright-2.png"
       ],
-      "features": ["Streak-free clean", "Fast-acting", "Fresh scent"]
+      "features": [
+        "Streak-free clean",
+        "Fast-acting",
+        "Fresh scent"
+      ]
     },
     {
       "id": "80",
@@ -659,7 +777,11 @@
         "/grace-bright-3.png",
         "/grace-bright-4.png"
       ],
-      "features": ["Streak-free clean", "Fast-acting", "Fresh scent"]
+      "features": [
+        "Streak-free clean",
+        "Fast-acting",
+        "Fresh scent"
+      ]
     },
     {
       "id": "36",
@@ -672,7 +794,11 @@
         "/shine-x-scourer-4.png",
         "/shine-x-scourer-5.png"
       ],
-      "features": ["Removes tough stains", "Durable", "Easy to grip"]
+      "features": [
+        "Removes tough stains",
+        "Durable",
+        "Easy to grip"
+      ]
     },
     {
       "id": "58",
@@ -685,7 +811,11 @@
         "/shine-x-scourer-6.png",
         "/shine-x-scourer-7.png"
       ],
-      "features": ["Removes tough stains", "Durable", "Easy to grip"]
+      "features": [
+        "Removes tough stains",
+        "Durable",
+        "Easy to grip"
+      ]
     },
     {
       "id": "59",
@@ -697,7 +827,11 @@
         "/shine-x-scourer-3.png",
         "/shine-x-scourer-8.png"
       ],
-      "features": ["Removes tough stains", "Durable", "Easy to grip"]
+      "features": [
+        "Removes tough stains",
+        "Durable",
+        "Easy to grip"
+      ]
     },
     {
       "id": "37",
@@ -710,7 +844,11 @@
         "/tissue-2.png",
         "/tissue-3.png"
       ],
-      "features": ["Soft", "Absorbent", "Convenient"]
+      "features": [
+        "Soft",
+        "Absorbent",
+        "Convenient"
+      ]
     },
     {
       "id": "38",
@@ -723,7 +861,11 @@
         "/rat-book-2.png",
         "/rat-book-3.png"
       ],
-      "features": ["Non-toxic", "Reusable", "Easy to set"]
+      "features": [
+        "Non-toxic",
+        "Reusable",
+        "Easy to set"
+      ]
     },
     {
       "id": "47",
@@ -774,6 +916,6 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-15T16:25:00.000Z",
+  "lastUpdated": "2025-08-15T16:54:01.292Z",
   "version": "1.0"
 }
