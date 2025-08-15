@@ -20,8 +20,6 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           // UI components and libraries
           'ui-vendor': ['lucide-react', 'react-toastify'],
-          // Authentication related code
-          'auth': ['@supabase/supabase-js'],
         },
       },
     },
