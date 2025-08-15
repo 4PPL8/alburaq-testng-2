@@ -1,23 +1,6 @@
 {
   "products": [
     {
-      "id": "5",
-      "name": "Ujala Razor",
-      "category": "Razors",
-      "description": "Reliable razor for everyday grooming needs.",
-      "image": "/ujala-razor-1.jpg",
-      "images": [
-        "/ujala-razor-1.jpg",
-        "/ujala-razor-2.jpg",
-        "/ujala-razor-3.png"
-      ],
-      "features": [
-        "Reliable quality",
-        "Everyday use",
-        "Affordable price"
-      ]
-    },
-    {
       "id": "6",
       "name": "Mr Clean Toothbrush",
       "category": "Toothbrush",
@@ -165,6 +148,6 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-15T13:54:44.615Z",
+  "lastUpdated": "2025-08-15T13:58:24.683Z",
   "version": "1.0"
 }
