@@ -1,23 +1,6 @@
 {
   "products": [
     {
-      "id": "4",
-      "name": "Sharp Ultra Razor",
-      "category": "Razors",
-      "description": "Professional-grade razor for precise and comfortable shaving.",
-      "image": "/sharp-razor-1.jpg",
-      "images": [
-        "/sharp-razor-1.jpg",
-        "/sharp-razor-2.png",
-        "/sharp-razor-3.png"
-      ],
-      "features": [
-        "Sharp blade",
-        "Comfortable grip",
-        "Precise cutting"
-      ]
-    },
-    {
       "id": "5",
       "name": "Ujala Razor",
       "category": "Razors",
@@ -182,6 +165,6 @@
       ]
     }
   ],
-  "lastUpdated": "2025-08-15T13:53:31.196Z",
+  "lastUpdated": "2025-08-15T13:54:44.615Z",
   "version": "1.0"
 }
